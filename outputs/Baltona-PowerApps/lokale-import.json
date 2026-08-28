@@ -1,0 +1,650 @@
+[
+  {
+    "Miasto": "BYDGOSZCZ",
+    "NumerLokalu": "B75",
+    "NazwaLokalu": "Multistore",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "BYDGOSZCZ",
+    "WierszZrodla": 2
+  },
+  {
+    "Miasto": "BYDGOSZCZ",
+    "NumerLokalu": "B38",
+    "NazwaLokalu": "Ministore",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "BYDGOSZCZ",
+    "WierszZrodla": 3
+  },
+  {
+    "Miasto": "KATOWICE PYRZOWICE",
+    "NumerLokalu": "B52",
+    "NazwaLokalu": "Multistore",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "KATOWICE PYRZOWICE TERMINAL A",
+    "WierszZrodla": 4
+  },
+  {
+    "Miasto": "KATOWICE PYRZOWICE",
+    "NumerLokalu": "B53",
+    "NazwaLokalu": "Glamour by Baltona",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "KATOWICE PYRZOWICE TERMINAL B",
+    "WierszZrodla": 5
+  },
+  {
+    "Miasto": "KATOWICE PYRZOWICE",
+    "NumerLokalu": "BA1",
+    "NazwaLokalu": "Beauty Shop",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "KATOWICE PYRZOWICE TERMINAL B",
+    "WierszZrodla": 6
+  },
+  {
+    "Miasto": "KATOWICE PYRZOWICE",
+    "NumerLokalu": "BA2",
+    "NazwaLokalu": "Multistore",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "KATOWICE PYRZOWICE TERMINAL B",
+    "WierszZrodla": 7
+  },
+  {
+    "Miasto": "POZNAŃ",
+    "NumerLokalu": "B39",
+    "NazwaLokalu": "Multistore",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "POZNAŃ",
+    "WierszZrodla": 8
+  },
+  {
+    "Miasto": "POZNAŃ",
+    "NumerLokalu": "B17",
+    "NazwaLokalu": "Ministore",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "POZNAŃ",
+    "WierszZrodla": 9
+  },
+  {
+    "Miasto": "POZNAŃ",
+    "NumerLokalu": "B15",
+    "NazwaLokalu": "ZOOM",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "POZNAŃ",
+    "WierszZrodla": 10
+  },
+  {
+    "Miasto": "RZESZÓW",
+    "NumerLokalu": "B34",
+    "NazwaLokalu": "Multistore",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "RZESZÓW",
+    "WierszZrodla": 11
+  },
+  {
+    "Miasto": "RZESZÓW",
+    "NumerLokalu": "B33",
+    "NazwaLokalu": "Ministore",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "RZESZÓW",
+    "WierszZrodla": 12
+  },
+  {
+    "Miasto": "ŚWINOUJŚCIE",
+    "NumerLokalu": "B76",
+    "NazwaLokalu": "Sklep Ogólnodostępny",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "ŚWINOUJŚCIE",
+    "WierszZrodla": 13
+  },
+  {
+    "Miasto": "WROCŁAW",
+    "NumerLokalu": "B03",
+    "NazwaLokalu": "Multistore",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WROCŁAW",
+    "WierszZrodla": 14
+  },
+  {
+    "Miasto": "WROCŁAW",
+    "NumerLokalu": "B05",
+    "NazwaLokalu": "ZOOM",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WROCŁAW",
+    "WierszZrodla": 15
+  },
+  {
+    "Miasto": "WROCŁAW",
+    "NumerLokalu": "B06",
+    "NazwaLokalu": "Beauty",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WROCŁAW",
+    "WierszZrodla": 16
+  },
+  {
+    "Miasto": "WROCŁAW",
+    "NumerLokalu": "B07",
+    "NazwaLokalu": "Wyspa",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WROCŁAW",
+    "WierszZrodla": 17
+  },
+  {
+    "Miasto": "WROCŁAW",
+    "NumerLokalu": "B08",
+    "NazwaLokalu": "Crew Shop",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WROCŁAW",
+    "WierszZrodla": 18
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "170",
+    "NazwaLokalu": "Glamour",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 19
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "171",
+    "NazwaLokalu": "Starter Dworzec",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 20
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "172",
+    "NazwaLokalu": "Starter Przyloty",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 21
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "173",
+    "NazwaLokalu": "La Maison Du Luxe",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 22
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "174",
+    "NazwaLokalu": "ZOOM",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 23
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "175",
+    "NazwaLokalu": "Ministore",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 24
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "176",
+    "NazwaLokalu": "ZOOM",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 25
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "177",
+    "NazwaLokalu": "Spirit Of Poland",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 26
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "178",
+    "NazwaLokalu": "Multistore",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 27
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "179",
+    "NazwaLokalu": "ZOOM",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 28
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "180",
+    "NazwaLokalu": "Starter",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 29
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "181",
+    "NazwaLokalu": "Bestseller",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 30
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "182",
+    "NazwaLokalu": "ZOOM",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 31
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "183",
+    "NazwaLokalu": "La Maison Du Luxe",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 32
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "187",
+    "NazwaLokalu": "ZOOM",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 33
+  },
+  {
+    "Miasto": "MODLIN",
+    "NumerLokalu": "BA5",
+    "NazwaLokalu": "STARTER",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "MODLIN",
+    "WierszZrodla": 34
+  },
+  {
+    "Miasto": "RADOM",
+    "NumerLokalu": "BR1",
+    "NazwaLokalu": "Multistore",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "RADOM",
+    "WierszZrodla": 35
+  },
+  {
+    "Miasto": "RADOM",
+    "NumerLokalu": "BR2",
+    "NazwaLokalu": "ZOOM",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "RADOM",
+    "WierszZrodla": 36
+  },
+  {
+    "Miasto": "RADOM",
+    "NumerLokalu": "BR3",
+    "NazwaLokalu": "Ministore",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "RADOM",
+    "WierszZrodla": 37
+  },
+  {
+    "Miasto": "RADOM",
+    "NumerLokalu": "BR4",
+    "NazwaLokalu": "STARTER",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "RADOM",
+    "WierszZrodla": 38
+  },
+  {
+    "Miasto": "ZIELONA GÓRA",
+    "NumerLokalu": "BZ1",
+    "NazwaLokalu": "STARTER",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "ZIELONA GÓRA",
+    "WierszZrodla": 39
+  },
+  {
+    "Miasto": "ZIELONA GÓRA",
+    "NumerLokalu": "BZ7",
+    "NazwaLokalu": "Ministore",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "ZIELONA GÓRA",
+    "WierszZrodla": 40
+  },
+  {
+    "Miasto": "KRAKÓW",
+    "NumerLokalu": "BK4",
+    "NazwaLokalu": "Ministore",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "KRAKÓW",
+    "WierszZrodla": 41
+  },
+  {
+    "Miasto": "KRAKÓW",
+    "NumerLokalu": "BK3",
+    "NazwaLokalu": "Ministore",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "KRAKÓW",
+    "WierszZrodla": 42
+  },
+  {
+    "Miasto": "KRAKÓW",
+    "NumerLokalu": "BK2",
+    "NazwaLokalu": "Multistore",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "KRAKÓW",
+    "WierszZrodla": 43
+  },
+  {
+    "Miasto": "KATOWICE PYRZOWICE",
+    "NumerLokalu": "260",
+    "NazwaLokalu": "Cavarious (wyspa)",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "KATOWICE PYRZOWICE",
+    "WierszZrodla": 44
+  },
+  {
+    "Miasto": "KATOWICE PYRZOWICE",
+    "NumerLokalu": "261",
+    "NazwaLokalu": "Travel Chef",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "KATOWICE PYRZOWICE",
+    "WierszZrodla": 45
+  },
+  {
+    "Miasto": "KATOWICE PYRZOWICE",
+    "NumerLokalu": "262",
+    "NazwaLokalu": "Cavarious Express",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "KATOWICE PYRZOWICE",
+    "WierszZrodla": 46
+  },
+  {
+    "Miasto": "KATOWICE PYRZOWICE",
+    "NumerLokalu": "263",
+    "NazwaLokalu": "Cavarious",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "KATOWICE PYRZOWICE",
+    "WierszZrodla": 47
+  },
+  {
+    "Miasto": "KATOWICE PYRZOWICE",
+    "NumerLokalu": "282",
+    "NazwaLokalu": "Cavarious",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "KATOWICE PYRZOWICE",
+    "WierszZrodla": 48
+  },
+  {
+    "Miasto": "KATOWICE PYRZOWICE",
+    "NumerLokalu": "283",
+    "NazwaLokalu": "Cavarious",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "KATOWICE PYRZOWICE",
+    "WierszZrodla": 49
+  },
+  {
+    "Miasto": "KATOWICE PYRZOWICE",
+    "NumerLokalu": "284",
+    "NazwaLokalu": "Travel Chef",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "KATOWICE PYRZOWICE",
+    "WierszZrodla": 50
+  },
+  {
+    "Miasto": "KRAKÓW",
+    "NumerLokalu": "288",
+    "NazwaLokalu": "Cavarious",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "KRAKÓW",
+    "WierszZrodla": 51
+  },
+  {
+    "Miasto": "POZNAŃ",
+    "NumerLokalu": "290",
+    "NazwaLokalu": "Cavarious Schengen",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "POZNAŃ",
+    "WierszZrodla": 52
+  },
+  {
+    "Miasto": "POZNAŃ",
+    "NumerLokalu": "299",
+    "NazwaLokalu": "Cavarious Non Schengen",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "POZNAŃ",
+    "WierszZrodla": 53
+  },
+  {
+    "Miasto": "POZNAŃ",
+    "NumerLokalu": "298",
+    "NazwaLokalu": "Travel Chef",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "POZNAŃ",
+    "WierszZrodla": 54
+  },
+  {
+    "Miasto": "RZESZÓW",
+    "NumerLokalu": "295",
+    "NazwaLokalu": "Cavarious",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "RZESZÓW",
+    "WierszZrodla": 56
+  },
+  {
+    "Miasto": "RZESZÓW",
+    "NumerLokalu": "296",
+    "NazwaLokalu": "Cavarious",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "RZESZÓW",
+    "WierszZrodla": 57
+  },
+  {
+    "Miasto": "RZESZÓW",
+    "NumerLokalu": "285",
+    "NazwaLokalu": "Business Lounge",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "RZESZÓW",
+    "WierszZrodla": 58
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "206",
+    "NazwaLokalu": "Food Truck (zamknięty)",
+    "Typ": "Lokal",
+    "Aktywny": false,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 59
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "207",
+    "NazwaLokalu": "Cavarious",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 60
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "208",
+    "NazwaLokalu": "Pizza",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 61
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "230",
+    "NazwaLokalu": "Cavarious",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 62
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "231",
+    "NazwaLokalu": "Subway",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 63
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "210",
+    "NazwaLokalu": "NOTAM",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 64
+  },
+  {
+    "Miasto": "RADOM",
+    "NumerLokalu": "211",
+    "NazwaLokalu": "Travel Chef",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "RADOM",
+    "WierszZrodla": 65
+  },
+  {
+    "Miasto": "RADOM",
+    "NumerLokalu": "212",
+    "NazwaLokalu": "Cavarious",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "RADOM",
+    "WierszZrodla": 66
+  },
+  {
+    "Miasto": "RADOM",
+    "NumerLokalu": "213",
+    "NazwaLokalu": "Cavarious NS",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "RADOM",
+    "WierszZrodla": 67
+  },
+  {
+    "Miasto": "RADOM",
+    "NumerLokalu": "214",
+    "NazwaLokalu": "Bistro",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "RADOM",
+    "WierszZrodla": 68
+  },
+  {
+    "Miasto": "MODLIN",
+    "NumerLokalu": "220",
+    "NazwaLokalu": "Business Lounge",
+    "Typ": "Lokal",
+    "Aktywny": true,
+    "Lokalizacja": "MODLIN",
+    "WierszZrodla": 69
+  },
+  {
+    "Miasto": "KATOWICE PYRZOWICE",
+    "NumerLokalu": "B51",
+    "NazwaLokalu": "Magazyn",
+    "Typ": "Magazyn",
+    "Aktywny": true,
+    "Lokalizacja": "KATOWICE PYRZOWICE",
+    "WierszZrodla": 73
+  },
+  {
+    "Miasto": "POZNAŃ",
+    "NumerLokalu": "B10",
+    "NazwaLokalu": "Magazyn",
+    "Typ": "Magazyn",
+    "Aktywny": true,
+    "Lokalizacja": "POZNAŃ",
+    "WierszZrodla": 74
+  },
+  {
+    "Miasto": "WROCŁAW",
+    "NumerLokalu": "B09",
+    "NazwaLokalu": "Magazyn",
+    "Typ": "Magazyn",
+    "Aktywny": true,
+    "Lokalizacja": "WROCŁAW",
+    "WierszZrodla": 75
+  },
+  {
+    "Miasto": "WARSZAWA",
+    "NumerLokalu": "532",
+    "NazwaLokalu": "Magazyn",
+    "Typ": "Magazyn",
+    "Aktywny": true,
+    "Lokalizacja": "WARSZAWA",
+    "WierszZrodla": 76
+  },
+  {
+    "Miasto": "KRAKÓW",
+    "NumerLokalu": "BK1",
+    "NazwaLokalu": "Magazyn",
+    "Typ": "Magazyn",
+    "Aktywny": true,
+    "Lokalizacja": "KRAKÓW",
+    "WierszZrodla": 77
+  }
+]

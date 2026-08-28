@@ -1,0 +1,484 @@
+{
+  "version": "1.0",
+  "lists": [
+    {
+      "name": "Lokale",
+      "attachments": false,
+      "fields": [
+        {
+          "name": "Miasto",
+          "type": "Text",
+          "required": true,
+          "index": true,
+          "unique": false
+        },
+        {
+          "name": "NumerLokalu",
+          "type": "Text",
+          "required": true,
+          "index": true,
+          "unique": true
+        },
+        {
+          "name": "NazwaLokalu",
+          "type": "Text",
+          "required": true,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "Typ",
+          "type": "Choice",
+          "required": true,
+          "index": false,
+          "unique": false,
+          "choices": [
+            "Lokal",
+            "Magazyn"
+          ]
+        },
+        {
+          "name": "Aktywny",
+          "type": "Boolean",
+          "required": true,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "Lokalizacja",
+          "type": "Text",
+          "required": false,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "WierszZrodla",
+          "type": "Number",
+          "required": false,
+          "index": false,
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "Zgloszenia",
+      "attachments": true,
+      "fields": [
+        {
+          "name": "NumerZgloszenia",
+          "type": "Text",
+          "required": false,
+          "index": true,
+          "unique": true
+        },
+        {
+          "name": "DataZgloszenia",
+          "type": "DateTime",
+          "required": true,
+          "index": true,
+          "unique": false
+        },
+        {
+          "name": "Miasto",
+          "type": "Text",
+          "required": true,
+          "index": true,
+          "unique": false
+        },
+        {
+          "name": "NumerLokalu",
+          "type": "Text",
+          "required": true,
+          "index": true,
+          "unique": false
+        },
+        {
+          "name": "NazwaLokalu",
+          "type": "Text",
+          "required": true,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "Zglaszajacy",
+          "type": "User",
+          "required": true,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "EmailZglaszajacego",
+          "type": "Text",
+          "required": true,
+          "index": true,
+          "unique": false
+        },
+        {
+          "name": "RodzajUsterki",
+          "type": "Choice",
+          "required": true,
+          "index": false,
+          "unique": false,
+          "choices": [
+            "Elektryka i oświetlenie",
+            "Klimatyzacja i wentylacja",
+            "Instalacja wodna i kanalizacja",
+            "Urządzenia chłodnicze",
+            "Sprzęt gastronomiczny",
+            "Drzwi, zamki i zabezpieczenia",
+            "Wyposażenie lokalu",
+            "IT i system sprzedażowy",
+            "Inna"
+          ]
+        },
+        {
+          "name": "PoziomAlertu",
+          "type": "Choice",
+          "required": true,
+          "index": true,
+          "unique": false,
+          "choices": [
+            "Niski",
+            "Średni",
+            "Wysoki"
+          ]
+        },
+        {
+          "name": "BlokujeSprzedaz",
+          "type": "Boolean",
+          "required": true,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "Opis",
+          "type": "Note",
+          "required": true,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "Status",
+          "type": "Choice",
+          "required": true,
+          "index": true,
+          "unique": false,
+          "choices": [
+            "Nowe",
+            "W realizacji",
+            "Oczekuje na części",
+            "Oczekuje na informację",
+            "Zamknięte",
+            "Odrzucone"
+          ]
+        },
+        {
+          "name": "Koordynator",
+          "type": "User",
+          "required": false,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "EmailKoordynatora",
+          "type": "Text",
+          "required": false,
+          "index": true,
+          "unique": false
+        },
+        {
+          "name": "TerminRealizacji",
+          "type": "DateTime",
+          "required": false,
+          "index": true,
+          "unique": false
+        },
+        {
+          "name": "KosztNaprawy",
+          "type": "Currency",
+          "required": false,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "DataZamkniecia",
+          "type": "DateTime",
+          "required": false,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "KomentarzZamkniecia",
+          "type": "Note",
+          "required": false,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "DataPierwszejReakcji",
+          "type": "DateTime",
+          "required": false,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "KluczZadania",
+          "type": "Text",
+          "required": true,
+          "index": true,
+          "unique": true
+        },
+        {
+          "name": "Lokalizacja",
+          "type": "Text",
+          "required": false,
+          "index": false,
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "Role",
+      "attachments": false,
+      "fields": [
+        {
+          "name": "Uzytkownik",
+          "type": "User",
+          "required": true,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "Email",
+          "type": "Text",
+          "required": true,
+          "index": true,
+          "unique": true
+        },
+        {
+          "name": "Rola",
+          "type": "Choice",
+          "required": true,
+          "index": false,
+          "unique": false,
+          "choices": [
+            "Użytkownik",
+            "Koordynator",
+            "Administrator"
+          ]
+        },
+        {
+          "name": "Aktywny",
+          "type": "Boolean",
+          "required": true,
+          "index": false,
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "Komentarze",
+      "attachments": false,
+      "fields": [
+        {
+          "name": "ZgloszenieId",
+          "type": "Number",
+          "required": true,
+          "index": true,
+          "unique": false
+        },
+        {
+          "name": "Tresc",
+          "type": "Note",
+          "required": true,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "Autor",
+          "type": "User",
+          "required": true,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "DataKomentarza",
+          "type": "DateTime",
+          "required": true,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "KluczZadania",
+          "type": "Text",
+          "required": true,
+          "index": true,
+          "unique": true
+        }
+      ]
+    },
+    {
+      "name": "Komendy",
+      "attachments": true,
+      "fields": [
+        {
+          "name": "Operacja",
+          "type": "Choice",
+          "required": true,
+          "index": false,
+          "unique": false,
+          "choices": [
+            "NoweZgloszenie",
+            "DodajKomentarz",
+            "AktualizujZgloszenie",
+            "ZarzadzajRola",
+            "ZarzadzajLokalem",
+            "Konfiguracja"
+          ]
+        },
+        {
+          "name": "ZgloszenieId",
+          "type": "Number",
+          "required": false,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "Dane",
+          "type": "Note",
+          "required": true,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "Stan",
+          "type": "Choice",
+          "required": true,
+          "index": true,
+          "unique": false,
+          "choices": [
+            "Szkic",
+            "Gotowe",
+            "Przetwarzanie",
+            "Wykonane",
+            "Błąd"
+          ]
+        },
+        {
+          "name": "WynikId",
+          "type": "Number",
+          "required": false,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "Komunikat",
+          "type": "Note",
+          "required": false,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "KluczZadania",
+          "type": "Text",
+          "required": true,
+          "index": true,
+          "unique": true
+        }
+      ]
+    },
+    {
+      "name": "Konfiguracja",
+      "attachments": false,
+      "fields": [
+        {
+          "name": "Klucz",
+          "type": "Text",
+          "required": true,
+          "index": true,
+          "unique": true
+        },
+        {
+          "name": "Wartosc",
+          "type": "Note",
+          "required": false,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "Opis",
+          "type": "Note",
+          "required": false,
+          "index": false,
+          "unique": false
+        }
+      ]
+    },
+    {
+      "name": "DziennikPowiadomien",
+      "attachments": false,
+      "fields": [
+        {
+          "name": "Klucz",
+          "type": "Text",
+          "required": true,
+          "index": true,
+          "unique": true
+        },
+        {
+          "name": "ZgloszenieId",
+          "type": "Number",
+          "required": true,
+          "index": true,
+          "unique": false
+        },
+        {
+          "name": "Kanal",
+          "type": "Choice",
+          "required": true,
+          "index": false,
+          "unique": false,
+          "choices": [
+            "Email",
+            "Teams"
+          ]
+        },
+        {
+          "name": "Typ",
+          "type": "Text",
+          "required": true,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "Stan",
+          "type": "Choice",
+          "required": true,
+          "index": false,
+          "unique": false,
+          "choices": [
+            "Oczekuje",
+            "Wysyłanie",
+            "Wysłano",
+            "Błąd",
+            "Do sprawdzenia"
+          ]
+        },
+        {
+          "name": "DataWyslania",
+          "type": "DateTime",
+          "required": false,
+          "index": false,
+          "unique": false
+        },
+        {
+          "name": "Blad",
+          "type": "Note",
+          "required": false,
+          "index": false,
+          "unique": false
+        }
+      ]
+    }
+  ]
+}
