@@ -433,7 +433,7 @@ document.addEventListener('click',async event=>{const el=event.target.closest('[
  else if(action==='backup-page'){if(!isAdmin()){toast('Kopie danych znajdziesz w Administracji — wybierz profil administratora.');return;}navigate('admin');adminTab='reports';shell();}
  }catch(error){fail(error);}});
 document.addEventListener('submit',async event=>{event.preventDefault();const form=event.target;if(!state||busy)return;if(!form.reportValidity())return;if(pendingRemote&&form.id!=='filter-form'&&form.id!=='export-form'){fail(Error('Dostępne są nowsze dane. Użyj przycisku „Wczytaj nowsze dane” przed zapisem.'),form);return;}busy=true;const buttons=[...form.querySelectorAll('button[type=submit]')];buttons.forEach(b=>b.disabled=true);form.querySelector('.form-error')?.remove();try{
- if(form.id==='login-form')await perform(()=>submitLogin(form));
+ if(form.id==='login-form')await submitLogin(form);
  else if(form.id==='new-form')await submitNew(form);
  else if(form.id==='comment-form')await submitComment(form);
  else if(form.id==='manage-form')await submitManage(form);
