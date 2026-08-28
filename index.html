@@ -225,7 +225,7 @@ const btn = (action,label,ic='plus',kind='') => `<button class="btn ${kind}" dat
 const header = (title,description,action='') => `<div class="heading"><div><h1>${esc(title)}</h1><p>${esc(description)}</p></div>${action}</div>`;
 let db, state, currentId, page='home', adminTab='users', selectedTicket=null, draftFiles=[], dirty=false, busy=false, editingUser=null, editingLocation=null;
 let authUser=null, authClient=null, authConfigured=false, authReady=false;
-const SUPABASE_URL='https://TWOJ-PROJEKT.supabase.co', SUPABASE_ANON_KEY='WSTAW_TUTAJ_PUBLICZNY_ANON_KEY';
+const SUPABASE_URL='https://uwavvvcacsxqkitmfank.supabase.co', SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3YXZ2dmNhY3N4cWtpdG1mYW5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc5MTM0OTEsImV4cCI6MjEwMzQ4OTQ5MX0.MzAdRypyHWdMIZWrQJ5agus25l0na_QB1iGWiVAFrk8';
 let filters={q:'',status:'',city:'',priority:'',from:'',to:''};
 let detailDirty=false,onlyUnreadNotifications=false,pendingRemote=null,syncing=false,updatesChannel=null,lastSeenProfile=null,seenNotificationIds=new Set(),syncErrorShown=false;
 function user(){return state.users.find(u=>u.id===currentId&&u.active)||state.users.find(u=>u.active&&u.role==='Administrator');}
