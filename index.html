@@ -1064,6 +1064,51 @@ body,.main-wrap,.auth-screen .content{background:var(--bg);color:var(--ink)}
 .auth-brand .brand-mark img{width:32px;height:32px}
 @media(max-width:800px){.brand-mark img{width:22px;height:22px}}
 
+/* Mobile dialogs: centered notifications and messages below the close control. */
+@media(max-width:800px){
+  .notifications-dialog{
+    position:fixed;
+    inset:auto;
+    top:50%;
+    left:50%;
+    right:auto;
+    bottom:auto;
+    transform:translate(-50%,-50%);
+    margin:0;
+    box-sizing:border-box;
+    width:min(470px,calc(100vw - 24px));
+    max-width:none;
+    max-height:calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    overflow-y:auto;
+    border-radius:12px;
+  }
+  .notifications-dialog .dialog-head{position:sticky;top:0;z-index:5;align-items:center;gap:12px;padding:14px 16px}
+  .notifications-dialog .dialog-head>div{flex:1;min-width:0;overflow-wrap:anywhere}
+  .notifications-dialog .close-dialog{display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px}
+  .notifications-dialog .notification-toolbar{padding:12px 15px}
+  .notifications-dialog .notification-filters{display:flex;flex-wrap:wrap;gap:7px}
+  .notifications-dialog .notification-filters button{min-height:40px}
+  .notifications-dialog .notification-toolbar>.btn{justify-self:stretch;text-align:center}
+  .notifications-dialog .notification-copy{min-width:0;overflow-wrap:anywhere}
+  .notifications-dialog .notification-footer{padding:12px 15px}
+  .dialog-toast-layer{
+    position:sticky;
+    top:var(--dialog-header-height,64px);
+    left:auto;
+    transform:none;
+    z-index:4;
+    box-sizing:border-box;
+    width:auto;
+    max-width:none;
+    margin:8px 12px;
+  }
+  .toast-container{pointer-events:none}
+  .toast-container .toast:not(.incoming-toast){pointer-events:none}
+  #content[data-page="admin"] .admin-split:has(#user-form){display:flex;flex-direction:column}
+  #content[data-page="admin"] .admin-split:has(#user-form)>*{width:100%;min-width:0}
+  #content[data-page="admin"] #user-form{order:-1}
+}
+
 </style>
 </head>
 <body>
@@ -1340,7 +1385,17 @@ async function initializeAuth(){
  authReady=true;if(!authUser){showAuth();return;}
  await ensureAuthProfile();
 }
-async function ensureAuthProfile(){const role=authRole(),email=authUser.email||'',name=authUser.user_metadata?.full_name||authUser.user_metadata?.name||email.split('@')[0]||'Użytkownik';const assigned=Array.isArray(authUser.app_metadata?.mpks)?authUser.app_metadata.mpks.filter(mpk=>state.locations.some(l=>l.mpk===mpk)):null;let profile=state.users.find(u=>u.email.toLowerCase()===email.toLowerCase());if(!profile){profile={id:'auth-'+authUser.id,name,email,role,mpks:assigned||[],active:true};state.users.push(profile);}if(!profile.active||profile.deletedAt)throw Error('Profil powiązany z tym kontem jest nieaktywny. Skontaktuj się z administratorem.');if(!state.users.some(u=>u.id===currentId&&u.active&&!u.deletedAt))currentId=profile.id;savePreference();}
+async function ensureAuthProfile(){
+ const role=authRole(),email=authUser.email||'',name=authUser.user_metadata?.full_name||authUser.user_metadata?.name||email.split('@')[0]||'Użytkownik';
+ const assigned=Array.isArray(authUser.app_metadata?.mpks)?authUser.app_metadata.mpks.filter(mpk=>state.locations.some(l=>l.mpk===mpk)):null;
+ let profile=state.users.find(u=>u.authUid===authUser.id||u.id==='auth-'+authUser.id);
+ if(!profile)profile=state.users.find(u=>u.email.toLowerCase()===email.toLowerCase());
+ if(!profile){profile={id:'auth-'+authUser.id,name,email,role,mpks:assigned||[],active:true};state.users.push(profile);}
+ profile.authUid=authUser.id;
+ if(!profile.active||profile.deletedAt)throw Error('Profil powiązany z tym kontem jest nieaktywny. Skontaktuj się z administratorem.');
+ if(!state.users.some(u=>u.id===currentId&&u.active&&!u.deletedAt))currentId=profile.id;
+ savePreference();
+}
 async function submitLogin(form){if(!authClient)throw Error('Supabase nie jest jeszcze skonfigurowany.');const values=Object.fromEntries(new FormData(form));const {error}=await authClient.auth.signInWithPassword({email:values.email.trim(),password:values.password});if(error)throw error;}
 async function logout(){if(authClient)await authClient.auth.signOut();else{authUser=null;showAuth();}}
 function canManage(){return ['Koordynator','Administrator'].includes(user().role);}
@@ -1500,7 +1555,24 @@ async function restoreUserProfile(id){
  await mutate(next=>{const profile=next.users.find(u=>u.id===id);profile.active=true;delete profile.deletedAt;});
  shell();toast('Przywrócono profil testowy.');
 }
-async function submitUser(form){if(!isAdmin())throw Error('Wybierz profil administratora.');const values=Object.fromEntries(new FormData(form));const mpks=[...new Set(String(values.mpks||'').toUpperCase().split(/[,;\s]+/).filter(Boolean))];if(mpks.some(mpk=>!state.locations.some(l=>l.mpk===mpk)))throw Error('Sprawdź przypisane MPK — jeden z numerów nie istnieje.');const proposed={id:values.id||uid(),name:values.name.trim(),email:values.email.trim().toLowerCase(),phone:String(values.phone||'').trim(),role:values.role,mpks,active:values.active==='on'};Model.validateUserChange(state.users,proposed);await mutate(next=>{const index=next.users.findIndex(u=>u.id===proposed.id);if(index>=0)next.users[index]=proposed;else next.users.push(proposed);});currentId=user().id;savePreference();editingUser=null;if(!isAdmin())page='home';shell();toast('Zapisano profil testowy. Konto logowania pozostaje bez zmian.');}
+async function submitUser(form){
+ if(!isAdmin())throw Error('Wybierz profil administratora.');
+ const values=Object.fromEntries(new FormData(form));
+ const mpks=[...new Set(String(values.mpks||'').toUpperCase().split(/[,;\s]+/).filter(Boolean))];
+ if(mpks.some(mpk=>!state.locations.some(l=>l.mpk===mpk)))throw Error('Sprawdź przypisane MPK — jeden z numerów nie istnieje.');
+ const previous=values.id?state.users.find(u=>u.id===values.id):null;
+ if(values.id&&!previous)throw Error('Nie znaleziono edytowanego profilu. Odśwież listę użytkowników.');
+ const proposed={...previous,id:values.id||uid(),name:values.name.trim(),email:values.email.trim().toLowerCase(),phone:String(values.phone||'').trim(),role:values.role,mpks,active:values.active==='on'};
+ Model.validateUserChange(state.users,proposed);
+ await mutate(next=>{const index=next.users.findIndex(u=>u.id===proposed.id);if(index>=0)next.users[index]=proposed;else next.users.push(proposed);});
+ currentId=user().id;
+ savePreference();
+ editingUser=proposed.id;
+ if(!isAdmin())page='home';
+ shell();
+ if(page==='admin')$('#user-form')?.insertAdjacentHTML('afterbegin','<p class="notice" role="status">Zmiany profilu zostały zapisane. Konto logowania w Supabase pozostaje bez zmian.</p>');
+ toast('Zapisano zmiany profilu.');
+}
 async function submitLocation(form){if(!isAdmin())throw Error('Wybierz profil administratora.');const v=Object.fromEntries(new FormData(form));const mpk=v.mpk.trim().toUpperCase();if(!mpk||!v.name.trim()||!v.city.trim())throw Error('Uzupełnij MPK, nazwę i miasto.');if(!['Lokal','Magazyn'].includes(v.type))throw Error('Nieprawidłowy typ obiektu.');if(!v.original&&state.locations.some(l=>l.mpk.toUpperCase()===mpk))throw Error('Obiekt z tym MPK już istnieje.');if(v.original&&mpk!==v.original)throw Error('Nie zmieniaj numeru MPK istniejącego obiektu.');await mutate(next=>{const i=next.locations.findIndex(l=>l.mpk===mpk);const record={...(i>=0?next.locations[i]:{}),mpk,name:v.name.trim(),city:v.city.trim().toUpperCase(),location:v.location.trim().toUpperCase()||v.city.trim().toUpperCase(),type:v.type,active:v.active==='on'};if(i>=0)next.locations[i]=record;else next.locations.push(record);});editingLocation=null;shell();toast('Zapisano obiekt. Historia zgłoszeń pozostała bez zmian.');}
 async function submitSettings(form){if(!isAdmin())throw Error('Wybierz profil administratora.');const v=Object.fromEntries(new FormData(form));const categories=[...new Set(v.categories.split('\n').map(x=>x.trim()).filter(Boolean))];const responseHours=Number(v.responseHours),maxFiles=Number(v.maxFiles),maxMB=Number(v.maxMB);if(!categories.length||categories.length>40||categories.some(c=>c.length>100))throw Error('Podaj od 1 do 40 kategorii, każda do 100 znaków.');if(!Number.isInteger(responseHours)||responseHours<1||responseHours>720||!Number.isInteger(maxFiles)||maxFiles<1||maxFiles>5||!Number.isInteger(maxMB)||maxMB<1||maxMB>10)throw Error('Sprawdź dopuszczalne zakresy ustawień.');await mutate(next=>{next.settings={categories,responseHours,maxFiles,maxMB};});shell();toast('Zapisano ustawienia.');}
 function exportCsv(form){if(!isAdmin())throw Error('Wybierz profil administratora.');const v=Object.fromEntries(new FormData(form));if(v.from&&v.to&&v.from>v.to)throw Error('Data początkowa nie może być późniejsza niż końcowa.');const tickets=state.tickets.filter(t=>(!v.from||t.createdAt>=new Date(v.from+'T00:00').toISOString())&&(!v.to||t.createdAt<=new Date(v.to+'T23:59:59.999').toISOString()));const rows=[['Numer zgłoszenia','Poprzedni numer','Data zgłoszenia','Miasto','MPK','Nazwa','Zgłaszający','Telefon kontaktowy','E-mail','Rodzaj','Priorytet','Blokuje sprzedaż','Opis','Status','Czas sugerowany (h)','Termin sugerowany','Termin planowany','Data zamknięcia','Komentarz zamknięcia','Pierwsza reakcja','Załączniki']];for(const t of tickets)rows.push([t.number,t.previousNumber||'',date(t.createdAt),t.city,t.mpk,t.locationName,t.reporter,t.reporterPhone||'',t.reporterEmail,t.category,t.priority,t.blocksSales?'Tak':'Nie',t.description,t.status,targetHours(t.priority,t.blocksSales),date(suggestedDeadline(t)),t.dueAt?dateOnly(t.dueAt):'',t.closedAt?date(t.closedAt):'',t.closingComment,t.firstResponseAt?date(t.firstResponseAt):'',t.attachments.map(f=>f.name).join(' | ')]);download(new Blob(['\uFEFF'+rows.map(r=>r.map(Model.csvCell).join(';')).join('\r\n')],{type:'text/csv;charset=utf-8'}),'Baltona-zgloszenia-'+new Date().toISOString().slice(0,10)+'.csv');toast('Przygotowano raport: '+tickets.length+' zgłoszeń.');}
@@ -1508,7 +1580,20 @@ async function backup(){if(!isAdmin())throw Error('Wybierz profil administratora
 async function restore(file){if(!isAdmin())throw Error('Wybierz profil administratora.');if(!file)return;if(file.size>250*1024*1024&&!confirm('To duża kopia danych. Jej wczytanie może wymagać dużo pamięci przeglądarki. Kontynuować?'))return;const data=JSON.parse(await file.text());const next=Model.validateBackup(data);const files=[];for(const f of data.files){const raw=atob(f.base64);if(raw.length!==f.size)throw Error('Niezgodny rozmiar załącznika w kopii.');const bytes=Uint8Array.from(raw,c=>c.charCodeAt(0));const blob=new Blob([bytes],{type:f.type});const b=new Uint8Array(await blob.slice(0,8).arrayBuffer());const valid=f.type==='image/jpeg'?b[0]===255&&b[1]===216&&b[2]===255:f.type==='image/png'?[137,80,78,71,13,10,26,10].every((v,i)=>b[i]===v):String.fromCharCode(...b.slice(0,5))==='%PDF-';if(!valid)throw Error('Nieprawidłowa zawartość załącznika w kopii.');const {base64,...meta}=f;files.push({...meta,blob});}if(!confirm('Wczytać '+next.tickets.length+' zgłoszeń i '+files.length+' załączników? Zastąpi to CAŁĄ bieżącą lokalną bazę, w tym profile i obiekty. Najpierw pobierz kopię obecnych danych.'))return;await persist(structuredClone(next),files,true);currentId=state.users.find(u=>u.active&&u.role==='Administrator').id;savePreference();selectedTicket=null;editingUser=null;editingLocation=null;dirty=false;page='admin';adminTab='reports';pendingRemote=null;lastSeenProfile=null;shell();announceProfile();toast('Wczytano i zapisano pełną kopię danych.');}
 // Powiadomienia są częścią tej samej transakcji co zgłoszenie/komentarz.
 function notificationsContext(data=pendingRemote||state){return Model.notificationsFor(data,data.users.find(u=>u.id===currentId&&u.active));}
-function mountToast(node){const modal=['quick-close-dialog','notifications-dialog','detail-dialog'].map(id=>document.getElementById(id)).find(dialog=>dialog?.open);if(!modal){$('#toasts').append(node);return;}let layer=modal.querySelector('.dialog-toast-layer');if(!layer){layer=document.createElement('div');layer.className='dialog-toast-layer';modal.append(layer);}layer.append(node);}
+function mountToast(node){
+ const modal=['quick-close-dialog','notifications-dialog','detail-dialog'].map(id=>document.getElementById(id)).find(dialog=>dialog?.open);
+ if(!modal){$('#toasts').append(node);return;}
+ let layer=modal.querySelector('.dialog-toast-layer');
+ if(!layer){
+   layer=document.createElement('div');
+   layer.className='dialog-toast-layer';
+   const header=modal.querySelector('.dialog-head');
+   layer.style.setProperty('--dialog-header-height',(header?.getBoundingClientRect().height||64)+'px');
+   if(header)header.insertAdjacentElement('afterend',layer);
+   else modal.prepend(layer);
+ }
+ layer.append(node);
+}
 function incomingToast(title,body,notificationId=''){
  const node=document.createElement('div');node.className='toast incoming-toast';node.setAttribute('role','status');
  const copy=document.createElement('div'),strong=document.createElement('strong'),p=document.createElement('p');strong.textContent=title;p.textContent=body;copy.append(strong,p);
