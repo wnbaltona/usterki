@@ -1745,7 +1745,7 @@ $('#detail-dialog').addEventListener('close',()=>{selectedTicket=null;detailDirt
 $('#quick-close-dialog').addEventListener('close',()=>{quickCloseId=null;});
 $('#detail-dialog').addEventListener('cancel',event=>{if(busy||(detailDirty&&!confirm('Odrzucić niezapisane zmiany w zgłoszeniu?')))event.preventDefault();else detailDirty=false;});
 </script>
-<script src="./cloud-sync.js"></script>
+<script src="./cloud-sync.js?v=2"></script>
 <script>
 openStore().then(()=>initializeAuth()).then(()=>{if(authUser){showApp();announceProfile();startLiveSync();}}).catch(error=>{showAuth(error.message);});
 </script>

@@ -44,7 +44,7 @@ initializeAuth = async function () {
     if (demoLoaded && authUser?.id && authUser.id === session?.user?.id) return;
     authUser = session?.user || null;
     if (authUser) {
-      setTimeout(() => loadDemoState().then(ensureAuthProfile).then(() => {
+      setTimeout(() => loadDemoState().then(() => {
         showApp();
         announceProfile();
         startLiveSync();
@@ -53,7 +53,6 @@ initializeAuth = async function () {
   });
   if (!authUser) { showAuth(); return; }
   await loadDemoState();
-  await ensureAuthProfile();
 };
 
 persist = async function (next, files = [], replaceFiles = false) {
