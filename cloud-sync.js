@@ -74,7 +74,12 @@ persist = async function (next, files = [], replaceFiles = false) {
       .update({ data: next, revision: next.revision, updated_at: now })
       .eq('id', 1).eq('revision', revision).select('revision').maybeSingle();
     if (error) throw error;
-    if (!data) throw Error('Inna osoba zapisała zmiany wcześniej. Odśwież dane i ponów zapis.');
+    if (!data) {
+      const latest = await authClient.from(DEMO_TABLE).select('revision').eq('id', 1).maybeSingle();
+      if (latest.error) throw latest.error;
+      if (latest.data?.revision === revision) throw Error('Supabase odmówił zapisu. Sprawdź uprawnienie UPDATE dla zalogowanych użytkowników w tabeli usterki_demo_state.');
+      throw Error('Inna osoba zapisała zmiany wcześniej. Odśwież dane i ponów zapis.');
+    }
   } catch (error) {
     if (uploaded.length) await authClient.storage.from(DEMO_BUCKET).remove(uploaded);
     throw error;
