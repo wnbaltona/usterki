@@ -1109,6 +1109,30 @@ body,.main-wrap,.auth-screen .content{background:var(--bg);color:var(--ink)}
   #content[data-page="admin"] #user-form{order:-1}
 }
 
+.schedule-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:22px}
+.schedule-summary .panel{padding:17px 19px;box-shadow:none}
+.schedule-summary span{display:block;color:#536b7d;font-size:12px;font-weight:600}
+.schedule-summary strong{display:block;margin-top:4px;color:#1e3c4d;font-size:25px;line-height:1.2}
+.schedule-summary .is-late{border-color:#e6b9bd;background:#fff8f8}
+.schedule-summary .is-late strong{color:#a2333f}
+.schedule-section{margin-top:25px}
+.schedule-section>h2{font-size:19px;margin:0 0 12px;color:#223e50}
+.schedule-section>p{margin:0 0 13px;color:#617689;font-size:13px}
+.schedule-day{margin:0 0 12px;padding:0;overflow:hidden}
+.schedule-day-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:#f1f6f8;border-bottom:1px solid #d7e4e9}
+.schedule-day-heading h3{margin:0;font-size:14px}
+.schedule-day-heading small{color:#536c7e;font-size:12px}
+.schedule-day.is-late .schedule-day-heading{background:#fff1f2;border-bottom-color:#edcdd0}
+.schedule-row{display:grid;grid-template-columns:minmax(90px,.65fr) minmax(150px,1.1fr) minmax(150px,1.4fr) minmax(125px,1fr) auto;align-items:center;gap:12px;padding:13px 16px;border-top:1px solid #e4ecf0}
+.schedule-row:first-of-type{border-top:0}
+.schedule-row strong{display:block;color:#213e51;font-size:13px;overflow-wrap:anywhere}
+.schedule-row small{display:block;margin-top:2px;color:#5f7686;font-size:11px;overflow-wrap:anywhere}
+.schedule-row .schedule-state{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.schedule-row .btn{justify-self:end}
+.schedule-empty{padding:18px;color:#5d7181;font-size:13px}
+@media(max-width:1100px){.schedule-row{grid-template-columns:minmax(0,1fr) auto}.schedule-row .schedule-location,.schedule-row .schedule-category,.schedule-row .schedule-state{grid-column:1/3}.schedule-row .btn{grid-column:2;grid-row:1}}
+@media(max-width:680px){.schedule-summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.schedule-summary .panel{padding:13px}.schedule-summary strong{font-size:22px}.schedule-row{grid-template-columns:minmax(0,1fr) auto;gap:7px 10px}.schedule-row .schedule-location,.schedule-row .schedule-category,.schedule-row .schedule-state{grid-column:1/3}.schedule-row .btn{grid-column:2;grid-row:1}.schedule-day-heading{padding:11px 13px}.schedule-row{padding:12px 13px}}
+
 </style>
 </head>
 <body>
@@ -1427,14 +1451,14 @@ function savePreference(){try{localStorage.setItem('baltona-view-profile',curren
 function statusPill(status){const kind=status==='Nowe'?'new':status==='Zamknięte'?'closed':status==='Odrzucone'?'rejected':'progress';return `<span class="pill ${kind}">${esc(status)}</span>`;}
 function priorityPill(priority){return `<span class="pill ${priority==='Wysoki'?'high':priority==='Średni'?'medium':'low'}">${esc(priority)}</span>`;}
 function shell(){
- const u=user(); const listLabel=canManage()?'Wszystkie zgłoszenia':user().role==='Kierownik lokalu'?'Zgłoszenia lokalu':'Moje zgłoszenia';const nav=[['home','home','Zgłoszenia'],['new','plus','Dodaj zgłoszenie'],['tickets','list',listLabel]];if(canManage())nav.push(['dashboard','chart','Dashboard']);if(isAdmin())nav.push(['admin','settings','Administracja']);
- if(!canManage()&&page==='dashboard')page='home';
+ const u=user(); const listLabel=canManage()?'Wszystkie zgłoszenia':user().role==='Kierownik lokalu'?'Zgłoszenia lokalu':'Moje zgłoszenia';const nav=[['home','home','Zgłoszenia'],['new','plus','Dodaj zgłoszenie'],['tickets','list',listLabel]];if(canManage())nav.push(['schedule','clock','Harmonogram'],['dashboard','chart','Dashboard']);if(isAdmin())nav.push(['admin','settings','Administracja']);
+ if(!canManage()&&['dashboard','schedule'].includes(page))page='home';
  $('#navigation').style.setProperty('--nav-count',nav.length);
- $('#navigation').innerHTML=nav.map(([id,ic,label])=>`<button class="nav-button ${page===id?'active':''}" data-action="nav" data-page="${id}" aria-label="${label}" ${page===id?'aria-current="page"':''}>${icon(ic)}<span class="nav-desktop-label">${label}</span><span class="nav-mobile-label" aria-hidden="true">${({home:'Start',new:'Zgłoś',tickets:'Lista',dashboard:'Raporty',admin:'Ustawienia'})[id]}</span></button>`).join('');
+ $('#navigation').innerHTML=nav.map(([id,ic,label])=>`<button class="nav-button ${page===id?'active':''}" data-action="nav" data-page="${id}" aria-label="${label}" ${page===id?'aria-current="page"':''}>${icon(ic)}<span class="nav-desktop-label">${label}</span><span class="nav-mobile-label" aria-hidden="true">${({home:'Start',new:'Zgłoś',tickets:'Lista',schedule:'Terminy',dashboard:'Raporty',admin:'Ustawienia'})[id]}</span></button>`).join('');
  if($('#profile-select'))$('#profile-select').innerHTML=state.users.filter(x=>x.active).map(x=>option(x.id,x.role+' · '+x.name,u.id)).join('');
  $('#profile-name').textContent=u.name;$('#profile-role').textContent=u.role;
  $('#content').dataset.page=page;
- $('#content').innerHTML=page==='home'?homeView():page==='new'?newView():page==='tickets'?ticketsView():page==='dashboard'?dashboardView():adminView();
+ $('#content').innerHTML=page==='home'?homeView():page==='new'?newView():page==='tickets'?ticketsView():page==='schedule'?scheduleView():page==='dashboard'?dashboardView():adminView();
  if(page==='new')renderDraftFiles();refreshNotificationsUI();
 }
 function statsView(tickets,interactive=true){
@@ -1458,6 +1482,31 @@ function ticketMonth(value){const day=new Date(value),key=new Intl.DateTimeForma
 function monthGroups(tickets){const grouped=new Map();for(const ticket of tickets){const month=ticketMonth(ticket.createdAt);if(!grouped.has(month.key))grouped.set(month.key,{label:month.label,items:[]});grouped.get(month.key).items.push(ticket);}const manager=user().role==='Kierownik lokalu';return [...grouped.entries()].sort((a,b)=>filters.sort==='oldest'?a[0].localeCompare(b[0]):b[0].localeCompare(a[0])).map(([,group])=>`<section class="month-group"><div class="month-group-heading"><h2>${esc(group.label)}</h2><span>${group.items.length} ${group.items.length===1?'zgłoszenie':'zgłoszeń'}</span></div>${manager?`<div class="panel table-panel">${ticketTable(group.items,0,false)}</div>`:cityGroups(group.items)}</section>`).join('');}
 function ticketsView(){const tickets=filteredTickets(),manager=user().role==='Kierownik lokalu',cityBase=manager?[]:filteredTickets({ignoreCity:true});return header(canManage()?'Wszystkie zgłoszenia':manager?'Zgłoszenia lokalu':'Moje zgłoszenia','',btn('new','Zgłoś usterkę'))+statsView(currentTickets())+filterForm()+(manager?'':cityFilters(cityBase))+(tickets.length?monthGroups(tickets)+`<div class="page-count city-total">Liczba wyników: ${tickets.length}</div>`:`<section class="panel">${empty('Nie znaleziono zgłoszeń',currentTickets().length?'Zmień filtry lub wyczyść wyszukiwanie.':'Dodaj pierwsze zgłoszenie, aby sprawdzić cały obieg naprawy.',btn('new','Zgłoś usterkę'))}</section>`);}
 function bars(tickets,key){const groups=new Map();for(const t of tickets){const label=key==='location'?t.mpk+' · '+t.locationName:key==='city'?ticketCity(t):t[key];groups.set(label,(groups.get(label)||0)+1);}const sorted=[...groups.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'pl'));const max=sorted[0]?.[1]||1;return sorted.length?sorted.map(([label,n])=>`<div class="bar-row"><span class="bar-label">${esc(label)}</span><span class="bar-track" aria-hidden="true"><span class="bar-fill" style="display:block;width:${n/max*100}%"></span></span><strong>${n}</strong></div>`).join(''):'<p class="report-copy">Brak danych do wyświetlenia.</p>';}
+function scheduleDateKey(value){return new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Warsaw',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(value));}
+function scheduleRow(ticket,unplanned=false){return `<div class="schedule-row"><div><strong>${esc(ticket.number)}</strong><small>${date(ticket.createdAt)}</small></div><div class="schedule-location"><strong>${esc(ticket.mpk)} · ${esc(ticket.locationName)}</strong><small>${esc(ticketCity(ticket))}</small></div><div class="schedule-category"><strong>${esc(ticket.category)}</strong>${unplanned?`<small>Sugerowany termin: ${date(suggestedDeadline(ticket))}</small>`:''}</div><div class="schedule-state">${priorityPill(ticket.priority)} ${statusPill(ticket.status)}</div><button class="btn secondary small" type="button" data-action="detail" data-id="${esc(ticket.id)}">${unplanned?'Ustaw termin':'Otwórz'}</button></div>`;}
+function scheduleDays(tickets,today){
+ const groups=new Map();
+ for(const ticket of tickets){const key=scheduleDateKey(ticket.dueAt);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(ticket);}
+ return [...groups.entries()].sort((a,b)=>a[0].localeCompare(b[0])).map(([key,items])=>{
+  items.sort((a,b)=>priorityScore(b)-priorityScore(a)||a.number.localeCompare(b.number,'pl'));
+  const label=new Intl.DateTimeFormat('pl-PL',{timeZone:'Europe/Warsaw',weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(new Date(items[0].dueAt));
+  return `<section class="panel schedule-day ${key<today?'is-late':''}"><div class="schedule-day-heading"><h3>${esc(label)}${key===today?' · Dzisiaj':''}${key<today?' · Po terminie':''}</h3><small>${items.length} ${items.length===1?'zgłoszenie':'zgłoszeń'}</small></div>${items.map(ticket=>scheduleRow(ticket)).join('')}</section>`;
+ }).join('');
+}
+function scheduleView(){
+ if(!canManage())return empty('Widok niedostępny','Harmonogram jest dostępny dla koordynatora i administratora.');
+ const open=currentTickets().filter(ticket=>!Model.closed(ticket));
+ const today=scheduleDateKey(new Date());
+ const planned=open.filter(ticket=>ticket.dueAt&&Number.isFinite(Date.parse(ticket.dueAt)));
+ const overdue=planned.filter(ticket=>scheduleDateKey(ticket.dueAt)<today);
+ const upcoming=planned.filter(ticket=>scheduleDateKey(ticket.dueAt)>=today);
+ const unplanned=open.filter(ticket=>!ticket.dueAt||!Number.isFinite(Date.parse(ticket.dueAt))).sort((a,b)=>priorityScore(b)-priorityScore(a)||a.createdAt.localeCompare(b.createdAt));
+ return header('Harmonogram','Planowane terminy otwartych zgłoszeń. Zmiana terminu w zgłoszeniu od razu aktualizuje ten widok.')+
+  `<div class="schedule-summary"><div class="panel is-late"><span>Po terminie</span><strong>${overdue.length}</strong></div><div class="panel"><span>Na dziś</span><strong>${planned.filter(ticket=>scheduleDateKey(ticket.dueAt)===today).length}</strong></div><div class="panel"><span>Z terminem</span><strong>${planned.length}</strong></div><div class="panel"><span>Bez terminu</span><strong>${unplanned.length}</strong></div></div>`+
+  `<section class="schedule-section"><h2>Po terminie</h2>${overdue.length?scheduleDays(overdue,today):'<div class="panel schedule-empty">Brak zgłoszeń po terminie.</div>'}</section>`+
+  `<section class="schedule-section"><h2>Nadchodzące terminy</h2>${upcoming.length?scheduleDays(upcoming,today):'<div class="panel schedule-empty">Brak zaplanowanych terminów.</div>'}</section>`+
+  `<section class="schedule-section"><h2>Wymagają ustalenia terminu</h2><p>Otwórz zgłoszenie, aby ustawić planowany dzień realizacji.</p>${unplanned.length?`<div class="panel schedule-day">${unplanned.map(ticket=>scheduleRow(ticket,true)).join('')}</div>`:'<div class="panel schedule-empty">Wszystkie otwarte zgłoszenia mają planowany termin.</div>'}</section>`;
+}
 function dashboardView(){const tickets=currentTickets();const m=Model.metrics(tickets,Date.now(),state.settings.responseHours);return header('Dashboard','')+statsView(tickets,false)+`<div class="metric-strip"><section class="panel"><h3>Średni czas realizacji</h3><strong>${m.meanHours===null?'—':m.meanHours.toLocaleString('pl-PL',{maximumFractionDigits:1})+' h'}</strong><small>${m.completed} zamkniętych · bez odrzuconych</small></section><section class="panel"><h3>Wymagają reakcji</h3><strong>${m.overdue} <span class="muted" style="font-size:13px">po terminie</span></strong><small>${m.waiting} bez reakcji przez ${state.settings.responseHours} h</small></section></div><div class="chart-grid"><section class="panel"><div class="block-heading"><h2>Usterki wg miasta</h2></div>${bars(tickets,'city')}</section><section class="panel"><div class="block-heading"><h2>Usterki wg rodzaju</h2></div>${bars(tickets,'category')}</section><section class="panel full"><div class="block-heading"><h2>Usterki wg lokalu / magazynu</h2></div>${bars(tickets,'location')}</section></div>`;}
 function adminView(){if(!isAdmin())return empty('Widok niedostępny','Wybierz profil administratora w przełączniku testowym.');
  const tabs=[['users','Użytkownicy i role'],['locations','Lokale i magazyny'],['reports','Raporty i kopia danych'],['settings','Konfiguracja']];
