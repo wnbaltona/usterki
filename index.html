@@ -1115,6 +1115,11 @@ body,.main-wrap,.auth-screen .content{background:var(--bg);color:var(--ink)}
 .schedule-summary strong{display:block;margin-top:4px;color:#1e3c4d;font-size:25px;line-height:1.2}
 .schedule-summary .is-late{border-color:#e6b9bd;background:#fff8f8}
 .schedule-summary .is-late strong{color:#a2333f}
+.schedule-summary button.panel{font:inherit;text-align:left;cursor:pointer;transition:background .15s,border-color .15s,box-shadow .15s}
+.schedule-summary button.panel:hover,.schedule-summary button.panel:focus-visible{background:#edf7fa;border-color:#6da7ba}
+.schedule-summary button.panel.is-late:hover,.schedule-summary button.panel.is-late:focus-visible{background:#fff0f1;border-color:#d9828b}
+.schedule-summary button.panel.active{border-color:#176f89;background:#e8f5f9;box-shadow:inset 0 0 0 1px #176f89}
+.schedule-summary button.panel.is-late.active{border-color:#ae4854;background:#fff0f1;box-shadow:inset 0 0 0 1px #ae4854}
 .schedule-section{margin-top:25px}
 .schedule-section>h2{font-size:19px;margin:0 0 12px;color:#223e50}
 .schedule-section>p{margin:0 0 13px;color:#617689;font-size:13px}
@@ -1418,7 +1423,7 @@ let db, state, currentId, page='home', adminTab='users', selectedTicket=null, dr
 let authUser=null, authClient=null, authConfigured=false, authReady=false;
 const SUPABASE_URL='https://uwavvvcacsxqkitmfank.supabase.co', SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3YXZ2dmNhY3N4cWtpdG1mYW5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc5MTM0OTEsImV4cCI6MjEwMzQ4OTQ5MX0.MzAdRypyHWdMIZWrQJ5agus25l0na_QB1iGWiVAFrk8';
 let filters={q:'',status:'',city:'',priority:'',from:'',to:'',quick:'',sort:'urgent'};
-let scheduleMode='list',scheduleMonth=scheduleDateKey(new Date()).slice(0,7),scheduleSelectedDay=scheduleDateKey(new Date());
+let scheduleMode='list',scheduleFilter='all',scheduleMonth=scheduleDateKey(new Date()).slice(0,7),scheduleSelectedDay=scheduleDateKey(new Date());
 let quickCloseId=null,detailDirty=false,onlyUnreadNotifications=false,pendingRemote=null,syncing=false,updatesChannel=null,lastSeenProfile=null,seenNotificationIds=new Set(),syncErrorShown=false;
 function user(){return state.users.find(u=>u.id===currentId&&u.active)||state.users.find(u=>u.active&&u.role==='Administrator');}
 function authRole(){const value=authUser?.app_metadata?.role;return Model.roles.includes(value)?value:'Użytkownik';}
@@ -1540,15 +1545,20 @@ function scheduleView(){
  const today=scheduleDateKey(new Date());
  const planned=open.filter(ticket=>ticket.dueAt&&Number.isFinite(Date.parse(ticket.dueAt)));
  const overdue=planned.filter(ticket=>scheduleDateKey(ticket.dueAt)<today);
+ const dueToday=planned.filter(ticket=>scheduleDateKey(ticket.dueAt)===today);
  const upcoming=planned.filter(ticket=>scheduleDateKey(ticket.dueAt)>=today);
  const unplanned=open.filter(ticket=>!ticket.dueAt||!Number.isFinite(Date.parse(ticket.dueAt))).sort((a,b)=>priorityScore(b)-priorityScore(a)||a.createdAt.localeCompare(b.createdAt));
  const unplannedSection=`<section class="schedule-section"><h2>Wymagają ustalenia terminu</h2><p>Otwórz zgłoszenie, aby ustawić planowany dzień realizacji.</p>${unplanned.length?`<div class="panel schedule-day">${unplanned.map(ticket=>scheduleRow(ticket,true)).join('')}</div>`:'<div class="panel schedule-empty">Wszystkie otwarte zgłoszenia mają planowany termin.</div>'}</section>`;
+ const summary=[['overdue','Po terminie',overdue.length],['today','Na dziś',dueToday.length],['planned','Z terminem',planned.length],['unplanned','Bez terminu',unplanned.length]];
+ const filteredPlanned=scheduleFilter==='overdue'?overdue:scheduleFilter==='today'?dueToday:scheduleFilter==='unplanned'?[]:planned;
+ const overdueSection=`<section class="schedule-section"><h2>Po terminie</h2>${overdue.length?scheduleDays(overdue,today):'<div class="panel schedule-empty">Brak zgłoszeń po terminie.</div>'}</section>`;
+ const upcomingSection=`<section class="schedule-section"><h2>Nadchodzące terminy</h2>${upcoming.length?scheduleDays(upcoming,today):'<div class="panel schedule-empty">Brak zaplanowanych terminów.</div>'}</section>`;
+ const todaySection=`<section class="schedule-section"><h2>Na dziś</h2>${dueToday.length?scheduleDays(dueToday,today):'<div class="panel schedule-empty">Na dziś nie ma zaplanowanych zgłoszeń.</div>'}</section>`;
+ const listSections=scheduleFilter==='overdue'?overdueSection:scheduleFilter==='today'?todaySection:scheduleFilter==='unplanned'?unplannedSection:overdueSection+upcomingSection+(scheduleFilter==='all'?unplannedSection:'');
  return header('Harmonogram','Planowane terminy otwartych zgłoszeń. Zmiana terminu w zgłoszeniu od razu aktualizuje ten widok.')+
-  `<div class="schedule-summary"><div class="panel is-late"><span>Po terminie</span><strong>${overdue.length}</strong></div><div class="panel"><span>Na dziś</span><strong>${planned.filter(ticket=>scheduleDateKey(ticket.dueAt)===today).length}</strong></div><div class="panel"><span>Z terminem</span><strong>${planned.length}</strong></div><div class="panel"><span>Bez terminu</span><strong>${unplanned.length}</strong></div></div>`+
+  `<div class="schedule-summary" aria-label="Filtry harmonogramu">${summary.map(([key,label,count])=>`<button type="button" class="panel ${key==='overdue'?'is-late':''} ${scheduleFilter===key?'active':''}" data-action="schedule-filter" data-filter="${key}" aria-pressed="${scheduleFilter===key}" aria-label="${label}: ${count}. ${scheduleFilter===key?'Wyczyść filtr':'Pokaż zgłoszenia'}"><span>${label}</span><strong>${count}</strong></button>`).join('')}</div>`+
   `<div class="schedule-view-switch" role="group" aria-label="Widok harmonogramu"><button type="button" class="${scheduleMode==='list'?'active':''}" data-action="schedule-mode" data-mode="list" aria-pressed="${scheduleMode==='list'}">Lista</button><button type="button" class="${scheduleMode==='calendar'?'active':''}" data-action="schedule-mode" data-mode="calendar" aria-pressed="${scheduleMode==='calendar'}">Kalendarz</button></div>`+
-  (scheduleMode==='calendar'?scheduleCalendar(planned,today,overdue.length):
-   `<section class="schedule-section"><h2>Po terminie</h2>${overdue.length?scheduleDays(overdue,today):'<div class="panel schedule-empty">Brak zgłoszeń po terminie.</div>'}</section>`+
-   `<section class="schedule-section"><h2>Nadchodzące terminy</h2>${upcoming.length?scheduleDays(upcoming,today):'<div class="panel schedule-empty">Brak zaplanowanych terminów.</div>'}</section>`)+unplannedSection;
+  (scheduleMode==='calendar'?(scheduleFilter==='unplanned'?'<div class="panel schedule-empty space-top">Zgłoszenia bez terminu nie mają daty w kalendarzu. Ustaw termin w wybranym zgłoszeniu.</div>'+unplannedSection:scheduleCalendar(filteredPlanned,today,scheduleFilter==='all'?overdue.length:0)+(scheduleFilter==='all'?unplannedSection:'')):listSections);
 }
 function dashboardView(){const tickets=currentTickets();const m=Model.metrics(tickets,Date.now(),state.settings.responseHours);return header('Dashboard','')+statsView(tickets,false)+`<div class="metric-strip"><section class="panel"><h3>Średni czas realizacji</h3><strong>${m.meanHours===null?'—':m.meanHours.toLocaleString('pl-PL',{maximumFractionDigits:1})+' h'}</strong><small>${m.completed} zamkniętych · bez odrzuconych</small></section><section class="panel"><h3>Wymagają reakcji</h3><strong>${m.overdue} <span class="muted" style="font-size:13px">po terminie</span></strong><small>${m.waiting} bez reakcji przez ${state.settings.responseHours} h</small></section></div><div class="chart-grid"><section class="panel"><div class="block-heading"><h2>Usterki wg miasta</h2></div>${bars(tickets,'city')}</section><section class="panel"><div class="block-heading"><h2>Usterki wg rodzaju</h2></div>${bars(tickets,'category')}</section><section class="panel full"><div class="block-heading"><h2>Usterki wg lokalu / magazynu</h2></div>${bars(tickets,'location')}</section></div>`;}
 function adminView(){if(!isAdmin())return empty('Widok niedostępny','Wybierz profil administratora w przełączniku testowym.');
@@ -1789,7 +1799,8 @@ document.addEventListener('click',async event=>{const el=event.target.closest('[
  else if(action==='open-notification')await perform(()=>openNotification(el.dataset.id));
  else if(action==='apply-pending')applyPending();
  else if(action==='nav')navigate(el.dataset.page);
- else if(action==='schedule-mode'){if(!canManage())return;scheduleMode=el.dataset.mode==='calendar'?'calendar':'list';shell();}
+ else if(action==='schedule-filter'){if(!canManage())return;const selected=el.dataset.filter;if(!['overdue','today','planned','unplanned'].includes(selected))return;scheduleFilter=scheduleFilter===selected?'all':selected;scheduleMode='list';shell();}
+ else if(action==='schedule-mode'){if(!canManage())return;scheduleMode=el.dataset.mode==='calendar'?'calendar':'list';if(scheduleMode==='calendar'&&scheduleFilter==='today'){scheduleSelectedDay=scheduleDateKey(new Date());scheduleMonth=scheduleSelectedDay.slice(0,7);}else if(scheduleMode==='calendar'&&scheduleFilter==='overdue'){const today=scheduleDateKey(new Date()),dates=currentTickets().filter(ticket=>!Model.closed(ticket)&&ticket.dueAt&&Number.isFinite(Date.parse(ticket.dueAt))).map(ticket=>scheduleDateKey(ticket.dueAt)).filter(key=>key<today).sort();if(dates.length){scheduleSelectedDay=dates[dates.length-1];scheduleMonth=scheduleSelectedDay.slice(0,7);}}shell();}
  else if(action==='schedule-day'){if(!canManage())return;scheduleSelectedDay=el.dataset.day;shell();}
  else if(action==='schedule-prev'||action==='schedule-next'){if(!canManage())return;const [year,month]=scheduleMonth.split('-').map(Number);const next=new Date(Date.UTC(year,month-1+(action==='schedule-prev'?-1:1),1));scheduleMonth=next.toISOString().slice(0,7);scheduleSelectedDay=scheduleMonth+'-01';shell();}
  else if(action==='stat-filter'){
