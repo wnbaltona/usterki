@@ -1,15 +1,3 @@
-:root {
-  --navy:#122c49;
-  --ink:#1b304a;
-  --muted:#718095;
-  --teal:#176b79;
-  --line:#dfe6ed;
-  --paper:#fff;
-  --bg:#f3f6f9;
-  --red:#b03d47;
-  --green:#2b765b;
-  --amber:#9a6b1d
-}
 * {
   box-sizing:border-box
 }
@@ -1389,14 +1377,7 @@ dialog::backdrop {
     }
   }
 }
-/* Wersja 2: wyraźniejsza typografia, większe cele dotykowe i centrum powiadomień. */
-:root {
-  --ink:#17304b;
-  --muted:#536a80;
-  --line:#ccd8e2;
-  --teal:#146475;
-  --bg:#f1f5f8
-}
+/* Typografia, cele dotykowe i centrum powiadomień. */
 [hidden] {
   display:none!important
 }
@@ -2343,15 +2324,7 @@ td {
     font-size:10px
   }
 }
-/* Restrained layout: one primary action, consistent spacing and neutral surfaces. */
-:root {
-  --navy:#17283d;
-  --ink:#202e40;
-  --muted:#5c6979;
-  --teal:#206e7a;
-  --line:#dfe4eb;
-  --bg:#f5f6f8
-}
+/* Działania główne, odstępy i powierzchnie. */
 body {
   color:var(--ink);
   background:var(--bg);
@@ -3135,18 +3108,6 @@ dialog {
   }
 }
 /* Spójny wygląd panelu obsługi usterek */
-:root {
-  --navy:#12273a;
-  --ink:#1d3043;
-  --muted:#627488;
-  --teal:#087a82;
-  --line:#dce5eb;
-  --bg:#f4f7f9;
-  --paper:#fff;
-  --red:#b74650;
-  --green:#187a61;
-  --amber:#9d6b18
-}
 body {
   font:14px/1.5 'Segoe UI',Arial,sans-serif;
   color:var(--ink);
@@ -4330,15 +4291,6 @@ dialog {
 .admin-settings {
   max-width:840px
 }
-:root {
-  --navy:#172b3e;
-  --ink:#1e3448;
-  --muted:#64778a;
-  --teal:#156b72;
-  --line:#dbe3e9;
-  --bg:#f6f8fa;
-  --paper:#fff
-}
 body {
   font-family:Inter,"Segoe UI",Arial,sans-serif;
   font-size:14px;
@@ -4897,19 +4849,7 @@ textarea {
   font-size:11px;
   line-height:1.35
 }
-/* Baltona: układ aplikacji firmowej */
-:root {
-  --navy:#173241;
-  --ink:#23343d;
-  --muted:#61727c;
-  --teal:#146d70;
-  --line:#dbe3e7;
-  --paper:#fff;
-  --bg:#f4f6f7;
-  --red:#a63f48;
-  --green:#337058;
-  --amber:#8d6822;
-}
+/* Układ aplikacji firmowej. */
 body {
   background:var(--bg);
   color:var(--ink);
@@ -5771,19 +5711,7 @@ dialog::backdrop {
   margin-top:14px;
   width:100%
 }
-/* One visual system for navigation, lists, forms and dialogs. */
-:root {
-  --navy:#315766;
-  --ink:#243b46;
-  --muted:#607783;
-  --teal:#327981;
-  --line:#dce5e7;
-  --paper:#fff;
-  --bg:#f6f8f8;
-  --red:#ad4550;
-  --green:#287454;
-  --amber:#956b28
-}
+/* Nawigacja, listy, formularze i okna. */
 body {
   background:var(--bg);
   color:var(--ink);
@@ -6972,7 +6900,7 @@ dialog {
     min-height:48px
   }
 }
-/* Mobile-first workflow: persistent navigation, legible ticket cards and full-screen detail. */
+/* Nawigacja mobilna, karty zgłoszeń i szczegóły. */
 .brand-mark svg,.auth-brand .brand-mark svg {
   display:block;
   width:22px;
@@ -7620,19 +7548,7 @@ dialog {
     padding:12px
   }
 }
-/* Clearer visual hierarchy and stronger contrast throughout the application. */
-:root {
-  --navy:#173b54;
-  --ink:#1b3445;
-  --muted:#526d7c;
-  --teal:#087991;
-  --line:#cddfe6;
-  --paper:#fff;
-  --bg:#f0f5f8;
-  --red:#a93548;
-  --green:#18714d;
-  --amber:#8c5d0b
-}
+/* Hierarchia tekstu i kontrast elementów. */
 body {
   background:var(--bg);
   color:var(--ink)
@@ -8679,16 +8595,7 @@ html {
   color:#a12e3c;
   font-weight:600
 }
-/* Neutral application palette: colour carries actions and status, surfaces stay quiet. */
-:root {
-  --navy:#203947;
-  --ink:#203440;
-  --muted:#4e626d;
-  --teal:#176a73;
-  --line:#bccad1;
-  --paper:#fff;
-  --bg:#f7f8fa
-}
+/* Powierzchnie, statusy i komunikaty. */
 body,.main-wrap,.auth-screen .content {
   background:var(--bg);
   color:var(--ink)
@@ -8849,11 +8756,6 @@ body,.main-wrap,.auth-screen .content {
   }
   .due-suggestion {
     flex-wrap:wrap
-  }
-  :root {
-    --bg:#f3f6f8;
-    --line:#b7c6ce;
-    --muted:#455c67
   }
   body,.main-wrap,.auth-screen .content {
     background:#f3f6f8

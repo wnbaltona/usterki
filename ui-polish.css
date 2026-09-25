@@ -1,15 +1,15 @@
-/* Final visual layer. Layout and behavior stay in styles.css. */
+/* Warstwa wizualna: kolory, typografia i wykończenie komponentów. */
 :root {
-  --navy:#1d333b;
-  --ink:#172e38;
-  --muted:#526670;
-  --teal:#126a72;
-  --line:#cbd6d9;
+  --navy:#192e3b;
+  --ink:#172c38;
+  --muted:#526773;
+  --teal:#08727a;
+  --line:#c6d4dc;
   --paper:#fff;
-  --bg:#f4f6f5;
-  --red:#a72f43;
-  --green:#17694c;
-  --amber:#865b16;
+  --bg:#eef3f6;
+  --red:#a72c40;
+  --green:#146647;
+  --amber:#80510d;
 }
 
 html { color-scheme:light }
@@ -322,18 +322,6 @@ dialog::backdrop { background:#10242db3 }
 }
 
 /* Spójna paleta i czytelniejsza hierarchia na komputerze i telefonie. */
-:root {
-  --navy:#192e3b;
-  --ink:#172c38;
-  --muted:#526773;
-  --teal:#08727a;
-  --line:#c6d4dc;
-  --paper:#fff;
-  --bg:#eef3f6;
-  --red:#a72c40;
-  --green:#146647;
-  --amber:#80510d;
-}
 
 body,.main-wrap,.auth-screen .content { background:var(--bg);color:var(--ink) }
 .sidebar { background:var(--navy) }
