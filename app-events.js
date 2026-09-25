@@ -28,17 +28,21 @@ document.addEventListener('click', async event => {
  else if(action==='apply-pending')applyPending();
  else if(action==='nav')navigate(el.dataset.page);
  else if(action==='attention-all'){if(!canManage())return;page='tickets';filters={q:'',status:'',city:'',priority:'',from:'',to:'',quick:'attention',sort:'urgent'};shell();window.scrollTo(0,0);}
+ else if(action==='dashboard-range'){if(!canManage())return;const range=el.dataset.range;if(!['30','90','all'].includes(range))return;dashboardRange=range;shell();}
+ else if(action==='dashboard-waiting'){if(!canManage())return;filters={q:'',status:'',city:'',priority:'',from:dashboardStartDate(),to:'',quick:'waiting',sort:'urgent'};page='tickets';shell();window.scrollTo(0,0);}
+ else if(action==='dashboard-schedule'){if(!canManage())return;const selected=el.dataset.filter;if(!['overdue','today','unplanned'].includes(selected))return;scheduleFilter=selected;scheduleMode='list';page='schedule';shell();window.scrollTo(0,0);}
  else if(action==='schedule-filter'){if(!canManage())return;const selected=el.dataset.filter;if(!['overdue','today','planned','unplanned'].includes(selected))return;scheduleFilter=scheduleFilter===selected?'all':selected;scheduleMode='list';shell();}
  else if(action==='schedule-mode'){if(!canManage())return;scheduleMode=el.dataset.mode==='calendar'?'calendar':'list';if(scheduleMode==='calendar'&&scheduleFilter==='today'){scheduleSelectedDay=scheduleDateKey(new Date());scheduleMonth=scheduleSelectedDay.slice(0,7);}else if(scheduleMode==='calendar'&&scheduleFilter==='overdue'){const today=scheduleDateKey(new Date()),dates=currentTickets().filter(ticket=>!Model.closed(ticket)&&ticket.dueAt&&Number.isFinite(Date.parse(ticket.dueAt))).map(ticket=>scheduleDateKey(ticket.dueAt)).filter(key=>key<today).sort();if(dates.length){scheduleSelectedDay=dates[dates.length-1];scheduleMonth=scheduleSelectedDay.slice(0,7);}}shell();}
  else if(action==='schedule-day'){if(!canManage())return;scheduleSelectedDay=el.dataset.day;shell();}
  else if(action==='schedule-prev'||action==='schedule-next'){if(!canManage())return;const [year,month]=scheduleMonth.split('-').map(Number);const next=new Date(Date.UTC(year,month-1+(action==='schedule-prev'?-1:1),1));scheduleMonth=next.toISOString().slice(0,7);scheduleSelectedDay=scheduleMonth+'-01';shell();}
  else if(action==='stat-filter'){
    const selected=el.dataset.filter;
-   filters={q:'',status:selected==='new'?'Nowe':selected==='closed'?'Zamknięte':'',city:'',priority:'',from:'',to:'',quick:selected==='critical'?'critical':selected==='progress'?'active':'',sort:'urgent'};
+   filters={q:'',status:selected==='new'?'Nowe':selected==='closed'?'Zamknięte':'',city:'',priority:'',from:page==='dashboard'?dashboardStartDate():'',to:'',quick:selected==='critical'?'critical':selected==='progress'?'active':'',sort:'urgent'};
    page='tickets';shell();window.scrollTo(0,0);
  }
  else if(action==='city-filter'){filters.city=el.dataset.city;shell();}
  else if(action==='clear-quick'){filters.quick='';shell();}
+ else if(action==='clear-date'){filters.from='';filters.to='';shell();}
  else if(action==='new')navigate('new');
  else if(action==='detail')await perform(()=>openTicket(el.dataset.id));
  else if(action==='use-suggested-date'){const ticket=state.tickets.find(t=>t.id===selectedTicket),field=$('#m-due');if(!canManage()||!ticket||!field)return;const target=suggestedDeadline({...ticket,priority:$('#m-priority').value});if(Date.parse(target)<Date.now()){updateDueSuggestion();return;}field.value=inputDate(target);detailDirty=true;field.focus();}

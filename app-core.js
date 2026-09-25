@@ -19,6 +19,7 @@ const header = (title,description,action='') => `<div class="heading"><div><h1>$
 let state, currentId, page='home', adminTab='users', selectedTicket=null, draftFiles=[], dirty=false, busy=false, editingUser=null, editingLocation=null;
 let authUser=null, authClient=null;
 let filters={q:'',status:'',city:'',priority:'',from:'',to:'',quick:'',sort:'urgent'};
+let dashboardRange='30';
 let scheduleMode='list',scheduleFilter='all',scheduleMonth=scheduleDateKey(new Date()).slice(0,7),scheduleSelectedDay=scheduleDateKey(new Date());
 let quickCloseId=null,detailDirty=false,onlyUnreadNotifications=false,pendingRemote=null,syncing=false,updatesChannel=null,lastSeenProfile=null,seenNotificationIds=new Set(),syncErrorShown=false;
 function user(){return state.users.find(u=>u.id===currentId&&u.active)||state.users.find(u=>u.active&&u.role==='Administrator');}
