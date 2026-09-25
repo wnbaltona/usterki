@@ -9661,3 +9661,134 @@ body,.main-wrap,.auth-screen .content {
   color:#754700;
   font-weight:600
 }
+
+/* Comment composer: the send control stays beside the message field. */
+.comment-form {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 46px;
+  gap:10px;
+  align-items:end
+}
+.comment-form textarea {
+  grid-column:1;
+  grid-row:1;
+  min-width:0
+}
+.comment-form .comment-send,#detail-dialog .comment-form .comment-send {
+  grid-column:2;
+  grid-row:1;
+  display:grid;
+  place-items:center;
+  width:46px;
+  min-width:46px;
+  height:46px;
+  min-height:46px;
+  margin:0;
+  padding:0;
+  border-radius:9px
+}
+.comment-form .comment-send svg {
+  display:block
+}
+.comment-form .comment-status-choice {
+  grid-column:1/-1;
+  grid-row:2;
+  margin:0
+}
+
+/* Mobile notices remain tappable and fit within the viewport. */
+@media(max-width:800px) {
+  .toast-container {
+    left:50%;
+    right:auto;
+    bottom:calc(78px + env(safe-area-inset-bottom));
+    width:min(440px,calc(100vw - 24px));
+    max-width:none;
+    transform:translateX(-50%);
+    pointer-events:none
+  }
+  .toast-container .toast {
+    box-sizing:border-box;
+    width:100%;
+    overflow-wrap:anywhere
+  }
+  .toast-container .incoming-toast,.dialog-toast-layer .incoming-toast {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 36px;
+    align-items:start;
+    gap:9px 10px;
+    padding:13px 14px;
+    pointer-events:auto
+  }
+  .incoming-toast>div {
+    grid-column:1;
+    grid-row:1;
+    min-width:0
+  }
+  .incoming-toast p {
+    margin-bottom:0;
+    line-height:1.45
+  }
+  .incoming-toast .toast-dismiss {
+    grid-column:2;
+    grid-row:1;
+    width:36px;
+    height:36px;
+    min-width:36px;
+    min-height:36px;
+    padding:0;
+    align-self:start
+  }
+  .incoming-toast [data-action] {
+    grid-column:1/-1;
+    grid-row:2;
+    width:100%;
+    min-height:44px;
+    margin:0;
+    pointer-events:auto
+  }
+  .notifications-dialog {
+    width:min(470px,calc(100vw - 20px));
+    border-color:#aebfc7;
+    overscroll-behavior:contain
+  }
+  .notifications-dialog .dialog-head {
+    padding:12px 14px;
+    border-bottom-color:#c8d5db
+  }
+  .notifications-dialog .notification-toolbar {
+    padding:11px 12px;
+    gap:9px;
+    background:#fff
+  }
+  .notifications-dialog .notification-filters {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:7px
+  }
+  .notifications-dialog .notification-filters button {
+    min-width:0;
+    min-height:44px;
+    padding:7px 5px;
+    font-size:12px;
+    line-height:1.3;
+    white-space:normal
+  }
+  .notifications-dialog .notification-toolbar>.btn {
+    min-height:40px;
+    justify-self:stretch
+  }
+  .notifications-dialog .notification-open {
+    min-height:72px;
+    padding:14px 12px 8px;
+    gap:10px
+  }
+  .notifications-dialog .notification-read {
+    min-height:44px;
+    margin-left:52px
+  }
+  .notifications-dialog .notification-footer {
+    padding:11px 12px;
+    line-height:1.45
+  }
+}
