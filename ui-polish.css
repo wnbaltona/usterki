@@ -320,3 +320,143 @@ dialog::backdrop { background:#10242db3 }
 @media(prefers-reduced-motion:reduce) {
   *,*::before,*::after { scroll-behavior:auto!important;transition:none!important;animation:none!important }
 }
+
+/* Spójna paleta i czytelniejsza hierarchia na komputerze i telefonie. */
+:root {
+  --navy:#192e3b;
+  --ink:#172c38;
+  --muted:#526773;
+  --teal:#08727a;
+  --line:#c6d4dc;
+  --paper:#fff;
+  --bg:#eef3f6;
+  --red:#a72c40;
+  --green:#146647;
+  --amber:#80510d;
+}
+
+body,.main-wrap,.auth-screen .content { background:var(--bg);color:var(--ink) }
+.sidebar { background:var(--navy) }
+.brand { color:#fff }
+.brand small,.sidebar-foot { color:#c6d6dd }
+.nav-label { color:#aec4cd }
+.sidebar .nav-button { color:#d7e4e9 }
+.sidebar .nav-button:hover { background:#2b4654;color:#fff }
+.sidebar .nav-button.active {
+  background:#e8f5f3;color:#124d57;box-shadow:inset 3px 0 #0d8890;
+}
+.topbar { border-color:var(--line);box-shadow:0 1px 6px #172e3912 }
+.content h1,.content h2,.content h3 { color:var(--ink) }
+.heading p:not(.eyebrow),.cell-sub,.hint,.muted,.report-copy,
+.detail-meta dt,.progress-meta dt,.progress-step small { color:var(--muted) }
+.eyebrow { color:#126673 }
+
+.panel,.table-panel,.city-group .table-panel,.filters,
+.stats .stat,.stats .stat:last-child,.simple-form>.panel,
+.schedule-calendar,.schedule-calendar-results {
+  background:#fff;border-color:var(--line);
+  box-shadow:0 2px 8px #172e390d;
+}
+.block-heading,.recent-panel .block-heading,.table-panel .block-heading {
+  border-bottom-color:#dce5e9;
+}
+.tickets-table thead { background:#e9f0f3;color:#35515e }
+.tickets-table th { color:#35515e }
+.tickets-table td { border-top-color:#dde7eb }
+.tickets-table .ticket-number { color:#0e5968 }
+.tickets-table tbody tr,.tickets-table tbody tr:nth-child(even),
+.tickets-table tbody tr:hover,.tickets-table tbody tr:nth-child(even):hover { background:#fff }
+.month-group-heading,.city-group-heading { border-color:var(--line) }
+
+.btn,.btn.small { background:var(--teal);border-color:var(--teal);color:#fff }
+.btn:hover,.tickets-table .ticket-actions .btn:not(.secondary):hover {
+  background:#07575e;border-color:#07575e;color:#fff;
+}
+.btn.secondary,.tickets-table .ticket-actions .btn.secondary {
+  background:#fff;border-color:#9db5bf;color:#155764;
+}
+.btn.secondary:hover,.tickets-table .ticket-actions .btn.secondary:hover {
+  background:#e7f4f4;border-color:#408c92;color:#0b5159;
+}
+.notification-bell,.logout-button { border-color:#aebfc7;color:#244b58 }
+.notification-bell:hover,.logout-button:hover { background:#e9f4f4;border-color:#69a4aa }
+.notification-bell.has-unread { background:#e1f3f3;border-color:#438f97;color:#075a64 }
+.notification-count { background:#b33345;color:#fff }
+.stat.selected,.stats .stat.selected,
+.schedule-summary button.panel.active:not(.is-late) {
+  background:#e4f3f2;border-color:#2b858b;
+  box-shadow:inset 0 3px #08727a;
+}
+.stats button.stat:hover,.schedule-summary button.panel:not(.is-late):hover {
+  background:#f4faf9;border-color:#7baab0;
+}
+.stats.static-stats .stat:hover { background:#fff;border-color:var(--line) }
+.stats .stat.alert,.schedule-summary .is-late {
+  background:#fff4f4;border-color:#de9eaa;box-shadow:inset 4px 0 #ad3549;
+}
+.stat.alert strong,.stat.alert .icon,.schedule-summary .is-late strong { color:#99283c }
+
+.pill.new { background:#e8f4fa;border-color:#8ec1d7;color:#0a5976 }
+.pill.progress { background:#e8f3f3;border-color:#87bdc0;color:#105a64 }
+.pill.medium { background:#fff4dd;border-color:#dfba6b;color:#704809 }
+.pill.high { background:#fff0f1;border-color:#df9eaa;color:#92283a }
+.pill.closed,.pill.low { background:#eaf7ee;border-color:#8bc6a4;color:#155b3b }
+.pill.rejected { background:#edf1f3;border-color:#b2c2c9;color:#415765 }
+.demo-banner,.sync-notice { background:#fff6df;border-color:#dfbc6c;color:#704b0c }
+.sync-notice button { border-color:#b9934e;color:#694409 }
+
+input:not([type=radio]):not([type=checkbox]),select,textarea {
+  background:#fff;border-color:#9eb5c0;color:var(--ink);
+}
+input:not([type=radio]):not([type=checkbox]):hover,select:hover,textarea:hover {
+  border-color:#548d98;
+}
+input::placeholder,textarea::placeholder { color:#607783 }
+.priority-choice:has(input:checked) { background:#e7f4f3;border-color:#2e8b91 }
+.dropzone { background:#f6fafb;border-color:#83a9b5 }
+.dropzone:hover { background:#eaf6f7;border-color:#34818e }
+.checkline { background:#f6f9fa;border-color:#c2d0d7 }
+.due-suggestion,.priority-target { background:#f0f7f8;border-color:#c4dce1;color:#315360 }
+
+dialog,#detail-dialog { background:var(--bg);border-color:#9fb8c2 }
+dialog::backdrop { background:#11242dc2 }
+.dialog-head { background:#fff;border-color:var(--line) }
+.dialog-body { background:var(--bg) }
+#detail-dialog .detail-grid .panel,#detail-dialog .detail-grid .detail-status-panel {
+  background:#fff;border-color:var(--line);box-shadow:0 2px 8px #172e390d;
+}
+.progress-head .info-mark { background:#e4f3f3;color:#0c6570 }
+.progress-step.complete .progress-step-mark {
+  background:#e6f5f2;border-color:#72b7a7;color:#145d4d;
+}
+.notification-item.unread { background:#eaf5f8;border-left-color:#117c96 }
+.notification-item.unread .notification-copy strong { color:#105a70 }
+.notification-toolbar .btn.link:not(:disabled):hover {
+  background:#e8f3f5;border-color:#89b7c0;color:#0e5362;
+}
+.schedule-calendar-grid button.today { border-color:#4a9da9 }
+.schedule-calendar-grid button.selected {
+  background:#e4f3f4;border-color:#147a84;box-shadow:inset 0 0 0 1px #147a84;
+}
+
+@media(max-width:800px) {
+  .sidebar { background:var(--navy) }
+  .sidebar nav { background:#fff;border-top-color:var(--line) }
+  .sidebar .nav-button { color:#355767 }
+  .sidebar .nav-button:hover { background:#eef5f6;color:#174d59 }
+  .sidebar .nav-button.active {
+    background:#e3f2f2;color:#075d68;box-shadow:inset 0 -3px #0f7d86;
+  }
+  .main-wrap,.content,#detail-dialog { background:var(--bg) }
+  .tickets-table tbody { background:transparent }
+  .tickets-table tbody tr,.tickets-table tbody tr:nth-child(even) {
+    background:#fff;border-color:var(--line);box-shadow:0 2px 8px #172e3910;
+  }
+  #detail-dialog .progress-step { background:#f5f9fa;border-color:#d0dfe4 }
+}
+
+@media(max-width:560px) {
+  .home-toolbar .home-summary>div { border-color:var(--line)!important;background:#fff }
+  .home-toolbar .home-summary>div:last-child { border-right-color:var(--line)!important }
+  .stats .stat,.stats .stat:last-child { border-color:var(--line) }
+}
