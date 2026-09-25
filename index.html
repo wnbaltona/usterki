@@ -1130,8 +1130,32 @@ body,.main-wrap,.auth-screen .content{background:var(--bg);color:var(--ink)}
 .schedule-row .schedule-state{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .schedule-row .btn{justify-self:end}
 .schedule-empty{padding:18px;color:#5d7181;font-size:13px}
+.schedule-view-switch{display:flex;gap:5px;width:max-content;padding:4px;border:1px solid #c9dae2;border-radius:10px;background:#edf4f7}
+.schedule-view-switch button{min-height:38px;padding:7px 17px;border:0;border-radius:7px;background:transparent;color:#345265;font:inherit;font-weight:700;cursor:pointer}
+.schedule-view-switch button.active{background:#fff;color:#0e526c;box-shadow:0 1px 4px #183d501f}
+.schedule-calendar-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.8fr);align-items:start;gap:14px;margin-top:18px}
+.schedule-calendar{padding:17px}
+.schedule-calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:15px}
+.schedule-calendar-toolbar h2{margin:0;text-align:center;text-transform:capitalize;font-size:17px;color:#223e50}
+.schedule-calendar-toolbar button{width:38px;height:38px;flex:none;border:1px solid #cadbe3;border-radius:8px;background:#fff;color:#1e5368;font:inherit;font-size:22px;cursor:pointer}
+.schedule-calendar-toolbar button:hover,.schedule-calendar-toolbar button:focus-visible{background:#e9f4f8;border-color:#75aabe}
+.schedule-weekdays,.schedule-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.schedule-weekdays{margin-bottom:5px;text-align:center;color:#536b7d;font-size:11px;font-weight:700}
+.schedule-calendar-grid button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:0;min-height:62px;padding:4px 1px;border:1px solid #dfebef;border-radius:8px;background:#fff;color:#274253;font:inherit;cursor:pointer}
+.schedule-calendar-grid button:hover,.schedule-calendar-grid button:focus-visible{background:#eaf6fa;border-color:#81b5c7}
+.schedule-calendar-grid button.today{border-color:#61a6bb}
+.schedule-calendar-grid button.selected{border-color:#166b86;background:#e5f3f8;box-shadow:inset 0 0 0 1px #166b86}
+.schedule-calendar-grid button.overdue strong{background:#fce6e7;color:#a2333f}
+.schedule-calendar-grid button strong{min-width:20px;padding:1px 5px;border-radius:999px;background:#dceef4;color:#125e78;font-size:11px;line-height:16px}
+.schedule-calendar-results{padding:0;overflow:hidden}
+.schedule-calendar-results .schedule-day-heading{min-height:57px}
+.schedule-calendar-results .schedule-row{grid-template-columns:minmax(0,1fr) auto}
+.schedule-calendar-results .schedule-row .schedule-location,.schedule-calendar-results .schedule-row .schedule-category,.schedule-calendar-results .schedule-row .schedule-state{grid-column:1/3}
+.schedule-calendar-results .schedule-row .btn{grid-column:2;grid-row:1}
+.schedule-calendar-note{margin-top:12px;padding:12px 15px;border:1px solid #e6b9bd;border-radius:9px;background:#fff8f8;color:#87313a;font-size:13px}
 @media(max-width:1100px){.schedule-row{grid-template-columns:minmax(0,1fr) auto}.schedule-row .schedule-location,.schedule-row .schedule-category,.schedule-row .schedule-state{grid-column:1/3}.schedule-row .btn{grid-column:2;grid-row:1}}
-@media(max-width:680px){.schedule-summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.schedule-summary .panel{padding:13px}.schedule-summary strong{font-size:22px}.schedule-row{grid-template-columns:minmax(0,1fr) auto;gap:7px 10px}.schedule-row .schedule-location,.schedule-row .schedule-category,.schedule-row .schedule-state{grid-column:1/3}.schedule-row .btn{grid-column:2;grid-row:1}.schedule-day-heading{padding:11px 13px}.schedule-row{padding:12px 13px}}
+@media(max-width:900px){.schedule-calendar-layout{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:680px){.schedule-summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.schedule-summary .panel{padding:13px}.schedule-summary strong{font-size:22px}.schedule-row{grid-template-columns:minmax(0,1fr) auto;gap:7px 10px}.schedule-row .schedule-location,.schedule-row .schedule-category,.schedule-row .schedule-state{grid-column:1/3}.schedule-row .btn{grid-column:2;grid-row:1}.schedule-day-heading{padding:11px 13px}.schedule-row{padding:12px 13px}.schedule-calendar{padding:11px}.schedule-calendar-grid,.schedule-weekdays{gap:3px}.schedule-calendar-grid button{min-height:49px;font-size:13px}.schedule-calendar-toolbar h2{font-size:15px}}
 
 </style>
 </head>
@@ -1394,6 +1418,7 @@ let db, state, currentId, page='home', adminTab='users', selectedTicket=null, dr
 let authUser=null, authClient=null, authConfigured=false, authReady=false;
 const SUPABASE_URL='https://uwavvvcacsxqkitmfank.supabase.co', SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3YXZ2dmNhY3N4cWtpdG1mYW5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc5MTM0OTEsImV4cCI6MjEwMzQ4OTQ5MX0.MzAdRypyHWdMIZWrQJ5agus25l0na_QB1iGWiVAFrk8';
 let filters={q:'',status:'',city:'',priority:'',from:'',to:'',quick:'',sort:'urgent'};
+let scheduleMode='list',scheduleMonth=scheduleDateKey(new Date()).slice(0,7),scheduleSelectedDay=scheduleDateKey(new Date());
 let quickCloseId=null,detailDirty=false,onlyUnreadNotifications=false,pendingRemote=null,syncing=false,updatesChannel=null,lastSeenProfile=null,seenNotificationIds=new Set(),syncErrorShown=false;
 function user(){return state.users.find(u=>u.id===currentId&&u.active)||state.users.find(u=>u.active&&u.role==='Administrator');}
 function authRole(){const value=authUser?.app_metadata?.role;return Model.roles.includes(value)?value:'Użytkownik';}
@@ -1493,6 +1518,22 @@ function scheduleDays(tickets,today){
   return `<section class="panel schedule-day ${key<today?'is-late':''}"><div class="schedule-day-heading"><h3>${esc(label)}${key===today?' · Dzisiaj':''}${key<today?' · Po terminie':''}</h3><small>${items.length} ${items.length===1?'zgłoszenie':'zgłoszeń'}</small></div>${items.map(ticket=>scheduleRow(ticket)).join('')}</section>`;
  }).join('');
 }
+function scheduleCalendar(planned,today,overdueCount){
+ const [year,month]=scheduleMonth.split('-').map(Number);
+ const monthName=new Intl.DateTimeFormat('pl-PL',{month:'long',year:'numeric',timeZone:'Europe/Warsaw'}).format(new Date(Date.UTC(year,month-1,15,12)));
+ const firstWeekday=(new Date(Date.UTC(year,month-1,1)).getUTCDay()+6)%7;
+ const dayCount=new Date(Date.UTC(year,month,0)).getUTCDate();
+ const counts=new Map();
+ for(const ticket of planned){const key=scheduleDateKey(ticket.dueAt);counts.set(key,(counts.get(key)||0)+1);}
+ const cells=Array.from({length:firstWeekday},()=>'<span aria-hidden="true"></span>');
+ for(let day=1;day<=dayCount;day++){
+  const key=`${scheduleMonth}-${String(day).padStart(2,'0')}`,count=counts.get(key)||0;
+  cells.push(`<button type="button" class="${key===today?'today ':''}${key===scheduleSelectedDay?'selected ':''}${key<today&&count?'overdue':''}" data-action="schedule-day" data-day="${key}" aria-pressed="${key===scheduleSelectedDay}" aria-label="${day} ${esc(monthName)}: ${count} ${count===1?'zgłoszenie':'zgłoszeń'}"><span>${day}</span>${count?`<strong>${count}</strong>`:''}</button>`);
+ }
+ const selected=planned.filter(ticket=>scheduleDateKey(ticket.dueAt)===scheduleSelectedDay).sort((a,b)=>priorityScore(b)-priorityScore(a)||a.number.localeCompare(b.number,'pl'));
+ const selectedLabel=new Intl.DateTimeFormat('pl-PL',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'Europe/Warsaw'}).format(new Date(scheduleSelectedDay+'T12:00:00Z'));
+ return `<div class="schedule-calendar-layout"><section class="panel schedule-calendar" aria-label="Kalendarz terminów"><div class="schedule-calendar-toolbar"><button type="button" data-action="schedule-prev" aria-label="Poprzedni miesiąc">‹</button><h2>${esc(monthName)}</h2><button type="button" data-action="schedule-next" aria-label="Następny miesiąc">›</button></div><div class="schedule-weekdays" aria-hidden="true"><span>Pn</span><span>Wt</span><span>Śr</span><span>Cz</span><span>Pt</span><span>Sb</span><span>Nd</span></div><div class="schedule-calendar-grid">${cells.join('')}</div></section><section class="panel schedule-calendar-results" aria-live="polite"><div class="schedule-day-heading"><h3>${esc(selectedLabel)}${scheduleSelectedDay===today?' · Dzisiaj':''}</h3><small>${selected.length} ${selected.length===1?'zgłoszenie':'zgłoszeń'}</small></div>${selected.length?selected.map(ticket=>scheduleRow(ticket)).join(''):'<div class="schedule-empty">Na ten dzień nie zaplanowano zgłoszeń.</div>'}</section></div>${overdueCount?`<p class="schedule-calendar-note">Po terminie: ${overdueCount}. Przełącz na listę, aby zobaczyć wszystkie zaległe terminy.</p>`:''}`;
+}
 function scheduleView(){
  if(!canManage())return empty('Widok niedostępny','Harmonogram jest dostępny dla koordynatora i administratora.');
  const open=currentTickets().filter(ticket=>!Model.closed(ticket));
@@ -1501,11 +1542,13 @@ function scheduleView(){
  const overdue=planned.filter(ticket=>scheduleDateKey(ticket.dueAt)<today);
  const upcoming=planned.filter(ticket=>scheduleDateKey(ticket.dueAt)>=today);
  const unplanned=open.filter(ticket=>!ticket.dueAt||!Number.isFinite(Date.parse(ticket.dueAt))).sort((a,b)=>priorityScore(b)-priorityScore(a)||a.createdAt.localeCompare(b.createdAt));
+ const unplannedSection=`<section class="schedule-section"><h2>Wymagają ustalenia terminu</h2><p>Otwórz zgłoszenie, aby ustawić planowany dzień realizacji.</p>${unplanned.length?`<div class="panel schedule-day">${unplanned.map(ticket=>scheduleRow(ticket,true)).join('')}</div>`:'<div class="panel schedule-empty">Wszystkie otwarte zgłoszenia mają planowany termin.</div>'}</section>`;
  return header('Harmonogram','Planowane terminy otwartych zgłoszeń. Zmiana terminu w zgłoszeniu od razu aktualizuje ten widok.')+
   `<div class="schedule-summary"><div class="panel is-late"><span>Po terminie</span><strong>${overdue.length}</strong></div><div class="panel"><span>Na dziś</span><strong>${planned.filter(ticket=>scheduleDateKey(ticket.dueAt)===today).length}</strong></div><div class="panel"><span>Z terminem</span><strong>${planned.length}</strong></div><div class="panel"><span>Bez terminu</span><strong>${unplanned.length}</strong></div></div>`+
-  `<section class="schedule-section"><h2>Po terminie</h2>${overdue.length?scheduleDays(overdue,today):'<div class="panel schedule-empty">Brak zgłoszeń po terminie.</div>'}</section>`+
-  `<section class="schedule-section"><h2>Nadchodzące terminy</h2>${upcoming.length?scheduleDays(upcoming,today):'<div class="panel schedule-empty">Brak zaplanowanych terminów.</div>'}</section>`+
-  `<section class="schedule-section"><h2>Wymagają ustalenia terminu</h2><p>Otwórz zgłoszenie, aby ustawić planowany dzień realizacji.</p>${unplanned.length?`<div class="panel schedule-day">${unplanned.map(ticket=>scheduleRow(ticket,true)).join('')}</div>`:'<div class="panel schedule-empty">Wszystkie otwarte zgłoszenia mają planowany termin.</div>'}</section>`;
+  `<div class="schedule-view-switch" role="group" aria-label="Widok harmonogramu"><button type="button" class="${scheduleMode==='list'?'active':''}" data-action="schedule-mode" data-mode="list" aria-pressed="${scheduleMode==='list'}">Lista</button><button type="button" class="${scheduleMode==='calendar'?'active':''}" data-action="schedule-mode" data-mode="calendar" aria-pressed="${scheduleMode==='calendar'}">Kalendarz</button></div>`+
+  (scheduleMode==='calendar'?scheduleCalendar(planned,today,overdue.length):
+   `<section class="schedule-section"><h2>Po terminie</h2>${overdue.length?scheduleDays(overdue,today):'<div class="panel schedule-empty">Brak zgłoszeń po terminie.</div>'}</section>`+
+   `<section class="schedule-section"><h2>Nadchodzące terminy</h2>${upcoming.length?scheduleDays(upcoming,today):'<div class="panel schedule-empty">Brak zaplanowanych terminów.</div>'}</section>`)+unplannedSection;
 }
 function dashboardView(){const tickets=currentTickets();const m=Model.metrics(tickets,Date.now(),state.settings.responseHours);return header('Dashboard','')+statsView(tickets,false)+`<div class="metric-strip"><section class="panel"><h3>Średni czas realizacji</h3><strong>${m.meanHours===null?'—':m.meanHours.toLocaleString('pl-PL',{maximumFractionDigits:1})+' h'}</strong><small>${m.completed} zamkniętych · bez odrzuconych</small></section><section class="panel"><h3>Wymagają reakcji</h3><strong>${m.overdue} <span class="muted" style="font-size:13px">po terminie</span></strong><small>${m.waiting} bez reakcji przez ${state.settings.responseHours} h</small></section></div><div class="chart-grid"><section class="panel"><div class="block-heading"><h2>Usterki wg miasta</h2></div>${bars(tickets,'city')}</section><section class="panel"><div class="block-heading"><h2>Usterki wg rodzaju</h2></div>${bars(tickets,'category')}</section><section class="panel full"><div class="block-heading"><h2>Usterki wg lokalu / magazynu</h2></div>${bars(tickets,'location')}</section></div>`;}
 function adminView(){if(!isAdmin())return empty('Widok niedostępny','Wybierz profil administratora w przełączniku testowym.');
@@ -1746,6 +1789,9 @@ document.addEventListener('click',async event=>{const el=event.target.closest('[
  else if(action==='open-notification')await perform(()=>openNotification(el.dataset.id));
  else if(action==='apply-pending')applyPending();
  else if(action==='nav')navigate(el.dataset.page);
+ else if(action==='schedule-mode'){if(!canManage())return;scheduleMode=el.dataset.mode==='calendar'?'calendar':'list';shell();}
+ else if(action==='schedule-day'){if(!canManage())return;scheduleSelectedDay=el.dataset.day;shell();}
+ else if(action==='schedule-prev'||action==='schedule-next'){if(!canManage())return;const [year,month]=scheduleMonth.split('-').map(Number);const next=new Date(Date.UTC(year,month-1+(action==='schedule-prev'?-1:1),1));scheduleMonth=next.toISOString().slice(0,7);scheduleSelectedDay=scheduleMonth+'-01';shell();}
  else if(action==='stat-filter'){
    const selected=el.dataset.filter;
    filters={q:'',status:selected==='new'?'Nowe':selected==='closed'?'Zamknięte':'',city:'',priority:'',from:'',to:'',quick:selected==='critical'?'critical':selected==='progress'?'active':'',sort:'urgent'};
