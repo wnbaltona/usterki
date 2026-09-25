@@ -120,18 +120,9 @@ button:disabled { opacity:.6;cursor:not-allowed }
   min-height:89px;padding:15px 16px;border:1px solid var(--line);
   border-radius:10px;background:#fff;box-shadow:0 1px 3px #16333b0b;
 }
-.stats button.stat:hover { background:#f4f9f8;border-color:#8bafb3 }
-.stats.static-stats .stat:hover { background:#fff;border-color:var(--line) }
-.stats .stat.selected,.stat.selected {
-  border-color:#4b9297;background:#eaf5f3;box-shadow:inset 0 3px #2c7e82;
-}
 .stat-label { color:#4e636c;font-size:12px;font-weight:650 }
 .stat strong { color:var(--ink);font-size:26px;font-weight:750 }
 .stats .stat-link { color:#2e6972;font-size:11px }
-.stats .stat.alert,.schedule-summary .is-late {
-  border-color:#e2a9b0;background:#fff7f7;box-shadow:inset 3px 0 #bf5363;
-}
-.stat.alert strong,.stat.alert .icon,.schedule-summary .is-late strong { color:#9d2f40 }
 .metric-strip .panel,.chart-grid .panel { padding:19px 21px }
 .bar-fill { background:#3d9295 }
 
@@ -193,10 +184,6 @@ input:not([type=radio]):not([type=checkbox]):hover,select:hover,textarea:hover {
 .due-suggestion { border-color:#d0dedf;background:#f3f8f7;color:#355560 }
 .schedule-summary { gap:10px }
 .schedule-summary button.panel { border-radius:10px;box-shadow:0 1px 3px #16333b0b }
-.schedule-summary button.panel:not(.is-late):hover { background:#f0f8f6;border-color:#79a9aa }
-.schedule-summary button.panel.active:not(.is-late) {
-  background:#e8f4f2;border-color:#4c9294;box-shadow:inset 0 3px #2f7e81;
-}
 .schedule-summary span { color:var(--muted) }
 .schedule-summary strong { color:var(--ink) }
 .schedule-section>h2 { color:var(--ink) }
@@ -371,19 +358,66 @@ body,.main-wrap,.auth-screen .content { background:var(--bg);color:var(--ink) }
 .notification-bell:hover,.logout-button:hover { background:#e9f4f4;border-color:#69a4aa }
 .notification-bell.has-unread { background:#e1f3f3;border-color:#438f97;color:#075a64 }
 .notification-count { background:#b33345;color:#fff }
-.stat.selected,.stats .stat.selected,
-.schedule-summary button.panel.active:not(.is-late) {
-  background:#e4f3f2;border-color:#2b858b;
-  box-shadow:inset 0 3px #08727a;
-}
-.stats button.stat:hover,.schedule-summary button.panel:not(.is-late):hover {
+.stats:not(.static-stats) button.stat:hover {
   background:#f4faf9;border-color:#7baab0;
 }
-.stats.static-stats .stat:hover { background:#fff;border-color:var(--line) }
-.stats .stat.alert,.schedule-summary .is-late {
-  background:#fff4f4;border-color:#de9eaa;box-shadow:inset 4px 0 #ad3549;
+.stats:not(.static-stats) .stat.selected:not(.alert),
+.stats:not(.static-stats) button.stat.selected:not(.alert):hover {
+  background:#e6f4f3;border-color:#2b858b;
+  box-shadow:inset 4px 0 #08727a,0 2px 8px #172e390d;
 }
-.stat.alert strong,.stat.alert .icon,.schedule-summary .is-late strong { color:#99283c }
+.stats:not(.static-stats) .stat.alert:not(.selected) {
+  background:#fff;border-color:var(--line);box-shadow:0 2px 8px #172e390d;
+}
+.stats:not(.static-stats) button.stat.alert:not(.selected):hover {
+  background:#fff4f5;border-color:#d8939e;
+  box-shadow:inset 4px 0 #b23549,0 2px 8px #172e390d;
+}
+.stats:not(.static-stats) button.stat.alert.selected,
+.stats:not(.static-stats) button.stat.alert.selected:hover {
+  background:#fff1f3;border-color:#ce7b8a;
+  box-shadow:inset 4px 0 #b23549,0 2px 8px #172e390d;
+}
+.stats .stat.alert strong,.stats .stat.alert .icon { color:#99283c }
+
+.schedule-summary button.panel.active:not(.is-late),
+.schedule-summary button.panel.active:not(.is-late):hover {
+  background:#e6f4f3;border-color:#2b858b;
+  box-shadow:inset 4px 0 #08727a,0 2px 8px #172e390d;
+}
+.schedule-summary button.panel:not(.active):not(.is-late):hover {
+  background:#f4faf9;border-color:#7baab0;
+}
+.schedule-summary button.panel.is-late:not(.active) {
+  background:#fff7f7;border-color:#e2a9b0;box-shadow:0 2px 8px #172e390d;
+}
+.schedule-summary button.panel.is-late:not(.active):hover {
+  background:#fff0f2;border-color:#d78996;
+}
+.schedule-summary button.panel.is-late.active,
+.schedule-summary button.panel.is-late.active:hover {
+  background:#fff0f2;border-color:#c97383;
+  box-shadow:inset 4px 0 #ad3549,0 2px 8px #172e390d;
+}
+.schedule-summary .is-late strong { color:#99283c }
+
+#content[data-page="dashboard"] .stats.static-stats .stat {
+  min-height:98px;padding:17px 19px;border-color:var(--line);border-radius:10px;
+  background:#fff;box-shadow:0 2px 8px #172e390d;
+}
+#content[data-page="dashboard"] .stats.static-stats .stat:hover {
+  background:#fff;border-color:var(--line);box-shadow:0 2px 8px #172e390d;
+}
+#content[data-page="dashboard"] .stats.static-stats .stat.alert,
+#content[data-page="dashboard"] .stats.static-stats .stat.alert:hover {
+  background:#fff3f5;border-color:#df9faa;
+  box-shadow:inset 4px 0 #ad3549,0 2px 8px #172e390d;
+}
+#content[data-page="dashboard"] .metric-strip .panel {
+  border-left:4px solid #32868e;padding:19px 21px;
+}
+#content[data-page="dashboard"] .chart-grid .panel { border-color:var(--line) }
+#content[data-page="dashboard"] .bar-fill { background:#2e8b91 }
 
 .pill.new { background:#e8f4fa;border-color:#8ec1d7;color:#0a5976 }
 .pill.progress { background:#e8f3f3;border-color:#87bdc0;color:#105a64 }
