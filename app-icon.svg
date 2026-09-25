@@ -1,8 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Ikona aplikacji Obsługa usterek">
-<rect x="51" y="38" width="154" height="190" rx="18" fill="white" stroke="#080808" stroke-width="14"/>
-<rect x="94" y="24" width="68" height="27" rx="10" fill="white" stroke="#080808" stroke-width="12"/>
-<path d="M77 91h102M77 115h72" fill="none" stroke="#080808" stroke-width="10" stroke-linecap="round"/>
-<circle cx="128" cy="171" r="34" fill="#080808"/>
-<path d="M128 151v23" fill="none" stroke="white" stroke-width="10" stroke-linecap="round"/>
-<circle cx="128" cy="188" r="5" fill="white"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Obsługa usterek">
+  <path d="M30 18h26v-2c0-5 4-9 9-9h52c5 0 9 4 9 9v2h32c7 0 12 5 12 12v180c0 7-5 12-12 12H30c-7 0-12-5-12-12V30c0-7 5-12 12-12Z" fill="#ffffff" stroke="#080808" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M37 72h103M37 109h91M37 146h83M37 183h111" fill="none" stroke="#080808" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="163" cy="123" r="57" fill="#ffffff" stroke="#080808" stroke-width="8"/>
+  <rect x="155" y="88" width="16" height="45" rx="8" fill="none" stroke="#080808" stroke-width="6"/>
+  <circle cx="163" cy="151" r="7" fill="none" stroke="#080808" stroke-width="6"/>
 </svg>
