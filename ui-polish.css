@@ -226,9 +226,6 @@ dialog::backdrop { background:#10242db3 }
 .comment,.file-row,.activity-item { border-color:#dce5e6 }
 .notification-item.unread { background:#ecf6f5;border-left-color:#2b8186 }
 .notification-item.unread .notification-copy strong { color:#195d65 }
-.push-settings { border-color:#d5e1e1;background:#f5f9f8 }
-.push-settings strong { color:var(--ink) }
-.push-settings small { color:var(--muted) }
 .notification-toolbar .btn.link:not(:disabled):hover { background:#e8f3f2;border-color:#9dc2c5;color:#134b53 }
 .toast:not(.incoming-toast) { border-color:#93cab0;background:#eff9f2;color:#16583d }
 .toast.error:not(.incoming-toast),.form-error { border-color:#df9ba5;background:#fff1f2;color:#8f2b3a }
@@ -318,9 +315,6 @@ dialog::backdrop { background:#10242db3 }
   #detail-dialog .dialog-body { padding:12px 11px calc(26px + env(safe-area-inset-bottom)) }
   #detail-dialog .detail-grid .panel { padding:17px 15px }
   .notifications-dialog { width:min(470px,calc(100vw - 22px)) }
-  .push-settings { gap:10px }
-  .push-settings strong { font-size:13px }
-  .push-settings small { font-size:11px }
 }
 
 @media(prefers-reduced-motion:reduce) {

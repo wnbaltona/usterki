@@ -15,10 +15,9 @@ Wersja pokazowa aplikacji do zgłaszania usterek. Pliki można opublikować raze
 | `bootstrap.js` | Uruchomienie aplikacji |
 | `manifest.json`, ikony, `logo.svg` | Nazwa i grafiki aplikacji |
 | `supabase-demo.sql` | Schemat wyłącznie do wspólnego dema |
-| `push-client.js`, `push-sw.js` | Zgoda na powiadomienia telefonu i wyświetlanie komunikatów systemowych |
-| `supabase-push.sql`, `supabase/functions/send-push/` | Kolejka i wysyłka Web Push w Supabase |
-| `PUSH-SETUP.md` | Instrukcja włączenia powiadomień |
+| `app-sw.js` | Worker aplikacji instalowanej, bez powiadomień push |
+| `PUSH-DISABLE.md` | Wyłączenie wcześniej uruchomionej wysyłki push w Supabase |
 
 Przy aktualizacji GitHub Pages trzeba przesłać **cały zestaw zmienionych plików**, nie tylko `index.html`. Wersja produkcyjna wymaga rzeczywistych uprawnień po stronie serwera; obecny przełącznik profili służy prezentacji.
 
-Powiadomienia systemowe nie uruchomią się samą aktualizacją GitHub Pages. Wymagają konfiguracji opisanej w `PUSH-SETUP.md` oraz zgody na każdym urządzeniu.
+Powiadomienia widoczne w aplikacji pozostają aktywne. Wysyłka powiadomień push na urządzenia jest wyłączona; jeśli została wcześniej skonfigurowana w Supabase, wykonaj `PUSH-DISABLE.md`.
