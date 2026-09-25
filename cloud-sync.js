@@ -4,7 +4,7 @@ const DEMO_BUCKET = 'usterki-demo-files';
 let demoLoaded = false;
 
 openStore = async function () {
-  state = Model.initial(JSON.parse($('#seed').textContent));
+  state = Model.initial(window.BALTONA_LOCATIONS);
   try { currentId = localStorage.getItem('baltona-demo-view-profile'); } catch {}
   currentId = user().id;
 };
@@ -17,7 +17,7 @@ async function loadDemoState() {
   const { data, error } = await authClient.from(DEMO_TABLE).select('revision,data').eq('id', 1).single();
   if (error) throw Error('Nie można pobrać wspólnych danych. Najpierw uruchom supabase-demo.sql w Supabase. ' + error.message);
   if (!data.data?.version) {
-    const initial = Model.initial(JSON.parse($('#seed').textContent));
+    const initial = Model.initial(window.BALTONA_LOCATIONS);
     initial.revision = data.revision + 1;
     const result = await authClient.from(DEMO_TABLE).update({ data: initial, revision: initial.revision })
       .eq('id', 1).eq('revision', data.revision).select('revision').maybeSingle();
