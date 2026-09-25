@@ -1,4 +1,4 @@
-# Baltona — Obsługa usterek
+# Serwis Lokali — zgłoszenia usterek
 
 Wersja pokazowa aplikacji do zgłaszania usterek. Pliki można opublikować razem w jednym katalogu GitHub Pages. `index.html` otwierany lokalnie również korzysta z pozostałych plików tego katalogu.
 

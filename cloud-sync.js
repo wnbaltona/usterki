@@ -166,7 +166,7 @@ backup = async function () {
     files.push({ ...meta, base64 });
   }
   const archive = { format: 'baltona-usterki-backup', version: 1, exportedAt: new Date().toISOString(), state: snapshot.data, files };
-  download(new Blob([JSON.stringify(archive)], { type: 'application/json' }), 'Baltona-demo-kopia-' + new Date().toISOString().slice(0, 10) + '.json');
+  download(new Blob([JSON.stringify(archive)], { type: 'application/json' }), 'Serwis-Lokali-demo-kopia-' + new Date().toISOString().slice(0, 10) + '.json');
   toast('Pobrano kopię danych demo.');
 };
 
