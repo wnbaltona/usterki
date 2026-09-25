@@ -342,9 +342,10 @@ body,.main-wrap,.auth-screen .content { background:var(--bg);color:var(--ink) }
 .nav-label { color:#aec4cd }
 .sidebar .nav-button { color:#d7e4e9 }
 .sidebar .nav-button:hover { background:#2b4654;color:#fff }
-.sidebar .nav-button.active {
-  background:#e8f5f3;color:#124d57;box-shadow:inset 3px 0 #0d8890;
+.sidebar nav .nav-button.active {
+  background:#10232e;color:#fff;box-shadow:inset 3px 0 #55c1c3;
 }
+.sidebar nav .nav-button.active .icon { color:#9de1e0 }
 .topbar { border-color:var(--line);box-shadow:0 1px 6px #172e3912 }
 .content h1,.content h2,.content h3 { color:var(--ink) }
 .heading p:not(.eyebrow),.cell-sub,.hint,.muted,.report-copy,
@@ -444,7 +445,7 @@ dialog::backdrop { background:#11242dc2 }
   .sidebar nav { background:#fff;border-top-color:var(--line) }
   .sidebar .nav-button { color:#355767 }
   .sidebar .nav-button:hover { background:#eef5f6;color:#174d59 }
-  .sidebar .nav-button.active {
+  .sidebar nav .nav-button.active {
     background:#e3f2f2;color:#075d68;box-shadow:inset 0 -3px #0f7d86;
   }
   .main-wrap,.content,#detail-dialog { background:var(--bg) }
