@@ -9551,3 +9551,113 @@ body,.main-wrap,.auth-screen .content {
   font-weight:600;
   line-height:1.5
 }
+
+/* Stronger colour cues for actions that need attention. */
+.pill.new {
+  background:#e8f5fb;
+  border-color:#8bc5df;
+  color:#075a80
+}
+.pill.progress,.pill.medium {
+  background:#fff2d2;
+  border-color:#e4b957;
+  color:#754700
+}
+.pill.high {
+  background:#fff0f2;
+  border-color:#e99ba7;
+  color:#991b30
+}
+.pill.closed,.pill.low {
+  background:#e9f7ee;
+  border-color:#83c6a0;
+  color:#135d3a
+}
+.pill.rejected {
+  background:#eef1f3;
+  border-color:#aebdc5;
+  color:#40515b
+}
+.danger-text,.minichip {
+  color:#a51c31;
+  font-weight:700
+}
+.stat.alert,.schedule-summary .is-late {
+  background:#fff3f4;
+  border-color:#e9a3ad;
+  box-shadow:inset 4px 0 #be3044
+}
+.stat.alert strong,.stat.alert .icon,.schedule-summary .is-late strong {
+  color:#991b30
+}
+.schedule-summary button.panel.is-late.active {
+  background:#ffe8eb;
+  border-color:#be3044;
+  box-shadow:inset 4px 0 #be3044, inset 0 0 0 1px #be3044
+}
+.toast:not(.incoming-toast) {
+  position:relative;
+  padding-left:48px;
+  background:#e9f8ef;
+  border-color:#77c59a;
+  border-left:5px solid #238055;
+  color:#145d3c;
+  font-weight:600
+}
+.toast:not(.incoming-toast)::before {
+  content:"✓";
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:19px;
+  line-height:1
+}
+.toast.error:not(.incoming-toast),.form-error {
+  background:#fff0f2;
+  border-color:#e99ba7;
+  color:#991b30
+}
+.toast.error:not(.incoming-toast) {
+  border-left-color:#be3044
+}
+.toast.error:not(.incoming-toast)::before {
+  content:"!";
+  display:grid;
+  place-items:center;
+  width:21px;
+  height:21px;
+  border-radius:50%;
+  background:#be3044;
+  color:#fff;
+  font-size:14px
+}
+.form-error {
+  padding:9px 11px;
+  border:1px solid #e99ba7;
+  border-left:4px solid #be3044;
+  border-radius:6px;
+  font-weight:600
+}
+.notification-item.unread {
+  background:#eaf6fb;
+  border-left:4px solid #167b9c
+}
+.notification-item.unread .notification-copy strong {
+  color:#09506e
+}
+.sync-notice {
+  background:#fff2d2;
+  border-bottom-color:#d9ad49;
+  color:#674000;
+  font-weight:600
+}
+.sync-notice button {
+  border-color:#ba8c2d;
+  color:#674000;
+  font-weight:700
+}
+.closing-warning {
+  color:#754700;
+  font-weight:600
+}
