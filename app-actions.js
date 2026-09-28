@@ -190,6 +190,7 @@ function applyPending(){
 
 
 
+const PDFJS_CDN='https://cdn.jsdelivr.net/npm/pdfjs-dist@5.6.205/';
 let pdfPreviewDocument=null,pdfPreviewLoading=null,pdfPreviewRender=null,pdfPreviewPage=1,previewGeneration=0;
 function closeAttachmentResources(){
  previewGeneration++;
@@ -232,18 +233,18 @@ async function previewFile(id){
  if(!dialog.open)dialog.showModal();
  if(pdf){
   try{
-   const pdfjs=await import('./vendor/pdfjs/pdf.mjs');
+   const pdfjs=await import(PDFJS_CDN+'build/pdf.min.mjs');
    if(generation!==previewGeneration||!dialog.open)return;
-   pdfjs.GlobalWorkerOptions.workerSrc=new URL('./vendor/pdfjs/pdf.worker.mjs',document.querySelector('script[src*="app-actions.js"]').src).href;
+   pdfjs.GlobalWorkerOptions.workerSrc=PDFJS_CDN+'build/pdf.worker.min.mjs';
    const bytes=new Uint8Array(await blob.arrayBuffer());
    if(generation!==previewGeneration||!dialog.open)return;
-   pdfPreviewLoading=pdfjs.getDocument({data:bytes,isEvalSupported:false,cMapUrl:new URL('./vendor/pdfjs/cmaps/',document.querySelector('script[src*="app-actions.js"]').src).href,cMapPacked:true,standardFontDataUrl:new URL('./vendor/pdfjs/standard_fonts/',document.querySelector('script[src*="app-actions.js"]').src).href,wasmUrl:new URL('./vendor/pdfjs/wasm/',document.querySelector('script[src*="app-actions.js"]').src).href});
+   pdfPreviewLoading=pdfjs.getDocument({data:bytes,isEvalSupported:false,cMapUrl:PDFJS_CDN+'cmaps/',cMapPacked:true,standardFontDataUrl:PDFJS_CDN+'standard_fonts/',wasmUrl:PDFJS_CDN+'wasm/'});
    const doc=await pdfPreviewLoading.promise;
    if(generation!==previewGeneration||!dialog.open){await doc.destroy();return;}
    pdfPreviewDocument=doc;pdfPreviewLoading=null;pdfPreviewPage=1;await renderPdfPage();
   }catch(error){
    if(generation!==previewGeneration||!dialog.open)return;
-   console.error('PDF preview:',error);dialog.querySelector('.preview-body').innerHTML='<p class="form-error" role="alert">Nie można wyświetlić tego PDF. Pobierz plik, aby go otworzyć.</p>';
+   console.error('PDF preview:',error);dialog.querySelector('.preview-body').innerHTML='<p class="form-error" role="alert">Nie udało się wczytać podglądu PDF. Sprawdź połączenie z internetem lub pobierz plik.</p>';
    dialog.querySelector('.pdf-pages').hidden=true;
   }
  }

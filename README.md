@@ -33,6 +33,6 @@ Powiadomienia widoczne w aplikacji pozostają aktywne. Wysyłka powiadomień pus
 
 - Termin planowany jest główną datą; termin sugerowany pozostaje informacją pomocniczą.
 - Aktywne filtry można usuwać osobno. Powrót do listy zachowuje filtry i przewinięcie w bieżącej sesji; zmiana profilu je resetuje.
-- Zdjęcia i PDF otwierają się w osobnym podglądzie. Czytnik PDF ma przyciski zmiany stron i działa z lokalnymi plikami z folderu vendor/pdfjs (PDF.js, licencja Apache 2.0).
+- Zdjęcia i PDF otwierają się w osobnym podglądzie. Czytnik PDF ma przyciski zmiany stron. PDF.js w wersji 5.6.205 jest wczytywany z jsDelivr przy otwieraniu PDF i wymaga dostępu do internetu; dokument jest renderowany na urządzeniu. Nie ma folderu vendor.
 - Postęp naprawy wyróżnia aktualny etap i rzeczywisty status zgłoszenia.
-- Końcowe reguły układu są zebrane w ui-layout.css, ładowanym po ui-polish.css. Publikuj również ten plik i cały folder vendor.
+- Końcowe reguły układu są zebrane w ui-layout.css, ładowanym po ui-polish.css. Publikuj również ten plik.
