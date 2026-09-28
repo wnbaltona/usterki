@@ -1,6 +1,12 @@
 'use strict';
 // Operacje na zgłoszeniach, profilach, plikach i powiadomieniach.
-function navigate(target){if(dirty&&!confirm('Masz niezapisany formularz. Opuścić go i odrzucić wpisane dane?'))return;if($('#detail-dialog').open)$('#detail-dialog').close();page=target;dirty=false;draftFiles=[];filters={q:'',status:'',city:'',priority:'',from:'',to:'',quick:'',sort:'urgent'};shell();window.scrollTo(0,0);}
+function navigate(target){
+ if((dirty||detailDirty)&&!confirm('Masz niezapisany formularz. Opuścić go i odrzucić wpisane dane?'))return;
+ rememberTicketList();
+ if($('#detail-dialog').open)$('#detail-dialog').close();
+ page=target;dirty=false;detailDirty=false;draftFiles=[];
+ shell(target==='tickets');if(target!=='tickets')window.scrollTo(0,0);
+}
 function updateTargetHint(){const form=$('#new-form'),target=form?.querySelector('#priority-target');if(!target)return;const priority=form.querySelector('input[name="priority"]:checked')?.value||'Średni';const blocksSales=form.querySelector('#blocksSales')?.checked;target.textContent=`Proponowany czas realizacji: ${targetHours(priority,blocksSales)} h od wysłania zgłoszenia${blocksSales?' (usterka blokuje sprzedaż)':''}.`;}
 function renderDraftFiles(){if(draftFiles.length){document.getElementById('attachment-error').hidden=true;document.getElementById('dropzone').classList.remove('invalid');}if(!$('#draft-files'))return;$('#draft-files').innerHTML=draftFiles.map((f,i)=>`<div class="file-row">${icon('clip')}<span class="file-name">${esc(f.name)} <small>${sizeFmt(f.size)}</small></span><button class="btn secondary small" type="button" data-action="remove-file" data-index="${i}" aria-label="Usuń ${esc(f.name)}">Usuń</button></div>`).join('');}
 async function validateFile(file){if(!file.size||file.size>state.settings.maxMB*1024*1024)throw Error('Plik „'+file.name+'” jest pusty lub przekracza '+state.settings.maxMB+' MB.');const bytes=new Uint8Array(await file.slice(0,8).arrayBuffer());const extension=file.name.split('.').pop().toLowerCase();const jpg=bytes[0]===255&&bytes[1]===216&&bytes[2]===255;const png=[137,80,78,71,13,10,26,10].every((b,i)=>bytes[i]===b);const pdf=String.fromCharCode(...bytes.slice(0,5))==='%PDF-';if(!(['jpg','jpeg'].includes(extension)&&jpg||extension==='png'&&png||extension==='pdf'&&pdf))throw Error('Plik „'+file.name+'” nie jest poprawnym JPG, PNG lub PDF.');return jpg?'image/jpeg':png?'image/png':'application/pdf';}
@@ -25,7 +31,7 @@ async function submitComment(form){
   }
   t.updatedAt=now;
  });
- shell();openDetail(ticket.id);
+ shell(true);openDetail(ticket.id);
  toast(Model.closed(ticket)?'Dodano komentarz.':needsReply?'Dodano komentarz. Zgłoszenie oczekuje na odpowiedź lokalu.':ticket.status==='Oczekuje na informację'?'Dodano odpowiedź. Zgłoszenie wróciło do realizacji.':'Dodano komentarz.');
 }
 function openQuickClose(id){
@@ -55,7 +61,7 @@ async function submitQuickClose(form){
  await mutate(next=>{next.tickets[next.tickets.findIndex(t=>t.id===id)]=updated;},attachment?[{...attachment,blob:new Blob([file],{type})}]:[]);
  $('#quick-close-dialog').close();quickCloseId=null;detailDirty=false;shell();if($('#detail-dialog').open&&selectedTicket===id)$('#detail-dialog').innerHTML=detailView(state.tickets.find(t=>t.id===id));toast('Zamknięto zgłoszenie '+ticket.number+(attachment?' i zapisano załącznik.':'.'));
 }
-async function submitManage(form){const values=Object.fromEntries(new FormData(form)),ticket=state.tickets.find(t=>t.id===selectedTicket);if(!ticket)throw Error('Zgłoszenie nie jest dostępne.');if(values.dueAt&&values.dueAt<inputDate(new Date().toISOString())&&values.dueAt!==inputDate(ticket.dueAt))throw Error('Planowany termin nie może być wcześniejszy niż dzisiaj.');values.dueAt=values.dueAt?new Date(values.dueAt+'T23:59:59.999').toISOString():null;const updated=Model.updateTicket(ticket,values,user(),new Date().toISOString());await mutate(next=>{next.tickets[next.tickets.findIndex(t=>t.id===ticket.id)]=updated;});shell();openDetail(ticket.id);toast('Zapisano dane obsługi zgłoszenia.');}
+async function submitManage(form){const values=Object.fromEntries(new FormData(form)),ticket=state.tickets.find(t=>t.id===selectedTicket);if(!ticket)throw Error('Zgłoszenie nie jest dostępne.');if(values.dueAt&&values.dueAt<inputDate(new Date().toISOString())&&values.dueAt!==inputDate(ticket.dueAt))throw Error('Planowany termin nie może być wcześniejszy niż dzisiaj.');values.dueAt=values.dueAt?new Date(values.dueAt+'T23:59:59.999').toISOString():null;const updated=Model.updateTicket(ticket,values,user(),new Date().toISOString());await mutate(next=>{next.tickets[next.tickets.findIndex(t=>t.id===ticket.id)]=updated;});shell(true);openDetail(ticket.id);toast('Zapisano dane obsługi zgłoszenia.');}
 async function deleteUserProfile(id){
  if(!isAdmin())throw Error('Tylko administrator może usuwać profile testowe.');
  const target=state.users.find(u=>u.id===id&&!u.deletedAt);
@@ -182,3 +188,63 @@ function applyPending(){
  dirty=false;detailDirty=false;draftFiles=[];const latest=pendingRemote;ingestRemote(latest,false);shell();
 }
 
+
+
+let pdfPreviewDocument=null,pdfPreviewLoading=null,pdfPreviewRender=null,pdfPreviewPage=1,previewGeneration=0;
+function closeAttachmentResources(){
+ previewGeneration++;
+ if(attachmentPreviewUrl)URL.revokeObjectURL(attachmentPreviewUrl);
+ attachmentPreviewUrl=null;
+ if(pdfPreviewRender){pdfPreviewRender.cancel();pdfPreviewRender=null;}
+ const loading=pdfPreviewLoading,doc=pdfPreviewDocument;
+ pdfPreviewLoading=null;pdfPreviewDocument=null;
+ if(loading)loading.destroy().catch(()=>{});else if(doc)doc.destroy().catch(()=>{});
+}
+async function renderPdfPage(){
+ const doc=pdfPreviewDocument,dialog=$('#attachment-preview-dialog');
+ if(!doc||!dialog.open)return;
+ const pageNumber=pdfPreviewPage,page=await doc.getPage(pageNumber);
+ if(doc!==pdfPreviewDocument||!dialog.open)return;
+ const canvas=dialog.querySelector('canvas'),body=dialog.querySelector('.preview-body');
+ const natural=page.getViewport({scale:1});
+ const available=Math.max(100,body.clientWidth-24),scale=Math.min(2,available/natural.width);
+ const ratio=Math.min(window.devicePixelRatio||1,2),viewport=page.getViewport({scale:scale*ratio});
+ canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
+ canvas.style.width=Math.ceil(viewport.width/ratio)+'px';canvas.style.height='auto';
+ canvas.setAttribute('aria-label','Strona '+pageNumber+' z '+doc.numPages);
+ pdfPreviewRender=page.render({canvas,viewport});
+ try{await pdfPreviewRender.promise;}catch(error){if(error.name!=='RenderingCancelledException')throw error;return;}
+ if(doc!==pdfPreviewDocument||!dialog.open)return;
+ pdfPreviewRender=null;dialog.querySelector('.pdf-loading').hidden=true;
+ dialog.querySelector('.pdf-page-number').textContent=pageNumber+' / '+doc.numPages;
+ dialog.querySelector('[data-action="pdf-prev"]').disabled=pageNumber===1;
+ dialog.querySelector('[data-action="pdf-next"]').disabled=pageNumber===doc.numPages;
+ body.scrollTop=0;
+}
+async function previewFile(id){
+ const {record,blob}=await attachmentBlob(id);
+ const type=record.type||blob.type;
+ if(!['image/jpeg','image/png','application/pdf'].includes(type))throw Error('Podgląd jest dostępny dla JPG, PNG i PDF.');
+ closeAttachmentResources();const generation=previewGeneration;
+ const dialog=$('#attachment-preview-dialog'),pdf=type==='application/pdf';
+ if(!pdf)attachmentPreviewUrl=URL.createObjectURL(new Blob([blob],{type}));
+ dialog.innerHTML=`<div class="preview-head"><h2 id="attachment-preview-title">${esc(record.name)}</h2><button class="close-dialog" type="button" data-action="close-preview" aria-label="Zamknij podgląd">✕</button></div><div class="preview-body">${pdf?'<p class="pdf-loading" role="status">Wczytywanie dokumentu…</p><canvas role="img" aria-label="Podgląd dokumentu PDF"></canvas>':`<img src="${attachmentPreviewUrl}" alt="${esc(record.name)}">`}</div>${pdf?'<div class="pdf-pages"><button class="btn secondary small" type="button" data-action="pdf-prev" disabled aria-label="Poprzednia strona PDF">←</button><span class="pdf-page-number" aria-live="polite"></span><button class="btn secondary small" type="button" data-action="pdf-next" disabled aria-label="Następna strona PDF">→</button></div>':''}<div class="preview-footer"><button class="btn secondary" type="button" data-action="download-file" data-id="${esc(id)}">Pobierz</button><button class="btn" type="button" data-action="close-preview">Zamknij podgląd</button></div>`;
+ if(!dialog.open)dialog.showModal();
+ if(pdf){
+  try{
+   const pdfjs=await import('./vendor/pdfjs/pdf.mjs');
+   if(generation!==previewGeneration||!dialog.open)return;
+   pdfjs.GlobalWorkerOptions.workerSrc=new URL('./vendor/pdfjs/pdf.worker.mjs',document.querySelector('script[src*="app-actions.js"]').src).href;
+   const bytes=new Uint8Array(await blob.arrayBuffer());
+   if(generation!==previewGeneration||!dialog.open)return;
+   pdfPreviewLoading=pdfjs.getDocument({data:bytes,isEvalSupported:false,cMapUrl:new URL('./vendor/pdfjs/cmaps/',document.querySelector('script[src*="app-actions.js"]').src).href,cMapPacked:true,standardFontDataUrl:new URL('./vendor/pdfjs/standard_fonts/',document.querySelector('script[src*="app-actions.js"]').src).href,wasmUrl:new URL('./vendor/pdfjs/wasm/',document.querySelector('script[src*="app-actions.js"]').src).href});
+   const doc=await pdfPreviewLoading.promise;
+   if(generation!==previewGeneration||!dialog.open){await doc.destroy();return;}
+   pdfPreviewDocument=doc;pdfPreviewLoading=null;pdfPreviewPage=1;await renderPdfPage();
+  }catch(error){
+   if(generation!==previewGeneration||!dialog.open)return;
+   console.error('PDF preview:',error);dialog.querySelector('.preview-body').innerHTML='<p class="form-error" role="alert">Nie można wyświetlić tego PDF. Pobierz plik, aby go otworzyć.</p>';
+   dialog.querySelector('.pdf-pages').hidden=true;
+  }
+ }
+}

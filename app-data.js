@@ -86,14 +86,15 @@ async function persist(next, files = [], replaceFiles = false) {
   refreshNotificationsUI();
   updatesChannel?.postMessage({ revision: next.revision });
 }
-async function downloadFile(id) {
-  const ticket = currentTickets().find(t => t.attachments.some(f => f.id === id));
-  if (!ticket) throw Error('Załącznik niedostępny w tym profilu.');
-  const record = ticket.attachments.find(f => f.id === id);
-  const { data, error } = await authClient.storage.from(DEMO_BUCKET).download(id);
-  if (error) throw error;
-  download(data, record.name);
+async function attachmentBlob(id){
+ const ticket=currentTickets().find(t=>t.attachments.some(f=>f.id===id));
+ if(!ticket)throw Error('Załącznik niedostępny w tym profilu.');
+ const record=ticket.attachments.find(f=>f.id===id);
+ const {data,error}=await authClient.storage.from(DEMO_BUCKET).download(id);
+ if(error)throw error;
+ return {record,blob:data};
 }
+async function downloadFile(id){const {record,blob}=await attachmentBlob(id);download(blob,record.name);}
 async function syncFromDatabase() {
   if (!authClient || !authUser || !state || busy || syncing) return;
   syncing = true;

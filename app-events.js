@@ -49,6 +49,10 @@ document.addEventListener('click', async event => {
  else if(action==='close-quick-close')$('#quick-close-dialog').close();
  else if(action==='close-dialog'){if(!detailDirty||confirm('Odrzucić niezapisane zmiany w zgłoszeniu?')){detailDirty=false;$('#detail-dialog').close();}}
  else if(action==='remove-file'){draftFiles.splice(Number(el.dataset.index),1);dirty=true;renderDraftFiles();}
+ else if(action==='preview-file')await perform(()=>previewFile(el.dataset.id));
+ else if(action==='pdf-prev'||action==='pdf-next'){if(pdfPreviewDocument){pdfPreviewPage=Math.max(1,Math.min(pdfPreviewDocument.numPages,pdfPreviewPage+(action==='pdf-next'?1:-1)));await perform(renderPdfPage);}}
+ else if(action==='close-preview')$('#attachment-preview-dialog').close();
+ else if(action==='remove-filter'){const key=el.dataset.filter;if(['q','status','city','priority','quick','from','to','sort'].includes(key)){filters[key]=key==='sort'?'urgent':'';ticketListScroll=0;shell();window.scrollTo(0,0);}}
  else if(action==='download-file')await perform(()=>downloadFile(el.dataset.id));
  else if(action==='clear-filters'){filters={q:'',status:'',city:'',priority:'',from:'',to:'',quick:'',sort:'urgent'};shell();}
  else if(action==='admin-tab'){if(dirty&&!confirm('Odrzucić niezapisane zmiany formularza?'))return;dirty=false;adminTab=el.dataset.tab;editingUser=null;editingLocation=null;shell();}
@@ -113,7 +117,7 @@ document.addEventListener('invalid',event=>{
 document.addEventListener('change',async event=>{const el=event.target;if(!state)return;
  if(el.closest('#new-form')&&el.id!=='attachments')clearNewFormFieldError(el);
  if(el.name==='priority'||el.id==='blocksSales')updateTargetHint();
- if(el.id==='profile-select'){if(busy){el.value=currentId;return;}if((dirty||detailDirty)&&!confirm('Zmiana profilu odrzuci niezapisany formularz. Kontynuować?')){el.value=currentId;return;}currentId=el.value;savePreference();dirty=false;detailDirty=false;lastSeenProfile=null;draftFiles=[];editingUser=null;editingLocation=null;if($('#detail-dialog').open)$('#detail-dialog').close();if(page==='admin'&&!isAdmin())page='home';filters={q:'',status:'',city:'',priority:'',from:'',to:'',quick:'',sort:'urgent'};if(pendingRemote){state=pendingRemote;pendingRemote=null;currentId=user().id;}shell();toast('Widok testowy: '+user().role+'. To nie jest logowanie.');announceProfile();}
+ if(el.id==='profile-select'){if(busy){el.value=currentId;return;}if((dirty||detailDirty)&&!confirm('Zmiana profilu odrzuci niezapisany formularz. Kontynuować?')){el.value=currentId;return;}currentId=el.value;ticketListScroll=0;savePreference();dirty=false;detailDirty=false;lastSeenProfile=null;draftFiles=[];editingUser=null;editingLocation=null;if($('#detail-dialog').open)$('#detail-dialog').close();if(page==='admin'&&!isAdmin())page='home';filters={q:'',status:'',city:'',priority:'',from:'',to:'',quick:'',sort:'urgent'};if(pendingRemote){state=pendingRemote;pendingRemote=null;currentId=user().id;}shell();toast('Widok testowy: '+user().role+'. To nie jest logowanie.');announceProfile();}
  if(el.id==='m-status'){detailDirty=true;syncClosingFields();}
  if(el.id==='m-priority'){detailDirty=true;updateDueSuggestion();}
  if(el.id==='city'){const choices=availablePlaces().filter(l=>l.city===el.value);$('#mpk').disabled=!el.value;$('#mpk').innerHTML=option('','Wybierz lokal / magazyn')+choices.map(l=>option(l.mpk,l.mpk+' · '+l.name+(l.type==='Magazyn'?' [Magazyn]':'')+(l.location&&l.location!==l.city?' · '+l.location:''),choices.length===1?choices[0].mpk:'')).join('');}
@@ -136,6 +140,15 @@ for(const dialog of ['detail-dialog','quick-close-dialog','notifications-dialog'
   dialog.close();
  });
 }
-$('#detail-dialog').addEventListener('close',()=>{selectedTicket=null;detailDirty=false;});
+$('#detail-dialog').addEventListener('close',()=>{selectedTicket=null;detailDirty=false;restoreTicketList();});
 $('#quick-close-dialog').addEventListener('close',()=>{quickCloseId=null;});
 $('#detail-dialog').addEventListener('cancel',event=>{if(busy||(detailDirty&&!confirm('Odrzucić niezapisane zmiany w zgłoszeniu?')))event.preventDefault();else detailDirty=false;});
+
+$('#attachment-preview-dialog').addEventListener('close',()=>{
+ closeAttachmentResources();$('#attachment-preview-dialog').innerHTML='';
+});
+$('#attachment-preview-dialog').addEventListener('click',event=>{
+ const dialog=event.currentTarget;if(event.target!==dialog||busy)return;
+ const r=dialog.getBoundingClientRect();
+ if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();
+});

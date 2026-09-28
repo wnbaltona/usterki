@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; worker-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' blob: data:; manifest-src 'self'; connect-src https://*.supabase.co; base-uri 'none'; form-action 'none'"
+      content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; worker-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' blob: data:; manifest-src 'self'; connect-src 'self' https://*.supabase.co; base-uri 'none'; form-action 'none'"
     >
     <meta name="description" content="Serwis Lokali — zgłaszanie i obsługa usterek.">
     <meta name="theme-color" content="#1d2e3b">
@@ -19,7 +19,8 @@
     <link rel="apple-touch-icon" href="./icon-transparent-192.png">
     <link rel="stylesheet" href="./styles.css?v=11">
     <link rel="stylesheet" href="./fonts/manrope.css?v=1">
-    <link rel="stylesheet" href="./ui-polish.css?v=20">
+    <link rel="stylesheet" href="./ui-polish.css?v=22">
+    <link rel="stylesheet" href="./ui-layout.css?v=1">
   </head>
 
   <body>
@@ -79,6 +80,7 @@
     <dialog id="detail-dialog" aria-labelledby="dialog-title"></dialog>
     <dialog id="quick-close-dialog" class="quick-close-dialog" aria-labelledby="quick-close-title"></dialog>
     <dialog id="notifications-dialog" class="notifications-dialog" aria-labelledby="notifications-title"></dialog>
+    <dialog id="attachment-preview-dialog" class="attachment-preview-dialog" aria-labelledby="attachment-preview-title"></dialog>
     <div class="toast-container" id="toasts" aria-live="polite"></div>
 
     <noscript><div class="fatal">Włącz JavaScript, aby korzystać z aplikacji.</div></noscript>
@@ -87,11 +89,11 @@
     <script src="./locations.js?v=4"></script>
     <script src="./app-config.js?v=1"></script>
     <script src="./model.js?v=1"></script>
-    <script src="./app-core.js?v=3"></script>
-    <script src="./app-views.js?v=3"></script>
-    <script src="./app-actions.js?v=1"></script>
-    <script src="./app-events.js?v=3"></script>
-    <script src="./app-data.js?v=1"></script>
+    <script src="./app-core.js?v=22"></script>
+    <script src="./app-views.js?v=22"></script>
+    <script src="./app-actions.js?v=22"></script>
+    <script src="./app-events.js?v=22"></script>
+    <script src="./app-data.js?v=22"></script>
     <script src="./bootstrap.js?v=5"></script>
   </body>
 </html>

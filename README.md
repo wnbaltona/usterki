@@ -1,6 +1,6 @@
 # Serwis Lokali — zgłoszenia usterek
 
-Wersja pokazowa aplikacji do zgłaszania usterek. Pliki można opublikować razem w jednym katalogu GitHub Pages. `index.html` otwierany lokalnie również korzysta z pozostałych plików tego katalogu.
+Wersja pokazowa aplikacji do zgłaszania usterek. Pliki można opublikować razem w jednym katalogu GitHub Pages. Uruchamiaj aplikację przez HTTP lub HTTPS (np. GitHub Pages), aby działał również czytnik PDF.
 
 ## Struktura
 
@@ -28,3 +28,11 @@ Przy aktualizacji GitHub Pages trzeba przesłać **cały zestaw zmienionych plik
 Skrypty w `index.html` są ładowane w podanej kolejności. Aplikacja korzysta ze zwykłych plików JavaScript bez procesu budowania. Kolory podstawowe są zebrane w `:root` na początku `ui-polish.css`; układ pozostaje w `styles.css`.
 
 Powiadomienia widoczne w aplikacji pozostają aktywne. Wysyłka powiadomień push na urządzenia jest wyłączona; jeśli została wcześniej skonfigurowana w Supabase, wykonaj `PUSH-DISABLE.md`.
+
+## Usprawnienia interfejsu
+
+- Termin planowany jest główną datą; termin sugerowany pozostaje informacją pomocniczą.
+- Aktywne filtry można usuwać osobno. Powrót do listy zachowuje filtry i przewinięcie w bieżącej sesji; zmiana profilu je resetuje.
+- Zdjęcia i PDF otwierają się w osobnym podglądzie. Czytnik PDF ma przyciski zmiany stron i działa z lokalnymi plikami z folderu vendor/pdfjs (PDF.js, licencja Apache 2.0).
+- Postęp naprawy wyróżnia aktualny etap i rzeczywisty status zgłoszenia.
+- Końcowe reguły układu są zebrane w ui-layout.css, ładowanym po ui-polish.css. Publikuj również ten plik i cały folder vendor.
