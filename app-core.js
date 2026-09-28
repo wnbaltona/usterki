@@ -58,6 +58,6 @@ function fail(error,form){
  toast(message,true);
 }
 async function mutate(change,files=[],replace=false){const next=structuredClone(state);change(next);await persist(next,files,replace);}
-function statusPill(status){const kind=status==='Nowe'?'new':status==='Zamknięte'?'closed':status==='Odrzucone'?'rejected':'progress';return `<span class="pill ${kind}">${esc(status)}</span>`;}
+function statusPill(status){const kind=status==='Nowe'?'new':status==='Zamknięte'?'closed':status==='Odrzucone'?'rejected':status.startsWith('Oczekuje')?'waiting':'progress';return `<span class="pill ${kind}">${esc(status)}</span>`;}
 function priorityPill(priority){return `<span class="pill ${priority==='Wysoki'?'high':priority==='Średni'?'medium':'low'}">${esc(priority)}</span>`;}
 function scheduleDateKey(value){return new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Warsaw',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(value));}
