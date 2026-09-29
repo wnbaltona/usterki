@@ -13,3 +13,7 @@ Aktualizacja: kafelki filtrów mają mniejszą, jednolitą minimalną wysokość
 Aktualizacja wyśrodkowania na telefonie: formularze mają równe marginesy poziome. Okna szczegółów, zamknięcia zgłoszenia, powiadomień i podglądu załączników korzystają ze wspólnego centrowania w oknie przeglądarki i ograniczenia wysokości. Dłuższe okna można przewijać. Na telefonie ukryto pionowy pasek przewijania strony, pozostawiając możliwość przewijania; nie rezerwuje on już miejsca po prawej stronie. Nie zmieniono zachowania paska na komputerze.
 
 Kontrola lokalna: formularz przy 390 i 320 px ma po 16 px marginesu z obu stron; okna szczegółów mają po 12 px i działające przewijanie; zamknięcie zgłoszenia i powiadomienia są wyśrodkowane w pionie i poziomie; logowanie przy 320 px ma równą szerokość. Brak poziomego poszerzania strony i błędów konsoli w sprawdzonych widokach. Kontrola na lokalnych danych testowych.
+
+Aktualizacja logowania na komputerze: wyśrodkowana karta 480 px, krótszy falowany nagłówek, subtelne tło i cień, większe marginesy formularza, czytelniejsze pola i odnośniki oraz mniejszy odstęp przed przyciskiem. Przy niższych ekranach panel dodatkowo zmniejsza wysokość. Brak logo i nazwy aplikacji; telefon zachowuje dotychczasowy układ.
+
+Kontrola lokalna przy 1366×900 i 1366×620: równe marginesy po obu stronach i w pionie, brak poziomego poszerzania strony; podgląd hasła działa bez podświetlenia tła. Kontrola mobilna przy 390×844: karta wypełnia szerokość telefonu i zachowuje dotychczasową wysokość dekoracji. Brak błędów konsoli w sprawdzonych widokach.
