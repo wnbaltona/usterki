@@ -45,7 +45,7 @@
     transform:translateY(-50%);padding:8px 12px;border-radius:6px;
     background:var(--navy);color:#fff;font-size:12px;line-height:1.4;
     white-space:nowrap;pointer-events:none;opacity:0;z-index:100;
-    box-shadow:0 3px 12px #14263326;
+    box-shadow:0 3px 12px #141f3326;
   }
   .sidebar nav .nav-button:hover::after,
   .sidebar nav .nav-button:focus-visible::after { opacity:1 }
@@ -138,8 +138,8 @@
     margin-top:4px;font-size:11px;line-height:1.45;
   }
   .recent-panel .tickets-table .pill { white-space:normal;text-align:center }
-  .recent-panel .tickets-table .ticket-actions {
-    display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:flex-end;gap:6px;
+  .recent-panel .tickets-table td[data-label="Działanie"] .ticket-actions {
+    display:flex;flex-direction:row;flex-wrap:nowrap;justify-content:flex-end;gap:6px;width:100%;
   }
   .recent-panel .tickets-table .ticket-actions .btn { flex:0 0 auto }
 }
@@ -175,7 +175,7 @@
   width:2px;background:var(--line);
 }
 #detail-dialog .detail-status-panel .progress-step.complete:not(:last-child)::after {
-  background:#94bcc2;
+  background:#94a5c2;
 }
 #detail-dialog .detail-status-panel .progress-step-mark {
   width:30px;height:30px;border-radius:50%;font-size:12px;
@@ -184,7 +184,7 @@
   background:var(--teal);border-color:var(--teal);color:#fff;
 }
 #detail-dialog .detail-status-panel .progress-step.pending .progress-step-mark {
-  background:#fff;border-color:#afc1cc;color:var(--muted);
+  background:#fff;border-color:#afbacc;color:var(--muted);
 }
 #detail-dialog .detail-status-panel .progress-step strong {
   padding-top:3px;font-size:13px;line-height:1.4;font-weight:600;
@@ -205,13 +205,14 @@
 }
 .filter-chip>span:first-child { overflow-wrap:anywhere;text-align:left }
 .filter-chip>span:last-child { flex:none;font-size:18px;line-height:1 }
-.filter-chip:hover { background:#cde6e9 }
+.filter-chip:hover { background:#cdd7e9 }
 .tickets-table .planned-due { font-weight:650 }
 .tickets-table .suggested-due { font-size:11px;line-height:1.45 }
 .due-overdue {
   display:inline-block;margin-top:4px;color:var(--red);font-size:11px;font-weight:600;
 }
 @media(min-width:801px) {
+  .tickets-table th:nth-child(6) { text-align:left }
   .tickets-table td[data-label="Status"],.tickets-table td[data-label="Alert"],
   .tickets-table td[data-label="Termin"],.tickets-table td[data-label="Usterka"],
   .tickets-table td[data-label="Usterka"] .cell-main { text-align:left }

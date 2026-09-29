@@ -1,0 +1,76 @@
+/* Shared blue accents: the exact blue used by the sign-in header. */
+:root {
+  --button-blue:#396ab0;--button-blue-hover:#315f9f;--button-blue-active:#294f87;
+  --accent:#6799de;--accent-ink:#142e4f;--accent-dark:#3d70b8;
+  --accent-soft:#edf3fc;--accent-border:#a8c3e9;
+  --teal:var(--accent-dark);--brand-soft:var(--accent-soft);--brand-border:var(--accent-border);
+  --navy:#20314b;--ink:#20334b;--muted:#5d7088;
+}
+::selection { background:#cbdcf4;color:var(--accent-ink) }
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible { outline-color:var(--accent) }
+.btn,.tickets-table .ticket-actions .btn:not(.secondary):not(.danger),.auth-blue .auth-main .auth-submit {
+  background:var(--button-blue);border-color:var(--button-blue);color:#fff;
+}
+.btn:hover,.tickets-table .ticket-actions .btn:not(.secondary):not(.danger):hover,.auth-blue .auth-main .auth-submit:hover { background:var(--button-blue-hover);border-color:var(--button-blue-hover);color:#fff }
+.btn:active,.tickets-table .ticket-actions .btn:not(.secondary):not(.danger):active,.auth-blue .auth-main .auth-submit:active { background:var(--button-blue-active);border-color:var(--button-blue-active);color:#fff }
+.btn.secondary,.tickets-table .ticket-actions .btn.secondary { background:#fff;border-color:#aec2dd;color:var(--accent-dark) }
+.btn.secondary:hover,.tickets-table .ticket-actions .btn.secondary:hover { background:var(--accent-soft);border-color:var(--accent);color:var(--accent-dark) }
+.btn.danger { background:#fff;border-color:var(--danger-border);color:var(--red) }
+.btn.danger:hover { background:var(--danger-soft);border-color:var(--danger-border);color:var(--red) }
+.sidebar { background:var(--navy) }
+.sidebar nav .nav-button.active { background:#304765;color:#fff;box-shadow:inset 3px 0 var(--accent) }
+.sidebar nav .nav-button.active .icon { color:var(--accent) }
+.sidebar nav .nav-button:hover { background:#2b405d;color:#fff }
+.sidebar-toggle:hover { background:#2b405d;color:#fff }
+.pill.new,.pill.progress { background:var(--accent-soft);border-color:var(--accent-border);color:var(--accent-dark) }
+.city-chip.active,.city-chip:hover { color:var(--accent-dark);border-bottom-color:var(--accent) }
+.tab-button.active { color:var(--accent-dark);background:var(--accent-soft);border-color:var(--accent-border) }
+.stats .stat.selected { background:var(--accent-soft);border-color:var(--accent);box-shadow:inset 3px 0 var(--accent) }
+.stats .stat.alert.selected { background:var(--danger-soft);border-color:var(--danger-border) }
+.bar-fill { background:var(--accent) }
+.section-title .num,.progress-step.complete .progress-step-mark { background:var(--accent);border-color:var(--accent);color:var(--accent-ink) }
+.progress-step.complete:not(:last-child)::after { background:var(--accent) }
+.notification-bell.has-unread { background:var(--accent-soft);border-color:var(--accent);color:var(--accent-dark) }
+.notification-bell:hover,.logout-button:hover { background:var(--accent-soft);border-color:var(--accent) }
+.demo-banner { background:#f0f4fb;border-color:#d4e0f2 }
+.dropzone:hover { background:var(--accent-soft);border-color:var(--accent) }
+input[type=checkbox],input[type=radio] { accent-color:var(--accent-dark) }
+@media(max-width:800px) {
+  .sidebar nav .nav-button.active,.sidebar nav .nav-button:hover { background:#e4edfb;color:var(--accent-dark);box-shadow:none }
+  .sidebar nav .nav-button.active .icon,.sidebar nav .nav-button.active .icon svg { color:var(--accent-dark) }
+}
+
+/* Keep icons as readable as the primary button label. */
+.btn:not(.secondary):not(.danger) .icon,
+.btn:not(.secondary):not(.danger) .icon svg,
+.auth-blue .auth-main .auth-submit svg { color:inherit; }
+
+/* Section numbers use the same strong contrast as primary buttons. */
+.section-title .num { background:var(--button-blue);border-color:var(--button-blue);color:#fff; }
+/* Centre each heading and its values on the full-width ticket table. */
+@media(min-width:1001px) {
+  @container(min-width:1080px) {
+    .table-panel:not(.recent-panel) .tickets-table th,
+    .table-panel:not(.recent-panel) .tickets-table th:nth-child(n),
+    .table-panel:not(.recent-panel) .tickets-table td,
+    .table-panel:not(.recent-panel) .tickets-table td[data-label] { text-align:center;vertical-align:middle; }
+    .table-panel:not(.recent-panel) .tickets-table th:first-child,
+    .table-panel:not(.recent-panel) .tickets-table tbody td:first-child { padding-left:10px;padding-right:10px; }
+    .table-panel:not(.recent-panel) .tickets-table td[data-label="Działanie"] .ticket-actions { justify-content:center;align-items:center; }
+  }
+}
+
+/* A fixed icon rail on laptops prevents the table from changing width. */
+.sidebar-toggle[hidden] { display:none; }
+@media(min-width:801px) and (max-width:1500px) {
+  html[data-sidebar] .sidebar { width:76px;padding:12px 10px; }
+  html[data-sidebar] body:not(.auth-screen) .main-wrap { margin-left:76px; }
+  html[data-sidebar] .sidebar .brand { justify-content:center; }
+  html[data-sidebar] .sidebar .brand>div,
+  html[data-sidebar] .sidebar .nav-desktop-label,
+  html[data-sidebar] .sidebar .nav-mobile-label,
+  html[data-sidebar] .sidebar .sidebar-toggle { display:none; }
+  html[data-sidebar] .sidebar nav { padding-bottom:0; }
+  html[data-sidebar] .sidebar nav .nav-button { justify-content:center;padding:12px;gap:0; }
+  html[data-sidebar] .sidebar nav .nav-button::after { display:block; }
+}

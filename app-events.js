@@ -18,7 +18,10 @@ document.addEventListener('click', async event => {
  const action = el.dataset.action;
  try {
  if(busy){toast('Poczekaj na zakończenie bieżącej operacji.');return;}
- if(action==='notifications'){openNotifications();el.closest('.incoming-toast')?.remove();}
+ if(action==='sidebar-toggle')toggleSidebar();
+ else if(action==='toggle-password'){const field=$('#login-password'),visible=field.type==='password';field.type=visible?'text':'password';el.innerHTML=authEye(visible);el.setAttribute('aria-label',visible?'Ukryj hasło':'Pokaż hasło');el.setAttribute('aria-pressed',String(visible));}
+ else if(action==='auth-help'){const help=$('#auth-help');help.textContent=el.dataset.help==='password'?'Aby odzyskać dostęp, skontaktuj się z administratorem. Administrator pomoże Ci zmienić hasło.':'Konto i uprawnienia nadaje administrator. Skontaktuj się z nim, aby uzyskać dostęp.';help.hidden=false;help.focus();}
+ else if(action==='notifications'){openNotifications();el.closest('.incoming-toast')?.remove();}
  else if(action==='logout')await perform(logout);
  else if(action==='close-notifications')$('#notifications-dialog').close();
  else if(action==='notification-filter'){onlyUnreadNotifications=el.dataset.filter==='unread';refreshNotificationsUI();}

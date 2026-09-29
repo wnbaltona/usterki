@@ -11,7 +11,7 @@ const priorityScore = ticket => (ticket.blocksSales ? 4 : 0) + ({Wysoki:3,'Śred
 function dueCell(ticket){
  const planned=ticket.dueAt?dateOnly(ticket.dueAt):'Nie ustalono';
  const late=ticket.dueAt&&!Model.closed(ticket)&&scheduleDateKey(ticket.dueAt)<scheduleDateKey(new Date());
- return `<span class="cell-main planned-due ${late?'danger-text':''}">${planned}</span>${late?'<span class="due-overdue">Po terminie</span>':''}${canManage()?`<span class="cell-sub suggested-due">Sugerowany: ${date(suggestedDeadline(ticket))} · ${targetHours(ticket.priority,ticket.blocksSales)} h</span>`:''}`;
+ return `<span class="cell-main planned-due ${late?'danger-text':''}">${planned}</span>${late?'<span class="due-overdue">Po terminie</span>':''}`;
 }
 const sizeFmt = bytes => bytes < 1024*1024 ? Math.ceil(bytes/1024)+' KB' : (bytes/1024/1024).toFixed(1)+' MB';
 const iconPaths={message:'M21 11a8 8 0 0 1-8 8H5l-3 3V5a3 3 0 0 1 3-3h8a8 8 0 0 1 8 9zM7 7h8M7 12h6',plus:'M12 5v14M5 12h14',home:'m3 10 9-7 9 7v10H3zM9 20v-7h6v7',list:'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01',building:'M4 21V3h12v18M16 9h4v12M8 7h4M8 11h4M8 15h4M8 21v-3h4v3',chart:'M3 3v18h18M7 16v-4M12 16V7M17 16v-7',shield:'m12 3 9 4v6c0 5-9 9-9 9s-9-4-9-9V7zM8 12l3 3 5-6',clip:'m8 13 6-6a3 3 0 0 1 4 4l-8 8a5 5 0 0 1-7-7L13 2',arrow:'M5 12h14m-6-6 6 6-6 6',clock:'M12 8v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0',alert:'m12 3 10 18H2zM12 9v5M12 17h.01',check:'m5 12 4 4L19 6',download:'M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5',settings:'M4 7h16M4 17h16M8 4v6M16 14v6',user:'M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0M4 21v-2a8 8 0 0 1 16 0v2'};
@@ -31,10 +31,33 @@ function restoreTicketList(){if(page==='tickets')requestAnimationFrame(()=>windo
 let scheduleMode='list',scheduleFilter='all',scheduleMonth=scheduleDateKey(new Date()).slice(0,7),scheduleSelectedDay=scheduleDateKey(new Date());
 let quickCloseId=null,detailDirty=false,onlyUnreadNotifications=false,pendingRemote=null,syncing=false,updatesChannel=null,lastSeenProfile=null,seenNotificationIds=new Set(),syncErrorShown=false;
 function user(){return state.users.find(u=>u.id===currentId&&u.active)||state.users.find(u=>u.active&&u.role==='Administrator');}
-function loginView(message=''){return `<div class="auth-card"><div class="auth-brand"><span class="brand-mark" aria-hidden="true"><img src="./logo.svg?v=11" width="32" height="32" alt=""></span><div><strong>Serwis Lokali</strong><small>Zgłoszenia usterek</small></div></div><h1>Zaloguj się</h1><p class="auth-copy">Zaloguj się, aby zgłaszać i obsługiwać usterki.</p>${message?`<p class="form-error" role="alert">${esc(message)}</p>`:''}<form id="login-form"><div class="field"><label for="login-email">E-mail</label><input id="login-email" name="email" type="email" autocomplete="email" required></div><div class="field"><label for="login-password">Hasło</label><input id="login-password" name="password" type="password" autocomplete="current-password" required minlength="6"></div><button class="btn" type="submit">Zaloguj się</button></form></div>`;}
+function authEye(visible=false){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>${visible?'<path d="m3 3 18 18"/>':''}</svg>`;}
+function rememberedLoginEmail(){try{return localStorage.getItem('serwis-login-email')||'';}catch{return '';}}
+function loginView(message=''){const email=rememberedLoginEmail();return `<div class="auth-card auth-frame auth-blue"><div class="auth-decoration" aria-hidden="true"><svg class="auth-wave" viewBox="0 0 460 110" preserveAspectRatio="none"><path d="M0 24C80 0 139 0 213 53S345 132 460 78V110H0Z" fill="white"/></svg></div><section class="auth-main" aria-labelledby="login-title"><h1 id="login-title"><span>Zaloguj się</span></h1>${message?`<p class="form-error" role="alert">${esc(message)}</p>`:''}<form id="login-form"><div class="field"><label for="login-email">E-mail</label><div class="auth-line"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="4"/><path d="m4 7 8 6 8-6"/></svg><input id="login-email" name="email" type="email" autocomplete="username" placeholder="twoj.email@firma.pl" value="${esc(email)}" required></div></div><div class="field"><label for="login-password">Hasło</label><div class="auth-line auth-password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V6a4 4 0 0 1 8 0v4M12 14v3"/></svg><input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="Wpisz hasło" required minlength="6"><button type="button" class="password-toggle" data-action="toggle-password" aria-controls="login-password" aria-label="Pokaż hasło" aria-pressed="false">${authEye()}</button></div></div><div class="auth-options"><label class="auth-remember"><input name="rememberEmail" type="checkbox" ${email?'checked':''}><span>Zapamiętaj e-mail</span></label><button type="button" class="auth-link" data-action="auth-help" data-help="password">Nie pamiętasz hasła?</button></div><p class="auth-help" id="auth-help" role="status" tabindex="-1" hidden></p><button class="btn auth-submit" type="submit">Zaloguj się</button></form><p class="auth-support">Nie masz konta? <button type="button" class="auth-link" data-action="auth-help" data-help="access">Poproś o dostęp</button></p></section></div>`;}
+
+function syncSidebar(){
+ const button=$('.sidebar-toggle');if(!button)return;
+ const mode=document.documentElement.dataset.sidebar;
+ const wide=matchMedia('(min-width:1501px)').matches;
+ const expanded=wide&&mode==='expanded';
+ button.hidden=!wide;
+ button.setAttribute('aria-label',expanded?'Zwiń menu':'Rozwiń menu');button.setAttribute('aria-expanded',String(expanded));
+ button.querySelector('span').textContent=expanded?'Zwiń menu':'Rozwiń menu';
+}
+function toggleSidebar(){
+ if(!matchMedia('(min-width:1501px)').matches)return;
+ const expanded=$('.sidebar-toggle')?.getAttribute('aria-expanded')==='true';
+ const mode=expanded?'collapsed':'expanded';document.documentElement.dataset.sidebar=mode;
+ try{localStorage.setItem('serwis-sidebar-mode',mode)}catch{}syncSidebar();
+}
+document.documentElement.dataset.sidebar='collapsed';
+try{const mode=localStorage.getItem('serwis-sidebar-mode');if(['expanded','collapsed'].includes(mode))document.documentElement.dataset.sidebar=mode}catch{}
+matchMedia('(min-width:1501px)').addEventListener('change',syncSidebar);syncSidebar();
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&matchMedia('(min-width:1501px)').matches&&document.documentElement.dataset.sidebar==='expanded'&&!document.querySelector('dialog[open]')){toggleSidebar();$('.sidebar-toggle')?.focus();}});
+
 function showAuth(message=''){document.body.classList.add('auth-screen');$('#navigation').innerHTML='';$('#content').innerHTML=loginView(message);$('#notification-bell').hidden=true;$('.profile')?.classList.add('auth-hidden');}
 function showApp(){document.body.classList.remove('auth-screen');$('#notification-bell').hidden=false;$('.profile')?.classList.remove('auth-hidden');shell();}
-async function submitLogin(form){if(!authClient)throw Error('Supabase nie jest jeszcze skonfigurowany.');const values=Object.fromEntries(new FormData(form));const {error}=await authClient.auth.signInWithPassword({email:values.email.trim(),password:values.password});if(error)throw error;}
+async function submitLogin(form){if(!authClient)throw Error('Supabase nie jest jeszcze skonfigurowany.');const values=Object.fromEntries(new FormData(form));const {error}=await authClient.auth.signInWithPassword({email:values.email.trim(),password:values.password});if(error)throw error;try{if(values.rememberEmail)localStorage.setItem('serwis-login-email',values.email.trim());else localStorage.removeItem('serwis-login-email');}catch{}}
 async function logout(){if(authClient)await authClient.auth.signOut();else{authUser=null;showAuth();}}
 function canManage(){return ['Koordynator','Administrator'].includes(user().role);}
 function canClose(ticket){const u=user();return ['Koordynator','Administrator'].includes(u.role)||u.role==='Kierownik lokalu'&&!!ticket&&(u.mpks||[]).includes(ticket.mpk);}
