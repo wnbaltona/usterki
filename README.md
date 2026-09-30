@@ -25,3 +25,9 @@ Poprawka tabeli zgłoszeń: nagłówek i wartości kolumny „Rodzaj usterki” 
 Poprawka strony głównej: w szerokich kartach zgłoszeń priorytet jest osobną kolumną w tym samym rzędzie co pozostałe dane i przyciski. Przy mniejszej szerokości pozostaje układ responsywny.
 
 Ikona aplikacji pochodzi bezpośrednio z załącznika użytkowniczki: ciemne koło zębate z kluczem na białym tle. Zachowano rysunek i przygotowano kwadratowe pliki PNG 192 i 512 px dla menu, karty przeglądarki i aplikacji instalowanej.
+
+Dashboard: usunięto wykres „Rodzaje usterek”. Pozostałe wykresy „Miasta” i „Lokale i magazyny” zajmują obie kolumny na komputerze, a na telefonie układają się jeden pod drugim.
+
+W sekcji „Starsze otwarte zgłoszenia” etykieta „Usterka” i treść kolumny są wyśrodkowane w widoku komputerowym.
+
+Ikona aplikacji ma przezroczyste tło; w ciemnym pasku bocznym jej znak wyświetla się na biało.

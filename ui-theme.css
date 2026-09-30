@@ -51,6 +51,9 @@ input[type=checkbox],input[type=radio] { accent-color:var(--accent-dark) }
   .tickets-table thead th:nth-child(3),
   .tickets-table tbody td[data-label="Usterka"],
   .tickets-table tbody td[data-label="Usterka"] .cell-main { text-align:center; }
+  .recent-panel.space-top .tickets-table td[data-label="Usterka"],
+  .recent-panel.space-top .tickets-table td[data-label="Usterka"] .cell-main,
+  .recent-panel.space-top .tickets-table td[data-label="Usterka"]::before { text-align:center; }
 }
 /* Home cards: keep priority alongside the other ticket fields when there is room. */
 @media(min-width:1001px) {
@@ -134,3 +137,13 @@ input[type=checkbox],input[type=radio] { accent-color:var(--accent-dark) }
   .toast-container { left:50%;right:auto;max-width:calc(100% - 24px);transform:translateX(-50%); }
 }
 
+
+/* Ikona na pasku bocznym bez białego kafelka. */
+.sidebar .brand-mark {
+  background:transparent;
+  border-color:transparent;
+  box-shadow:none;
+}
+.sidebar .brand-mark img {
+  filter:brightness(0) invert(1);
+}
