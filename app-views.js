@@ -1,8 +1,8 @@
 'use strict';
 // Widoki zgłoszeń, harmonogramu, administracji i szczegółów.
 function shell(restorePosition=false){
- const u=user(); const listLabel=canManage()?'Wszystkie zgłoszenia':user().role==='Kierownik lokalu'?'Zgłoszenia lokalu':'Moje zgłoszenia';const nav=[['home','home','Zgłoszenia'],['new','plus','Dodaj zgłoszenie'],['tickets','list',listLabel]];if(canManage())nav.push(['schedule','clock','Harmonogram'],['dashboard','chart','Dashboard']);if(isAdmin())nav.push(['admin','settings','Administracja']);
- if(!canManage()&&['dashboard','schedule'].includes(page))page='home';
+ const u=user(); const listLabel=canManage()?'Wszystkie zgłoszenia':user().role==='Kierownik lokalu'?'Zgłoszenia lokalu':'Moje zgłoszenia';const nav=[['home','home','Zgłoszenia'],['new','plus','Dodaj zgłoszenie'],['tickets','list',listLabel]];if(canManage())nav.push(['schedule','clock','Harmonogram']);if(isAdmin())nav.push(['dashboard','chart','Dashboard'],['admin','settings','Administracja']);
+ if((page==='schedule'&&!canManage())||(['dashboard','admin'].includes(page)&&!isAdmin()))page='home';
  $('#navigation').style.setProperty('--nav-count',nav.length);
  $('#navigation').innerHTML=nav.map(([id,ic,label])=>`<button class="nav-button ${page===id?'active':''}" data-action="nav" data-page="${id}" aria-label="${label}" ${page===id?'aria-current="page"':''}>${icon(ic)}<span class="nav-desktop-label">${label}</span><span class="nav-mobile-label" aria-hidden="true">${({home:'Start',new:'Zgłoś',tickets:'Lista',schedule:'Terminy',dashboard:'Raporty',admin:'Ustawienia'})[id]}</span></button>`).join('');
  if($('#profile-select'))$('#profile-select').innerHTML=state.users.filter(x=>x.active).map(x=>option(x.id,x.role+' · '+x.name,u.id)).join('');
@@ -124,6 +124,7 @@ function dashboardStartDate(){
  return scheduleDateKey(start);
 }
 function dashboardView(){
+ if(!isAdmin())return '';
  const all=currentTickets();
  const from=dashboardStartDate(),tickets=from?all.filter(t=>t.createdAt>=new Date(from+'T00:00').toISOString()):all;
  const m=Model.metrics(tickets,Date.now(),state.settings.responseHours);

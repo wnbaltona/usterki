@@ -1,6 +1,7 @@
 'use strict';
 // Operacje na zgłoszeniach, profilach, plikach i powiadomieniach.
 function navigate(target){
+ if(target==='dashboard'&&!isAdmin())return;
  if((dirty||detailDirty)&&!confirm('Masz niezapisany formularz. Opuścić go i odrzucić wpisane dane?'))return;
  rememberTicketList();
  if($('#detail-dialog').open)$('#detail-dialog').close();
@@ -183,7 +184,7 @@ function ingestRemote(latest,announce=true){
  }
  const changed=Model.businessChanged(state,latest),oldProfile=currentId;state=latest;pendingRemote=null;
  currentId=user().id;
- if(!dirty&&!detailDirty&&changed){const ticketId=selectedTicket;const detailOpen=$('#detail-dialog').open;if(page==='admin'&&!isAdmin())page='home';shell();if(detailOpen){if(currentTickets().some(t=>t.id===ticketId))openDetail(ticketId);else $('#detail-dialog').close();}}
+ if(!dirty&&!detailDirty&&changed){const ticketId=selectedTicket;const detailOpen=$('#detail-dialog').open;if(['admin','dashboard'].includes(page)&&!isAdmin())page='home';shell();if(detailOpen){if(currentTickets().some(t=>t.id===ticketId))openDetail(ticketId);else $('#detail-dialog').close();}}
  if(oldProfile!==currentId){savePreference();announceProfile();}
  refreshNotificationsUI();
  if(announce)noticeFresh(latest);
