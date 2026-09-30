@@ -61,6 +61,15 @@ async function submitLogin(form){if(!authClient)throw Error('Supabase nie jest j
 async function logout(){if(authClient)await authClient.auth.signOut();else{authUser=null;showAuth();}}
 function canManage(){return ['Koordynator','Administrator'].includes(user().role);}
 function canClose(ticket){const u=user();return ['Koordynator','Administrator'].includes(u.role)||u.role==='Kierownik lokalu'&&!!ticket&&(u.mpks||[]).includes(ticket.mpk);}
+function syncCategoryOptions(){
+ const form=$('#new-form');if(!form)return;
+ const category=form.querySelector('#category');
+ const place=availablePlaces().find(item=>item.mpk===form.querySelector('#mpk')?.value);
+ if(!place){category.disabled=true;category.innerHTML=option('','Najpierw wybierz lokal');return;}
+ category.disabled=false;
+ const matches=Model.categoriesForLocation(state.settings.categories,place);
+ category.innerHTML=option('','Wybierz rodzaj usterki')+matches.map(item=>option(item)).join('');
+}
 function availablePlaces(){const u=user(),mpks=u.mpks||[];return state.locations.filter(l=>l.active&&(u.role==='Kierownik lokalu'?mpks.includes(l.mpk):u.role==='Użytkownik'&&mpks.length?mpks.includes(l.mpk):true));}
 function isAdmin(){return user().role==='Administrator';}
 function currentTickets(){return Model.visible(state,user());}

@@ -3,6 +3,16 @@ const Model = (() => {
   const statuses = ['Nowe', 'W realizacji', 'Oczekuje na naprawę', 'Oczekuje na informację', 'Zamknięte', 'Odrzucone'];
   const priorities = ['Niski', 'Średni', 'Wysoki'];
   const roles = ['Użytkownik', 'Kierownik lokalu', 'Koordynator', 'Administrator'];
+  const gastroMpks = new Set('260 261 262 263 282 283 284 288 290 299 298 295 296 285 206 207 208 230 231 210 211 212 213 214 220'.split(' '));
+  const legacyCategories = ['Elektryka i oświetlenie','Klimatyzacja i wentylacja','Instalacja wodna i kanalizacja','Urządzenia chłodnicze','Sprzęt gastronomiczny','Drzwi, zamki i zabezpieczenia','Wyposażenie lokalu','IT i system sprzedażowy','Inna'];
+  const extraCategories = ['Ogrzewanie i grzejniki','Instalacja gazowa','Toalety i armatura sanitarna','Ściany, sufity i zabudowy','Posadzki i podłogi','Witryny, szyby i przeszklenia','Rolety, kraty i bramy','Zalania, zacieki i wilgoć','Alarm, monitoring i kontrola dostępu','Systemy przeciwpożarowe','Sieć, internet i Wi-Fi','Kasy, drukarki fiskalne i terminale płatnicze','Oznakowanie i reklama świetlna','Regały, półki i ekspozytory','Gabloty i lady sprzedażowe','Przymierzalnie i zasłony','Manekiny i stojaki ekspozycyjne','Bramki antykradzieżowe i zabezpieczenia towaru','Metkownice i drukarki etykiet','Okapy i wyciągi kuchenne','Piece, piekarniki i kuchnie','Płyty, grille i frytownice','Zmywarki gastronomiczne','Ekspresy i młynki do kawy','Dystrybutory napojów i kostkarki lodu','Zamrażarki i mroźnie','Podgrzewacze i urządzenia do utrzymania temperatury','Filtry i uzdatnianie wody','Separatory tłuszczu i odpływy kuchenne','Krajalnice, miksery i urządzenia przygotowawcze','Oświetlenie ekspozycji i witryn'];
+  const gastroCategories = new Set(['Urządzenia chłodnicze','Sprzęt gastronomiczny','Instalacja gazowa','Okapy i wyciągi kuchenne','Piece, piekarniki i kuchnie','Płyty, grille i frytownice','Zmywarki gastronomiczne','Ekspresy i młynki do kawy','Dystrybutory napojów i kostkarki lodu','Zamrażarki i mroźnie','Podgrzewacze i urządzenia do utrzymania temperatury','Filtry i uzdatnianie wody','Separatory tłuszczu i odpływy kuchenne','Krajalnice, miksery i urządzenia przygotowawcze']);
+  const trCategories = new Set(['Regały, półki i ekspozytory','Gabloty i lady sprzedażowe','Przymierzalnie i zasłony','Manekiny i stojaki ekspozycyjne','Bramki antykradzieżowe i zabezpieczenia towaru','Metkownice i drukarki etykiet','Oświetlenie ekspozycji i witryn']);
+  const segmentFor = place => place?.type === 'Magazyn' ? 'magazyn' : place?.segment === 'gastro' || place?.segment === 'tr' ? place.segment : gastroMpks.has(String(place?.mpk)) ? 'gastro' : 'tr';
+  const categoriesForLocation = (categories, place) => categories.filter(category => {
+    const segment = segmentFor(place);
+    return segment === 'gastro' ? !trCategories.has(category) : segment === 'tr' ? !gastroCategories.has(category) : !gastroCategories.has(category) && !trCategories.has(category);
+  });
   const closed = t => ['Zamknięte', 'Odrzucone'].includes(t.status);
   const numberFor = counter => 'UST-' + String(counter).padStart(3,'0');
   const visible = (state, user) => user.role === 'Kierownik lokalu' ? state.tickets.filter(t => (user.mpks||[]).includes(t.mpk)) : user.role === 'Użytkownik' ? state.tickets.filter(t => t.creatorId === user.id || (user.mpks||[]).includes(t.mpk)) : state.tickets;
@@ -23,7 +33,7 @@ const Model = (() => {
     const phone = String(data.reporterPhone ?? '').trim();
     const digits = phone.replace(/\D/g,'');
     if (phone.length > 30 || !/^\+?[0-9()\s-]+$/.test(phone) || digits.length < 7 || digits.length > 15) throw Error('Podaj prawidłowy numer telefonu kontaktowego (7–15 cyfr).');
-    if (!state.settings.categories.includes(data.category)) throw Error('Wybierz rodzaj usterki.');
+    if (!categoriesForLocation(state.settings.categories, place).includes(data.category)) throw Error('Wybierz rodzaj usterki odpowiedni dla lokalu.');
     if (!priorities.includes(data.priority)) throw Error('Wybierz poziom alertu.');
     if (String(data.description).trim().length < 10 || String(data.description).length > 10000) throw Error('Opis musi zawierać od 10 do 10 000 znaków.');
     return place;
@@ -66,10 +76,12 @@ const Model = (() => {
       {id: 'demo-coord', name: 'Koordynator testowy', email: 'koordynator@example.test', role: 'Koordynator', active: true},
       {id: 'demo-user', name: 'Użytkownik testowy', email: 'uzytkownik@example.test', role: 'Użytkownik', active: true},
       {id: 'demo-manager', name: 'Kierownik lokalu 178', email: 'kierownik178@example.test', role: 'Kierownik lokalu', mpks: ['178'], active: true}
-    ], settings: { categories: ['Elektryka i oświetlenie','Klimatyzacja i wentylacja','Instalacja wodna i kanalizacja','Urządzenia chłodnicze','Sprzęt gastronomiczny','Drzwi, zamki i zabezpieczenia','Wyposażenie lokalu','IT i system sprzedażowy','Inna'], responseHours:48, maxFiles:5, maxMB:10 } };
+    ], settings: { categories: [...legacyCategories,...extraCategories], responseHours:48, maxFiles:5, maxMB:10 } };
   }
   function migrate(state) {
     // Zachowaj zgłoszenia i pliki przy uzupełnianiu starszej bazy.
+    if (JSON.stringify(state.settings?.categories) === JSON.stringify(legacyCategories)) state.settings.categories = [...legacyCategories,...extraCategories];
+    for (const place of state.locations) place.segment = segmentFor(place);
     if (state.notifications === undefined) state.notifications = [];
     if (state.events === undefined) state.events = [];
     for (const ticket of state.tickets) if (ticket.status === 'Oczekuje na części') ticket.status = 'Oczekuje na naprawę';
@@ -167,5 +179,5 @@ const Model = (() => {
   function businessChanged(a,b) {
     return ['counter','tickets','comments','users','locations','settings','events'].some(key=>JSON.stringify(a[key])!==JSON.stringify(b[key]));
   }
-  return { statuses, priorities, roles, closed, numberFor, visible, critical, overdue, waiting, metrics, validateTicket, updateTicket, validateUserChange, csvCell, initial, migrate, notificationsFor, notificationEvents, ticketEvents, businessChanged };
+  return { statuses, priorities, roles, closed, numberFor, visible, critical, overdue, waiting, metrics, validateTicket, updateTicket, validateUserChange, csvCell, initial, migrate, notificationsFor, notificationEvents, ticketEvents, businessChanged, segmentFor, categoriesForLocation };
 })();

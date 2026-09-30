@@ -17,3 +17,11 @@ Kontrola lokalna: formularz przy 390 i 320 px ma po 16 px marginesu z obu stron;
 Aktualizacja logowania na komputerze: wyśrodkowana karta 480 px, krótszy falowany nagłówek, subtelne tło i cień, większe marginesy formularza, czytelniejsze pola i odnośniki oraz mniejszy odstęp przed przyciskiem. Przy niższych ekranach panel dodatkowo zmniejsza wysokość. Brak logo i nazwy aplikacji; telefon zachowuje dotychczasowy układ.
 
 Kontrola lokalna przy 1366×900 i 1366×620: równe marginesy po obu stronach i w pionie, brak poziomego poszerzania strony; podgląd hasła działa bez podświetlenia tła. Kontrola mobilna przy 390×844: karta wypełnia szerokość telefonu i zachowuje dotychczasową wysokość dekoracji. Brak błędów konsoli w sprawdzonych widokach.
+
+Aktualizacja grup lokali: MPK z wykazu gastro/F&B są przypisane do grupy Gastro / F&B; pozostałe sklepy do TR / fashion, magazyny osobno. W formularzu po wyborze lokalu pojawia się wyłącznie lista odpowiednich rodzajów usterek, bez pola wyszukiwania i dodatkowych tekstów pomocniczych. Kategorie niepasujące do grupy są ukrywane i odrzucane podczas zapisu. Domyślna lista zawiera 40 kategorii. Jeśli administrator wcześniej zmienił listę, pozostaje ona bez zmian; automatycznie rozszerzana jest tylko oryginalna lista dziewięciu kategorii. Nowy lokal można przypisać do grupy w Administracji.
+
+Poprawka tabeli zgłoszeń: nagłówek i wartości kolumny „Rodzaj usterki” są wyśrodkowane w widoku komputerowym. Układ mobilny pozostaje bez zmian.
+
+Poprawka strony głównej: w szerokich kartach zgłoszeń priorytet jest osobną kolumną w tym samym rzędzie co pozostałe dane i przyciski. Przy mniejszej szerokości pozostaje układ responsywny.
+
+Ikona aplikacji pochodzi bezpośrednio z załącznika użytkowniczki: ciemne koło zębate z kluczem na białym tle. Zachowano rysunek i przygotowano kwadratowe pliki PNG 192 i 512 px dla menu, karty przeglądarki i aplikacji instalowanej.
