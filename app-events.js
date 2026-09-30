@@ -52,6 +52,11 @@ document.addEventListener('click', async event => {
  else if(action==='close-quick-close')$('#quick-close-dialog').close();
  else if(action==='close-dialog'){if(!detailDirty||confirm('Odrzucić niezapisane zmiany w zgłoszeniu?')){detailDirty=false;$('#detail-dialog').close();}}
  else if(action==='remove-file'){draftFiles.splice(Number(el.dataset.index),1);dirty=true;renderDraftFiles();}
+ else if(action==='remove-comment-file'){commentDraftFiles.splice(Number(el.dataset.index),1);detailDirty=true;renderCommentDraftFiles();}
+ else if(action==='remove-attachment')await perform(()=>removeAttachment(el.dataset.id));
+ else if(action==='edit-comment')startEditComment(el.dataset.id);
+ else if(action==='cancel-comment-edit')cancelEditComment();
+ else if(action==='delete-comment')await perform(()=>deleteComment(el.dataset.id));
  else if(action==='preview-file')await perform(()=>previewFile(el.dataset.id));
  else if(action==='pdf-prev'||action==='pdf-next'){if(pdfPreviewDocument){pdfPreviewPage=Math.max(1,Math.min(pdfPreviewDocument.numPages,pdfPreviewPage+(action==='pdf-next'?1:-1)));await perform(renderPdfPage);}}
  else if(action==='close-preview')$('#attachment-preview-dialog').close();
@@ -93,6 +98,7 @@ document.addEventListener('submit', async event => {
  if(form.id==='login-form')await submitLogin(form);
  else if(form.id==='new-form')await submitNew(form);
  else if(form.id==='comment-form')await submitComment(form);
+ else if(form.id==='comment-edit-form')await saveEditedComment(form);
  else if(form.id==='manage-form')await submitManage(form);
  else if(form.id==='quick-close-form')await submitQuickClose(form);
  else if(form.id==='location-form'){await submitLocation(form);dirty=false;}
@@ -126,8 +132,9 @@ document.addEventListener('change',async event=>{const el=event.target;if(!state
  if(el.id==='city'){const choices=availablePlaces().filter(l=>l.city===el.value);$('#mpk').disabled=!el.value;$('#mpk').innerHTML=option('','Wybierz lokal / magazyn')+choices.map(l=>option(l.mpk,l.mpk+' · '+l.name+(l.type==='Magazyn'?' [Magazyn]':'')+(l.location&&l.location!==l.city?' · '+l.location:''),choices.length===1?choices[0].mpk:'')).join('');syncCategoryOptions();}
  if(el.id==='mpk')syncCategoryOptions();
  if(el.id==='attachments'){await perform(()=>addFiles(el.files));el.value='';}
+ if(el.id==='comment-attachments'){await perform(()=>addCommentFiles(el.files));el.value='';}
 });
-document.addEventListener('input',event=>{if(event.target.closest('#new-form,#user-form,#location-form,#settings-form'))dirty=true;if(event.target.closest('#new-form'))clearNewFormFieldError(event.target);if(event.target.closest('#manage-form,#comment-form'))detailDirty=true;});
+document.addEventListener('input',event=>{if(event.target.closest('#new-form,#user-form,#location-form,#settings-form'))dirty=true;if(event.target.closest('#new-form'))clearNewFormFieldError(event.target);if(event.target.closest('#manage-form,#comment-form,#comment-edit-form'))detailDirty=true;});
 document.addEventListener('dragover',event=>{const zone=event.target.closest('#dropzone');if(zone){event.preventDefault();zone.classList.add('drag');}});
 document.addEventListener('dragleave',event=>{event.target.closest('#dropzone')?.classList.remove('drag');});
 document.addEventListener('drop',async event=>{const zone=event.target.closest('#dropzone');if(zone){event.preventDefault();zone.classList.remove('drag');await perform(()=>addFiles(event.dataTransfer.files));}});
@@ -144,7 +151,7 @@ for(const dialog of ['detail-dialog','quick-close-dialog','notifications-dialog'
   dialog.close();
  });
 }
-$('#detail-dialog').addEventListener('close',()=>{selectedTicket=null;detailDirty=false;restoreTicketList();});
+$('#detail-dialog').addEventListener('close',()=>{selectedTicket=null;commentDraftFiles=[];editingCommentId=null;detailDirty=false;restoreTicketList();});
 $('#quick-close-dialog').addEventListener('close',()=>{quickCloseId=null;});
 $('#detail-dialog').addEventListener('cancel',event=>{if(busy||(detailDirty&&!confirm('Odrzucić niezapisane zmiany w zgłoszeniu?')))event.preventDefault();else detailDirty=false;});
 

@@ -147,3 +147,135 @@ input[type=checkbox],input[type=radio] { accent-color:var(--accent-dark) }
 .sidebar .brand-mark img {
   filter:brightness(0) invert(1);
 }
+
+/* Załączniki w komentarzach i możliwość ich usunięcia. */
+#detail-dialog .attachment-actions {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  gap:6px;
+}
+#detail-dialog .attachment-remove {
+  color:#a12e3c;
+  border-color:#d9a9b0;
+}
+#detail-dialog .attachment-remove:hover {
+  background:#fbf0f2;
+}
+#detail-dialog .comment .file-row {
+  background:#f8faff;
+  margin-top:9px;
+}
+#detail-dialog .comment-attach {
+  grid-column:1/-1;
+  grid-row:2;
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:7px 12px;
+  min-width:0;
+}
+#detail-dialog .comment-attach label.btn {
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  margin:0;
+  cursor:pointer;
+}
+#detail-dialog .comment-attach input[type=file] {
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  opacity:0;
+  overflow:hidden;
+  clip-path:inset(50%);
+}
+#detail-dialog .comment-attach:focus-within label.btn {
+  outline:2px solid #416db5;
+  outline-offset:2px;
+}
+#detail-dialog .comment-attach>span {
+  color:#5f6d86;
+  font-size:12px;
+}
+#detail-dialog #comment-draft-files {
+  flex:0 0 100%;
+  min-width:0;
+}
+#detail-dialog .comment-form .comment-status-choice {
+  grid-row:3;
+}
+@media(max-width:800px) {
+  #detail-dialog .file-row {
+    align-items:flex-start;
+    flex-wrap:wrap;
+  }
+  #detail-dialog .attachment-actions {
+    width:100%;
+  }
+}
+
+/* Edycja komentarza przez autora i historia po prawej stronie. */
+#detail-dialog .comment-meta {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:2px;
+  color:#65748d;
+  font-size:11px;
+}
+#detail-dialog .comment-actions,
+#detail-dialog .comment-edit-actions {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  gap:7px;
+  margin-top:10px;
+}
+#detail-dialog .comment-actions .btn,
+#detail-dialog .comment-edit-actions .btn {
+  min-height:34px;
+  margin:0;
+}
+#detail-dialog .comment-delete {
+  color:#a12e3c;
+  border-color:#d9a9b0;
+}
+#detail-dialog .comment-delete:hover {
+  background:#fbf0f2;
+}
+#detail-dialog .comment-edit-form {
+  display:grid;
+  gap:7px;
+  margin-top:10px;
+}
+#detail-dialog .comment-edit-form label {
+  font-size:12px;
+  font-weight:650;
+  color:#334762;
+}
+#detail-dialog .comment-edit-form textarea {
+  min-height:94px;
+  width:100%;
+  resize:vertical;
+}
+#detail-dialog .detail-grid>aside .activity-panel {
+  margin-top:14px;
+  min-width:0;
+}
+#detail-dialog .detail-grid>aside .activity-item {
+  grid-template-columns:1fr;
+  gap:3px;
+}
+#detail-dialog .detail-grid>aside .activity-date {
+  white-space:normal;
+}
+@media(max-width:800px) {
+  #detail-dialog .comment-top {
+    align-items:flex-start;
+  }
+  #detail-dialog .comment-meta {
+    align-items:flex-start;
+  }
+}

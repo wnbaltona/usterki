@@ -155,7 +155,7 @@ const Model = (() => {
     for(const comment of after.comments) {
       if(oldComments.has(comment.id))continue;
       const ticket=after.tickets.find(t=>t.id===comment.ticketId);
-      if(ticket)emit(ticket,'comment-'+comment.id,'comment','Nowy komentarz · '+ticket.number,actor.name+': '+comment.text.slice(0,200)+(comment.text.length>200?'…':''));
+      if(ticket)emit(ticket,'comment-'+comment.id,'comment','Nowy komentarz · '+ticket.number,actor.name+': '+(comment.text?comment.text.slice(0,200)+(comment.text.length>200?'…':''):'Dodano załącznik'));
     }
     return result;
   }

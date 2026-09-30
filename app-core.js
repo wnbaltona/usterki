@@ -20,7 +20,7 @@ const option = (value,label=value,current='') => `<option value="${esc(value)}" 
 const empty = (title,text,action='') => `<div class="empty">${icon('list')}<h3>${esc(title)}</h3><p>${esc(text)}</p>${action}</div>`;
 const btn = (action,label,ic='plus',kind='') => `<button class="btn ${kind}" data-action="${action}">${icon(ic)}${esc(label)}</button>`;
 const header = (title,description,action='') => `<div class="heading"><div><h1>${esc(title)}</h1>${description?`<p>${esc(description)}</p>`:''}</div>${action}</div>`;
-let state, currentId, page='home', adminTab='users', selectedTicket=null, draftFiles=[], dirty=false, busy=false, editingUser=null, editingLocation=null;
+let state, currentId, page='home', adminTab='users', selectedTicket=null, draftFiles=[], commentDraftFiles=[], editingCommentId=null, dirty=false, busy=false, editingUser=null, editingLocation=null;
 let authUser=null, authClient=null;
 let filters={q:'',status:'',city:'',priority:'',from:'',to:'',quick:'',sort:'urgent'};
 let dashboardRange='30';
