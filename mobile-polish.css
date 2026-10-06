@@ -151,6 +151,10 @@ form[aria-busy="true"] button[type="submit"]::after {
 }
 
 /* Deleted profiles: details on the left, both actions together on the right. */
+#account-password-form > button[type="submit"],
+#recovery-password-form > button[type="submit"] {
+ margin-top:16px;
+}
 #content .tickets-table td[data-label="Status"] .pill,
 .schedule-state .pill.waiting {
  white-space:nowrap;overflow-wrap:normal;word-break:normal;
