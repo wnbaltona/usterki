@@ -30,7 +30,13 @@ function rememberTicketList(){if(page==='tickets')ticketListScroll=window.scroll
 function restoreTicketList(){if(page==='tickets')requestAnimationFrame(()=>window.scrollTo(0,ticketListScroll));}
 let scheduleMode='list',scheduleFilter='all',scheduleMonth=scheduleDateKey(new Date()).slice(0,7),scheduleSelectedDay=scheduleDateKey(new Date());
 let quickCloseId=null,detailDirty=false,onlyUnreadNotifications=false,pendingRemote=null,syncing=false,updatesChannel=null,lastSeenProfile=null,seenNotificationIds=new Set(),syncErrorShown=false;
-function user(){if(!authUser)return state.users.find(u=>u.id===currentId&&u.active)||state.users.find(u=>u.active&&u.role==='Administrator');return state.users.find(u=>u.authUserId===authUser.id&&u.active&&!u.deletedAt);}
+let previewProfileId=null;
+function signedInProfile(){return state?.users.find(u=>u.authUserId===authUser?.id&&u.active&&!u.deletedAt);}
+function canPreviewProfiles(){return !!authUser&&signedInProfile()?.role==='Administrator';}
+function testProfiles(){return ['Koordynator','Kierownik lokalu','Użytkownik'].map((role,i)=>{const existing=state.users.find(u=>!u.authUserId&&u.active&&!u.deletedAt&&u.role===role);return existing||{id:'preview-'+i,name:'Konto testowe',email:'test@example.test',role,active:true,mpks:role==='Kierownik lokalu'?(state.locations.filter(l=>l.active!==false).slice(0,1).map(l=>l.mpk)):[]};});}
+function user(){if(!authUser)return state.users.find(u=>u.id===currentId&&u.active)||state.users.find(u=>u.active&&u.role==='Administrator');const real=signedInProfile();if(real?.role==='Administrator'&&previewProfileId){const test=testProfiles().find(u=>u.id===previewProfileId);if(test)return test;}previewProfileId=null;return real;}
+function switchTestProfile(id){if(!canPreviewProfiles())return false;const real=signedInProfile();if(id!==real.id&&!testProfiles().some(u=>u.id===id))return false;previewProfileId=id===real.id?null:id;currentId=user().id;return true;}
+
 let authAccounts=[];
 async function refreshAuthAccounts(){if(!isAdmin())throw Error('Tylko administrator może pobrać konta.');const {data,error}=await authClient.rpc('usterki_list_accounts');if(error)throw Error('Nie można pobrać kont Supabase. Uruchom skrypt supabase-access.sql. '+error.message);authAccounts=data||[];}
 function pendingAccount(id){const a=authAccounts.find(a=>a.id===id);if(!a)return null;const existing=state.users.find(u=>u.authUserId===a.id)||state.users.find(u=>u.email?.trim().toLowerCase()===a.email.trim().toLowerCase());return existing?{...existing,email:a.email,authUserId:a.id,active:true,deletedAt:undefined}:{id:a.id,authUserId:a.id,email:a.email,name:a.email,role:'Użytkownik',mpks:[],active:true};}
@@ -63,7 +69,7 @@ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&matchMedia(
 function showAuth(message=''){document.body.classList.add('auth-screen');$('#navigation').innerHTML='';$('#content').innerHTML=loginView(message);$('#notification-bell').hidden=true;$('.profile')?.classList.add('auth-hidden');}
 function showApp(){if(!user()){showNoAccess();return;}document.body.classList.remove('auth-screen');$('#notification-bell').hidden=false;$('.profile')?.classList.remove('auth-hidden');shell();}
 async function submitLogin(form){if(!authClient)throw Error('Supabase nie jest jeszcze skonfigurowany.');const values=Object.fromEntries(new FormData(form));const {error}=await authClient.auth.signInWithPassword({email:values.email.trim(),password:values.password});if(error)throw error;try{if(values.rememberEmail)localStorage.setItem('serwis-login-email',values.email.trim());else localStorage.removeItem('serwis-login-email');}catch{}}
-async function logout(){if(authClient)await authClient.auth.signOut();else{authUser=null;showAuth();}}
+async function logout(){previewProfileId=null;if(authClient)await authClient.auth.signOut();else{authUser=null;showAuth();}}
 function canManage(){return ['Koordynator','Administrator'].includes(user().role);}
 function canClose(ticket){const u=user();return ['Koordynator','Administrator'].includes(u.role)||u.role==='Kierownik lokalu'&&!!ticket&&(u.mpks||[]).includes(ticket.mpk);}
 function syncCategoryOptions(){
@@ -102,7 +108,7 @@ function fail(error,form){
  if(form){let p=form.querySelector('.form-error');if(!p){p=document.createElement('p');p.className='form-error';p.setAttribute('role','alert');if(form.id==='user-form')form.prepend(p);else form.append(p);}p.textContent=message;if(form.id==='user-form')p.scrollIntoView({block:'center'});}
  toast(message,true);
 }
-async function mutate(change,files=[],replace=false){const next=structuredClone(state);change(next);await persist(next,files,replace);}
+async function mutate(change,files=[],replace=false){if(canPreviewProfiles()&&previewProfileId)throw Error('To jest podgląd konta testowego. Wróć do swojego konta, aby zapisać zmiany.');const next=structuredClone(state);change(next);await persist(next,files,replace);}
 function statusPill(status){const kind=status==='Nowe'?'new':status==='Zamknięte'?'closed':status==='Odrzucone'?'rejected':status.startsWith('Oczekuje')?'waiting':'progress';return `<span class="pill ${kind}">${esc(status)}</span>`;}
 function priorityPill(priority){return `<span class="pill ${priority==='Wysoki'?'high':priority==='Średni'?'medium':'low'}">${esc(priority)}</span>`;}
 function scheduleDateKey(value){return new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Warsaw',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(value));}

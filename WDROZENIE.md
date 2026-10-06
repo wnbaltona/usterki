@@ -36,3 +36,9 @@ Ograniczenie obecnej architektury: zgłoszenia nadal znajdują się w jednym wsp
 Jeśli poprzednia wersja kont i ról została już wdrożona, wystarczy podmienić pliki aplikacji z nowej paczki i odświeżyć stronę. SQL pozostaje bez zmian; nie wykonuj ponownie powiązania pierwszego administratora.
 
 Nadawanie dostępu wiąże konto z istniejącym profilem o tym samym e-mailu, także z profilem usuniętym, zachowując identyfikator i historię. Zapis przywraca taki profil. Trwałe usunięcie jest dostępne wyłącznie dla profili z listy usuniętych, wymaga potwierdzenia i usuwa profil oraz jego powiadomienia. Zachowuje zgłoszenia i komentarze oraz konto w Supabase. Po ponownym nadaniu dostępu trwale usuniętemu kontu powstaje nowy profil.
+
+## Podgląd kont testowych administratora
+
+Administrator ma przełącznik „Widok konta” u góry aplikacji. Może wybrać Koordynatora, Kierownika lokalu lub Użytkownika. Powrót: opcja „Moje konto”. Pozostałe konta mają przełącznik zablokowany. Podgląd korzysta z aktywnych niepowiązanych profili testowych; jeśli ich nie ma, dostępne są trzy tymczasowe widoki testowe, które nie są zapisywane w bazie. Dla tymczasowego kierownika wybierane jest pierwsze aktywne MPK. W podglądzie zapis zmian jest wyłączony. Nie zmienia to sesji Supabase ani uprawnień rzeczywistego administratora.
+
+Aktualizacja wymaga tylko podmiany plików aplikacji, bez zmian SQL.

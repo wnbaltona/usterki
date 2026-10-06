@@ -5,11 +5,11 @@ function shell(restorePosition=false){
  if((page==='schedule'&&!canManage())||(['dashboard','admin'].includes(page)&&!isAdmin()))page='home';
  $('#navigation').style.setProperty('--nav-count',nav.length);
  $('#navigation').innerHTML=nav.map(([id,ic,label])=>`<button class="nav-button ${page===id?'active':''}" data-action="nav" data-page="${id}" aria-label="${label}" ${page===id?'aria-current="page"':''}>${icon(ic)}<span class="nav-desktop-label">${label}</span><span class="nav-mobile-label" aria-hidden="true">${({home:'Start',new:'Zgłoś',tickets:'Lista',schedule:'Terminy',dashboard:'Raporty',admin:'Ustawienia'})[id]}</span></button>`).join('');
- if($('#profile-select'))$('#profile-select').innerHTML=state.users.filter(x=>x.id===u.id).map(x=>option(x.id,x.role+' · '+x.name,u.id)).join('');
+ if($('#profile-select')){const select=$('#profile-select'),real=signedInProfile();select.disabled=!canPreviewProfiles();select.innerHTML=(canPreviewProfiles()?[real,...testProfiles()]:[u]).map(x=>option(x.id,x.id===real?.id?'Moje konto · '+x.name:x.role+' · '+x.name,u.id)).join('');const label=document.querySelector('label[for="profile-select"]');if(label)label.textContent=canPreviewProfiles()?'Widok konta':'Twoje konto';}
  $('#profile-name').textContent=u.name;$('#profile-role').textContent=u.role;
  $('#content').dataset.page=page;
  $('#content').innerHTML=page==='home'?homeView():page==='new'?newView():page==='tickets'?ticketsView():page==='schedule'?scheduleView():page==='dashboard'?dashboardView():adminView();
- if(page==='new')renderDraftFiles();refreshNotificationsUI();if(restorePosition)restoreTicketList();
+ if(previewProfileId)$('#content').insertAdjacentHTML('afterbegin','<div class="warning" role="status">Podgląd konta testowego — '+esc(u.role)+'. Zapis zmian jest wyłączony. Aby wrócić, wybierz „Moje konto” w przełączniku widoku.</div>');if(page==='new')renderDraftFiles();refreshNotificationsUI();if(restorePosition)restoreTicketList();
 }
 function statsView(tickets,interactive=true){
  const m=Model.metrics(tickets);

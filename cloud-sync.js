@@ -44,6 +44,7 @@ initializeAuth = async function () {
   authClient.auth.onAuthStateChange((event, session) => {
     if (event === 'INITIAL_SESSION') return;
     if (demoLoaded && authUser?.id && authUser.id === session?.user?.id) return;
+    previewProfileId=null;
     authUser = session?.user || null;
     if (authUser) {
       setTimeout(() => loadDemoState().then(() => {
