@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="./ui-schedule.css?v=blue-theme1">
     <link rel="stylesheet" href="./ui-responsive.css?v=blue-theme1">
     <link rel="stylesheet" href="./ui-login.css?v=desktop-polish2">
-    <link rel="stylesheet" href="./ui-theme.css?v=profile-panel1">
+    <link rel="stylesheet" href="./ui-theme.css?v=account1">
   </head>
 
   <body>
@@ -46,7 +46,7 @@
           <div class="role-switch">
             <label for="profile-select">Twoje konto</label>
             <select id="profile-select" aria-label="Zalogowane konto" disabled></select>
-            <span id="account-summary" class="account-summary" hidden></span>
+            <button id="account-summary" class="account-summary" type="button" data-action="open-account" hidden></button>
           </div>
           <button
             id="notification-bell"
@@ -64,6 +64,7 @@
             <span class="notification-bell-label">Powiadomienia</span>
             <span class="notification-count" id="notification-count" hidden>0</span>
           </button>
+          <button id="admin-account-button" class="btn secondary small" type="button" data-action="open-account">Moje konto</button>
           <div class="profile-current">
             <strong id="profile-name"></strong>
             <small id="profile-role"></small>
@@ -83,6 +84,7 @@
       </main>
     </div>
 
+    <dialog id="account-dialog" class="account-dialog" aria-labelledby="account-title"></dialog>
     <dialog id="detail-dialog" aria-labelledby="dialog-title"></dialog>
     <dialog id="quick-close-dialog" class="quick-close-dialog" aria-labelledby="quick-close-title"></dialog>
     <dialog id="notifications-dialog" class="notifications-dialog" aria-labelledby="notifications-title"></dialog>
@@ -95,11 +97,12 @@
     <script src="./locations.js?v=4"></script>
     <script src="./app-config.js?v=1"></script>
     <script src="./model.js?v=profiles2"></script>
-    <script src="./app-core.js?v=preview1"></script>
-    <script src="./app-views.js?v=profile-panel1"></script>
+    <script src="./app-core.js?v=account1"></script>
+    <script src="./app-views.js?v=account1"></script>
     <script src="./app-actions.js?v=preview1"></script>
-    <script src="./app-events.js?v=preview1"></script>
-    <script src="./app-data.js?v=preview1"></script>
-    <script src="./bootstrap.js?v=5"></script>
+    <script src="./app-events.js?v=account1"></script>
+    <script src="./account.js?v=1"></script>
+    <script src="./app-data.js?v=account1"></script>
+    <script src="./bootstrap.js?v=account1"></script>
   </body>
 </html>

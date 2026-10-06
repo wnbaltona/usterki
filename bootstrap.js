@@ -23,7 +23,7 @@ async function startApplication() {
 
     if (authUser) {
       showApp();
-      if(user()){announceProfile();startLiveSync();}
+      if(!passwordRecovery&&user()){announceProfile();startLiveSync();}
     }
   } catch (error) {
     showAuth(error.message);

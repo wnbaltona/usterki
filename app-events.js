@@ -20,6 +20,9 @@ document.addEventListener('click', async event => {
  if(busy){toast('Poczekaj na zakończenie bieżącej operacji.');return;}
  if(action==='sidebar-toggle')toggleSidebar();
  else if(action==='toggle-password'){const field=$('#login-password'),visible=field.type==='password';field.type=visible?'text':'password';el.innerHTML=authEye(visible);el.setAttribute('aria-label',visible?'Ukryj hasło':'Pokaż hasło');el.setAttribute('aria-pressed',String(visible));}
+ else if(action==='open-account')openAccount();
+ else if(action==='close-account')$('#account-dialog').close();
+ else if(action==='auth-help'&&el.dataset.help==='password')openPasswordReset();
  else if(action==='auth-help'){const help=$('#auth-help');help.textContent=el.dataset.help==='password'?'Aby odzyskać dostęp, skontaktuj się z administratorem. Administrator pomoże Ci zmienić hasło.':'Konto i uprawnienia nadaje administrator. Skontaktuj się z nim, aby uzyskać dostęp.';help.hidden=false;help.focus();}
  else if(action==='notifications'){openNotifications();el.closest('.incoming-toast')?.remove();}
  else if(action==='refresh-accounts')await perform(async()=>{await refreshAuthAccounts();shell();});
@@ -89,7 +92,7 @@ document.addEventListener('submit', async event => {
    return;
  }
  if (!state || busy || !form.reportValidity()) return;
- if (pendingRemote && form.id !== 'filter-form' && form.id !== 'export-form') {
+ if (pendingRemote && !['filter-form','export-form','account-password-form','password-reset-form','recovery-password-form'].includes(form.id)) {
    fail(Error('Dostępne są nowsze dane. Użyj przycisku „Wczytaj nowsze dane” przed zapisem.'), form);
    return;
  }
@@ -98,7 +101,10 @@ document.addEventListener('submit', async event => {
  buttons.forEach(button => { button.disabled = true; });
  form.querySelector('.form-error')?.remove();
  try {
- if(form.id==='login-form')await submitLogin(form);
+ if(form.id==='account-password-form')await changeAccountPassword(form);
+ else if(form.id==='password-reset-form')await sendPasswordReset(form);
+ else if(form.id==='recovery-password-form')await changeAccountPassword(form,true);
+ else if(form.id==='login-form')await submitLogin(form);
  else if(form.id==='new-form')await submitNew(form);
  else if(form.id==='comment-form')await submitComment(form);
  else if(form.id==='comment-edit-form')await saveEditedComment(form);

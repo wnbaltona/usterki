@@ -296,3 +296,15 @@ input[type=checkbox],input[type=radio] { accent-color:var(--accent-dark) }
 /* Plain account name for users; administrators retain the view selector. */
 .role-switch [hidden] { display:none!important; }
 .account-summary { color:var(--ink,#1d2e3b);font-size:13px;line-height:1.5;overflow-wrap:anywhere; }
+
+.account-summary { padding:8px 10px;border:0;border-radius:8px;background:transparent;text-align:left;cursor:pointer;font:inherit;color:var(--ink,#1d2e3b); }
+.account-summary:hover { background:#edf2fb; }
+.account-summary:focus-visible { outline:2px solid #4168b1;outline-offset:2px; }
+.account-dialog { width:min(480px,calc(100vw - 24px));max-height:calc(100dvh - 24px);padding:0;overflow:auto; }
+.account-data { display:grid;grid-template-columns:130px minmax(0,1fr);gap:10px;margin:0 0 24px; }
+.account-data dt { color:#68758c; }.account-data dd { margin:0;overflow-wrap:anywhere; }
+.account-status { color:#285b42; }.account-logout { margin-top:18px; }
+.recovery-panel { width:min(480px,100%);margin:auto; }
+@media(max-width:560px) { .account-data { grid-template-columns:1fr;gap:4px; }.account-data dd { margin-bottom:10px; } }
+
+#admin-account-button[hidden] { display:none!important; }
