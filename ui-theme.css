@@ -279,3 +279,20 @@ input[type=checkbox],input[type=radio] { accent-color:var(--accent-dark) }
     align-items:flex-start;
   }
 }
+
+/* Older open tickets: centre status and give the deadline a little more room. */
+@media (min-width:1001px) {
+  @container (min-width:880px) {
+    .recent-panel.space-top .tickets-table td[data-label="Status"],
+    .recent-panel.space-top .tickets-table td[data-label="Status"]::before {
+      text-align:center;
+    }
+    .recent-panel.space-top .tickets-table td[data-label="Termin"] {
+      padding-left:16px;
+    }
+  }
+}
+
+/* Plain account name for users; administrators retain the view selector. */
+.role-switch [hidden] { display:none!important; }
+.account-summary { color:var(--ink,#1d2e3b);font-size:13px;line-height:1.5;overflow-wrap:anywhere; }
