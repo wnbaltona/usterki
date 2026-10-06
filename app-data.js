@@ -14,6 +14,7 @@ function savePreference() {
 }
 async function loadDemoState() {
   const { data, error } = await authClient.from(DEMO_TABLE).select('revision,data').eq('id', 1).single();
+  if(error && error.code==='PGRST116'){demoLoaded=false;currentId=null;state.users=[];return;}
   if (error) throw Error('Nie można pobrać wspólnych danych. Najpierw uruchom supabase-demo.sql w Supabase. ' + error.message);
   if (!data.data?.version) {
     const initial = Model.initial(window.BALTONA_LOCATIONS);
@@ -27,8 +28,9 @@ async function loadDemoState() {
     state = Model.migrate(data.data);
     state.revision = data.revision;
   }
-  currentId = user().id;
+  currentId = user()?.id;
   demoLoaded = true;
+  if(user()?.role==='Administrator')await refreshAuthAccounts();
 }
 
 async function initializeAuth() {
@@ -45,8 +47,7 @@ async function initializeAuth() {
     if (authUser) {
       setTimeout(() => loadDemoState().then(() => {
         showApp();
-        announceProfile();
-        startLiveSync();
+        if(user()){announceProfile();startLiveSync();}
       }).catch(error => showAuth(error.message)), 0);
     } else { demoLoaded = false; showAuth(); }
   });
@@ -100,6 +101,7 @@ async function syncFromDatabase() {
   syncing = true;
   try {
     const { data, error } = await authClient.from(DEMO_TABLE).select('revision,data').eq('id', 1).single();
+    if(error && error.code==='PGRST116'){state.users=[];currentId=null;demoLoaded=false;showNoAccess();return;}
     if (error) throw error;
     if (!busy && data.revision > state.revision) {
       const latest = Model.migrate(data.data);

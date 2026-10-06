@@ -75,21 +75,21 @@ async function submitQuickClose(form){
 }
 async function submitManage(form){const values=Object.fromEntries(new FormData(form)),ticket=state.tickets.find(t=>t.id===selectedTicket);if(!ticket)throw Error('Zgłoszenie nie jest dostępne.');if(values.dueAt&&values.dueAt<inputDate(new Date().toISOString())&&values.dueAt!==inputDate(ticket.dueAt))throw Error('Planowany termin nie może być wcześniejszy niż dzisiaj.');values.dueAt=values.dueAt?new Date(values.dueAt+'T23:59:59.999').toISOString():null;const updated=Model.updateTicket(ticket,values,user(),new Date().toISOString());await mutate(next=>{next.tickets[next.tickets.findIndex(t=>t.id===ticket.id)]=updated;});shell(true);openDetail(ticket.id);toast('Zapisano dane obsługi zgłoszenia.');}
 async function deleteUserProfile(id){
- if(!isAdmin())throw Error('Tylko administrator może usuwać profile testowe.');
+ if(!isAdmin())throw Error('Tylko administrator może usuwać profile.');
  const target=state.users.find(u=>u.id===id&&!u.deletedAt);
  if(!target)throw Error('Nie znaleziono profilu.');
  if(id===currentId)throw Error('Nie można usunąć aktualnie wybranego profilu.');
  if(authUser?.email?.toLowerCase()===target.email.toLowerCase())throw Error('Nie można usunąć konta aktualnie zalogowanego.');
  if(target.active&&target.role==='Administrator'&&!state.users.some(u=>u.id!==id&&u.active&&!u.deletedAt&&u.role==='Administrator'))throw Error('Musi pozostać aktywny administrator.');
  await mutate(next=>{const profile=next.users.find(u=>u.id===id);profile.active=false;profile.deletedAt=new Date().toISOString();});
- if(editingUser===id)editingUser=null;shell();toast('Usunięto profil testowy. Historia zgłoszeń została zachowana.');
+ if(editingUser===id)editingUser=null;shell();toast('Usunięto profil. Historia zgłoszeń została zachowana.');
 }
 async function restoreUserProfile(id){
- if(!isAdmin())throw Error('Tylko administrator może przywracać profile testowe.');
+ if(!isAdmin())throw Error('Tylko administrator może przywracać profile.');
  const target=state.users.find(u=>u.id===id&&u.deletedAt);
  if(!target)throw Error('Nie znaleziono usuniętego profilu.');
  await mutate(next=>{const profile=next.users.find(u=>u.id===id);profile.active=true;delete profile.deletedAt;});
- shell();toast('Przywrócono profil testowy.');
+ shell();toast('Przywrócono profil.');
 }
 async function saveUserForm(form){
  if(!form||!state)return;
@@ -116,14 +116,17 @@ async function submitUser(form){
  const values=Object.fromEntries(new FormData(form));
  const mpks=[...new Set(String(values.mpks||'').toUpperCase().split(/[,;\s]+/).filter(Boolean))];
  if(mpks.some(mpk=>!state.locations.some(l=>l.mpk===mpk)))throw Error('Sprawdź przypisane MPK — jeden z numerów nie istnieje.');
- const previous=values.id?state.users.find(u=>u.id===values.id):null;
+ const previous=values.id?(state.users.find(u=>u.id===values.id)||pendingAccount(values.id)):null;
+ const account=authAccounts.find(a=>a.email?.toLowerCase()===values.email.trim().toLowerCase());
+ if(!account)throw Error('Najpierw utwórz konto z tym e-mailem w Supabase i odśwież listę kont.');
  if(values.id&&!previous)throw Error('Nie znaleziono edytowanego profilu. Odśwież listę użytkowników.');
- const proposed={...previous,id:values.id||uid(),name:values.name.trim(),email:values.email.trim().toLowerCase(),phone:String(values.phone||'').trim(),role:values.role,mpks,active:values.active==='on'};
+ const proposed={...previous,authUserId:account.id,id:values.id||uid(),name:values.name.trim(),email:values.email.trim().toLowerCase(),phone:String(values.phone||'').trim(),role:values.role,mpks,active:values.active==='on'};
  Model.validateUserChange(state.users,proposed);
  await mutate(next=>{const index=next.users.findIndex(u=>u.id===proposed.id);if(index>=0)next.users[index]=proposed;else next.users.push(proposed);});
- currentId=user().id;
+ currentId=user()?.id;
  savePreference();
  editingUser=proposed.id;
+ if(!user()){showNoAccess();return;}
  if(!isAdmin())page='home';
  shell();
  if(page==='admin')$('#user-form')?.insertAdjacentHTML('afterbegin','<p class="notice" role="status">Zmiany profilu zostały zapisane. Konto logowania w Supabase pozostaje bez zmian.</p>');
@@ -179,11 +182,14 @@ function notificationsView(){
 function openNotifications(){const dialog=$('#notifications-dialog');dialog.innerHTML=notificationsView();if(!dialog.open)dialog.showModal();}
 function ingestRemote(latest,announce=true){
  latest=Model.migrate(latest);if(latest.revision<state.revision)return;
+ const oldAccess=user(),newAccess=latest.users.find(u=>u.authUserId===authUser?.id&&u.active&&!u.deletedAt);
+ if(JSON.stringify(oldAccess)!==JSON.stringify(newAccess)){dirty=false;detailDirty=false;}
  if((dirty||detailDirty)&&Model.businessChanged(state,latest)){
    const first=!pendingRemote;pendingRemote=latest;refreshNotificationsUI();if(first)toast('W innej karcie zmieniono dane. Twój formularz pozostaje bez zmian; odśwież dane przed zapisem.',true);if(announce)noticeFresh(latest);return;
  }
  const changed=Model.businessChanged(state,latest),oldProfile=currentId;state=latest;pendingRemote=null;
- currentId=user().id;
+ currentId=user()?.id;
+ if(!user()){showNoAccess();return;}
  if(!dirty&&!detailDirty&&changed){const ticketId=selectedTicket;const detailOpen=$('#detail-dialog').open;if(['admin','dashboard'].includes(page)&&!isAdmin())page='home';shell();if(detailOpen){if(currentTickets().some(t=>t.id===ticketId))openDetail(ticketId);else $('#detail-dialog').close();}}
  if(oldProfile!==currentId){savePreference();announceProfile();}
  refreshNotificationsUI();

@@ -23,8 +23,7 @@ async function startApplication() {
 
     if (authUser) {
       showApp();
-      announceProfile();
-      startLiveSync();
+      if(user()){announceProfile();startLiveSync();}
     }
   } catch (error) {
     showAuth(error.message);

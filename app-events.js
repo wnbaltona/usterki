@@ -22,6 +22,8 @@ document.addEventListener('click', async event => {
  else if(action==='toggle-password'){const field=$('#login-password'),visible=field.type==='password';field.type=visible?'text':'password';el.innerHTML=authEye(visible);el.setAttribute('aria-label',visible?'Ukryj hasło':'Pokaż hasło');el.setAttribute('aria-pressed',String(visible));}
  else if(action==='auth-help'){const help=$('#auth-help');help.textContent=el.dataset.help==='password'?'Aby odzyskać dostęp, skontaktuj się z administratorem. Administrator pomoże Ci zmienić hasło.':'Konto i uprawnienia nadaje administrator. Skontaktuj się z nim, aby uzyskać dostęp.';help.hidden=false;help.focus();}
  else if(action==='notifications'){openNotifications();el.closest('.incoming-toast')?.remove();}
+ else if(action==='refresh-accounts')await perform(async()=>{await refreshAuthAccounts();shell();});
+ else if(action==='grant-account'){if(!isAdmin())return;editingUser=el.dataset.id;shell();$('#user-form')?.scrollIntoView({block:'center'});}
  else if(action==='logout')await perform(logout);
  else if(action==='close-notifications')$('#notifications-dialog').close();
  else if(action==='notification-filter'){onlyUnreadNotifications=el.dataset.filter==='unread';refreshNotificationsUI();}
@@ -126,7 +128,7 @@ document.addEventListener('invalid',event=>{
 document.addEventListener('change',async event=>{const el=event.target;if(!state)return;
  if(el.closest('#new-form')&&el.id!=='attachments')clearNewFormFieldError(el);
  if(el.name==='priority'||el.id==='blocksSales')updateTargetHint();
- if(el.id==='profile-select'){if(busy){el.value=currentId;return;}if((dirty||detailDirty)&&!confirm('Zmiana profilu odrzuci niezapisany formularz. Kontynuować?')){el.value=currentId;return;}currentId=el.value;ticketListScroll=0;savePreference();dirty=false;detailDirty=false;lastSeenProfile=null;draftFiles=[];editingUser=null;editingLocation=null;if($('#detail-dialog').open)$('#detail-dialog').close();if(['admin','dashboard'].includes(page)&&!isAdmin())page='home';filters={q:'',status:'',city:'',priority:'',from:'',to:'',quick:'',sort:'urgent'};if(pendingRemote){state=pendingRemote;pendingRemote=null;currentId=user().id;}shell();toast('Widok testowy: '+user().role+'. To nie jest logowanie.');announceProfile();}
+ if(el.id==='profile-select'){el.value=user()?.id;return;if(busy){el.value=currentId;return;}if((dirty||detailDirty)&&!confirm('Zmiana profilu odrzuci niezapisany formularz. Kontynuować?')){el.value=currentId;return;}currentId=el.value;ticketListScroll=0;savePreference();dirty=false;detailDirty=false;lastSeenProfile=null;draftFiles=[];editingUser=null;editingLocation=null;if($('#detail-dialog').open)$('#detail-dialog').close();if(['admin','dashboard'].includes(page)&&!isAdmin())page='home';filters={q:'',status:'',city:'',priority:'',from:'',to:'',quick:'',sort:'urgent'};if(pendingRemote){state=pendingRemote;pendingRemote=null;currentId=user().id;}shell();toast('Widok testowy: '+user().role+'. To nie jest logowanie.');announceProfile();}
  if(el.id==='m-status'){detailDirty=true;syncClosingFields();}
  if(el.id==='m-priority'){detailDirty=true;updateDueSuggestion();}
  if(el.id==='city'){const choices=availablePlaces().filter(l=>l.city===el.value);$('#mpk').disabled=!el.value;$('#mpk').innerHTML=option('','Wybierz lokal / magazyn')+choices.map(l=>option(l.mpk,l.mpk+' · '+l.name+(l.type==='Magazyn'?' [Magazyn]':'')+(l.location&&l.location!==l.city?' · '+l.location:''),choices.length===1?choices[0].mpk:'')).join('');syncCategoryOptions();}
