@@ -37,15 +37,13 @@ async function loadDemoState() {
 initializeAuth = async function () {
   if (!window.supabase) throw Error('Nie udało się załadować logowania Supabase.');
   authClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  const { data, error } = await authClient.auth.getSession();
-  if (error) throw error;
-  authUser = data.session?.user || null;
-  authReady = true;
   authClient.auth.onAuthStateChange((event, session) => {
+    if(event==='PASSWORD_RECOVERY'){passwordRecovery=true;previewProfileId=null;authUser=session?.user||null;setTimeout(()=>showApp(),0);return;}
     if (event === 'INITIAL_SESSION') return;
     if (demoLoaded && authUser?.id && authUser.id === session?.user?.id) return;
     previewProfileId=null;
     authUser = session?.user || null;
+    if(passwordRecovery&&authUser){setTimeout(()=>showApp(),0);return;}
     if (authUser) {
       setTimeout(() => loadDemoState().then(() => {
         showApp();
@@ -53,7 +51,12 @@ initializeAuth = async function () {
       }).catch(error => showAuth(error.message)), 0);
     } else { demoLoaded = false; showAuth(); }
   });
+  const { data, error } = await authClient.auth.getSession();
+  if (error) throw error;
+  authUser = data.session?.user || null;
+  authReady = true;
   if (!authUser) { showAuth(); return; }
+  if(passwordRecovery){showPasswordRecovery();return;}
   await loadDemoState();
 };
 
@@ -101,7 +104,7 @@ downloadFile = async function (id) {
 };
 
 syncFromDatabase = async function () {
-  if (!authClient || !authUser || !state || busy || syncing) return;
+  if (passwordRecovery || !authClient || !authUser || !state || busy || syncing) return;
   syncing = true;
   try {
     const { data, error } = await authClient.from(DEMO_TABLE).select('revision,data').eq('id', 1).single();

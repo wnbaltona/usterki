@@ -1,0 +1,3 @@
+[functions.send-push]
+verify_jwt = false
+entrypoint = "./functions/send-push/index.js"

@@ -16,7 +16,8 @@ function pushKeyBytes(base64url) {
 }
 
 async function pushRegistration() {
-  return navigator.serviceWorker.register('./push-sw.js', { scope: './' });
+  await navigator.serviceWorker.register('./app-sw.js', { scope: './' });
+  return navigator.serviceWorker.ready;
 }
 
 async function pushSubscription() {
@@ -33,12 +34,13 @@ async function pushPublicKey() {
 }
 
 async function savePushSubscription(subscription) {
-  if (!authUser || !currentId) return;
+  const profile=signedInProfile();
+  if(!authUser||!profile)throw Error('Najpierw administrator musi nadać dostęp do aplikacji.');
   const keys = subscription.toJSON().keys;
   if (!keys?.p256dh || !keys?.auth) throw Error('Przeglądarka nie udostępniła kluczy powiadomień.');
   const { error } = await authClient.from(PUSH_TABLE).upsert({
     auth_user_id: authUser.id,
-    profile_id: currentId,
+    profile_id: profile.id,
     endpoint: subscription.endpoint,
     p256dh: keys.p256dh,
     auth: keys.auth,
@@ -47,15 +49,13 @@ async function savePushSubscription(subscription) {
   if (error) throw Error('Nie udało się zapisać urządzenia w Supabase: ' + error.message);
 }
 
-async function removePushSubscription() {
-  if (!pushSupported()) return;
-  const subscription = await pushSubscription();
-  if (!subscription) return;
-  if (authClient && authUser) {
-    const { error } = await authClient.from(PUSH_TABLE).delete().eq('endpoint', subscription.endpoint);
-    if (error) throw Error('Nie udało się wyłączyć powiadomień: ' + error.message);
-  }
-  await subscription.unsubscribe();
+async function removePushSubscription(){
+ if(!pushSupported())return;
+ const subscription=await pushSubscription();if(!subscription)return;
+ let failure;
+ try{if(authClient&&authUser){const {error}=await authClient.from(PUSH_TABLE).delete().eq('endpoint',subscription.endpoint);if(error)failure=error;}}
+ finally{await subscription.unsubscribe();}
+ if(failure)throw Error('Urządzenie wyłączono lokalnie, ale usunięcie wpisu z bazy nie powiodło się.');
 }
 
 window.removePushForLogout = async function () {
@@ -67,9 +67,10 @@ window.refreshPushButton = async function () {
   const button = document.getElementById('push-toggle');
   const status = document.getElementById('push-status');
   if (!button || !status) return;
+  if(!signedInProfile()){status.textContent='Powiadomienia wymagają aktywnego dostępu do aplikacji.';button.disabled=true;return;}
   if (!pushSupported()) {
     status.textContent = window.isSecureContext
-      ? 'Ta przeglądarka nie obsługuje powiadomień.'
+      ? 'Ta przeglądarka nie obsługuje push. Na iPhonie dodaj aplikację do ekranu początkowego i otwórz ją z ikony.'
       : 'Otwórz aplikację przez bezpieczny adres HTTPS.';
     button.disabled = true;
     return;
@@ -137,7 +138,7 @@ document.addEventListener('click', async event => {
 async function restorePushSubscription() {
   if (!pushSupported() || !authUser || Notification.permission !== 'granted') return;
   const subscription = await pushSubscription();
-  if (subscription) await savePushSubscription(subscription);
+  if (subscription) {try{await savePushSubscription(subscription);}catch(error){await subscription.unsubscribe();throw error;}}
 }
 
 function openTicketFromPush() {

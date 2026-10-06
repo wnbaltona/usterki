@@ -67,9 +67,9 @@ matchMedia('(min-width:1501px)').addEventListener('change',syncSidebar);syncSide
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&matchMedia('(min-width:1501px)').matches&&document.documentElement.dataset.sidebar==='expanded'&&!document.querySelector('dialog[open]')){toggleSidebar();$('.sidebar-toggle')?.focus();}});
 
 function showAuth(message=''){document.body.classList.add('auth-screen');$('#navigation').innerHTML='';$('#content').innerHTML=loginView(message);$('#notification-bell').hidden=true;$('.profile')?.classList.add('auth-hidden');}
-function showApp(){if(passwordRecovery&&authUser){showPasswordRecovery();return;}if(!user()){showNoAccess();return;}document.body.classList.remove('auth-screen');$('#notification-bell').hidden=false;$('.profile')?.classList.remove('auth-hidden');shell();}
+function showApp(){if(passwordRecovery&&authUser){showPasswordRecovery();return;}if(!user()){showNoAccess();return;}document.body.classList.remove('auth-screen');$('#notification-bell').hidden=false;$('.profile')?.classList.remove('auth-hidden');currentId=user().id;shell();window.onPushAppReady?.();}
 async function submitLogin(form){if(!authClient)throw Error('Supabase nie jest jeszcze skonfigurowany.');const values=Object.fromEntries(new FormData(form));const {error}=await authClient.auth.signInWithPassword({email:values.email.trim(),password:values.password});if(error)throw error;try{if(values.rememberEmail)localStorage.setItem('serwis-login-email',values.email.trim());else localStorage.removeItem('serwis-login-email');}catch{}}
-async function logout(){passwordRecovery=false;previewProfileId=null;document.querySelectorAll('dialog[open]').forEach(d=>d.close());if(authClient)await authClient.auth.signOut();else{authUser=null;showAuth();}}
+async function logout(){passwordRecovery=false;previewProfileId=null;try{await window.removePushForLogout?.();}catch(error){toast(error.message,true);}document.querySelectorAll('dialog[open]').forEach(d=>d.close());if(authClient)await authClient.auth.signOut();else{authUser=null;showAuth();}}
 function canManage(){return ['Koordynator','Administrator'].includes(user().role);}
 function canClose(ticket){const u=user();return ['Koordynator','Administrator'].includes(u.role)||u.role==='Kierownik lokalu'&&!!ticket&&(u.mpks||[]).includes(ticket.mpk);}
 function syncCategoryOptions(){

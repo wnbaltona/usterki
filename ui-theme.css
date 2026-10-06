@@ -394,3 +394,6 @@ input[type=checkbox],input[type=radio] { accent-color:var(--accent-dark) }
   .account-dialog { max-height:calc(100dvh - 12px); }
   .auth-screen .content:has(.recovery-panel) { padding-block:12px; }
 }
+
+.account-push { margin:0 0 26px;padding-bottom:22px;border-bottom:1px solid #dde5f0; }.account-push p { line-height:1.6;overflow-wrap:anywhere; }.account-push .hint { margin:12px 0 0; }
+@media(max-width:800px){#push-toggle{width:100%;min-height:48px;white-space:normal;}}
