@@ -143,18 +143,22 @@ const Model = (() => {
     }
     for (const ticket of after.tickets) {
       const old=previousTickets.get(ticket.id);
-      if (!old) {emit(ticket,'new-'+ticket.id,'new','Nowe zgłoszenie · '+ticket.number,actor.name+' zgłasza: '+ticket.mpk+' · '+ticket.locationName+'. Alert: '+ticket.priority+'.');continue;}
+      const place=[ticket.locationName||ticket.mpk,ticket.city].filter(Boolean).join(', ');
+      if (!old) {emit(ticket,'new-'+ticket.id,'new',ticket.number+' — Nowe zgłoszenie',place+'\n'+(ticket.category||'Usterka')+' — priorytet '+String(ticket.priority||'nie podano').toLocaleLowerCase('pl-PL'));continue;}
       const changes=[];
-      if(old.status!==ticket.status)changes.push('Status: '+old.status+' → '+ticket.status);
-      if(old.priority!==ticket.priority)changes.push('Alert: '+ticket.priority);
-      if(old.assigneeId!==ticket.assigneeId)changes.push('Przypisanie: '+(after.users.find(u=>u.id===ticket.assigneeId)?.name||'Nie przypisano'));
-      if(old.dueAt!==ticket.dueAt)changes.push('Zmieniono termin realizacji');
-      if(changes.length)emit(ticket,'update-'+after.revision+'-'+ticket.id,'update',(closed(ticket)?'Zakończono zgłoszenie':'Aktualizacja zgłoszenia')+' · '+ticket.number,actor.name+': '+changes.join(' · ')+'.');
+      if(old.status!==ticket.status)changes.push('Status: '+ticket.status.toLocaleLowerCase('pl-PL'));
+      if(old.priority!==ticket.priority)changes.push('Priorytet: '+ticket.priority.toLocaleLowerCase('pl-PL'));
+      if(old.assigneeId!==ticket.assigneeId)changes.push(ticket.assigneeId?'Przypisano do: '+(after.users.find(u=>u.id===ticket.assigneeId)?.name||'osoby obsługującej zgłoszenie'):'Usunięto przypisanie');
+      if(old.dueAt!==ticket.dueAt)changes.push(ticket.dueAt?'Termin: '+new Intl.DateTimeFormat('pl-PL',{day:'numeric',month:'long',timeZone:'Europe/Warsaw'}).format(new Date(ticket.dueAt)):'Usunięto termin');
+      if(changes.length){
+        const title=old.status!==ticket.status?(ticket.status==='Oczekuje na informację'?'Potrzebna odpowiedź':ticket.status==='Zamknięte'?'Zgłoszenie zamknięte':ticket.status==='Odrzucone'?'Zgłoszenie odrzucone':'Zmiana statusu'):old.dueAt!==ticket.dueAt?'Zmiana terminu':old.priority!==ticket.priority?'Zmiana priorytetu':'Zmiana przypisania';
+        emit(ticket,'update-'+after.revision+'-'+ticket.id,'update',ticket.number+' — '+title,place+'\n'+changes.join(', '));
+      }
     }
     for(const comment of after.comments) {
       if(oldComments.has(comment.id))continue;
       const ticket=after.tickets.find(t=>t.id===comment.ticketId);
-      if(ticket)emit(ticket,'comment-'+comment.id,'comment','Nowy komentarz · '+ticket.number,actor.name+': '+(comment.text?comment.text.slice(0,200)+(comment.text.length>200?'…':''):'Dodano załącznik'));
+      if(ticket)emit(ticket,'comment-'+comment.id,'comment',ticket.number+' — Nowy komentarz',(comment.authorName||actor.name)+': '+(comment.text?comment.text.slice(0,160)+(comment.text.length>160?'…':''):'Dodano załącznik'));
     }
     return result;
   }
@@ -180,3 +184,5 @@ const Model = (() => {
   }
   return { statuses, priorities, roles, closed, numberFor, visible, critical, overdue, waiting, metrics, validateTicket, updateTicket, validateUserChange, csvCell, initial, migrate, notificationsFor, notificationEvents, ticketEvents, businessChanged, segmentFor, categoriesForLocation };
 })();
+
+
