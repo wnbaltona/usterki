@@ -3,12 +3,14 @@
 async function perform(action) {
   if (busy) return;
   busy = true;
+  document.body.classList.add('operation-pending');
   try {
     await action();
   } catch (error) {
     fail(error);
   } finally {
     busy = false;
+    document.body.classList.remove('operation-pending');
   }
 }
 
@@ -97,6 +99,8 @@ document.addEventListener('submit', async event => {
    return;
  }
  busy = true;
+ document.body.classList.add('operation-pending');
+ form.setAttribute('aria-busy','true');
  const buttons = [...form.querySelectorAll('button[type=submit]')];
  buttons.forEach(button => { button.disabled = true; });
  form.querySelector('.form-error')?.remove();
@@ -118,6 +122,8 @@ document.addEventListener('submit', async event => {
    fail(error, form);
  } finally {
    busy = false;
+   document.body.classList.remove('operation-pending');
+   form.removeAttribute('aria-busy');
    buttons.forEach(button => { button.disabled = false; });
  }
 });
@@ -163,6 +169,10 @@ for(const dialog of ['detail-dialog','quick-close-dialog','notifications-dialog'
 $('#detail-dialog').addEventListener('close',()=>{selectedTicket=null;commentDraftFiles=[];editingCommentId=null;detailDirty=false;restoreTicketList();});
 $('#quick-close-dialog').addEventListener('close',()=>{quickCloseId=null;});
 $('#detail-dialog').addEventListener('cancel',event=>{if(busy||(detailDirty&&!confirm('Odrzucić niezapisane zmiany w zgłoszeniu?')))event.preventDefault();else detailDirty=false;});
+// Escape nie zamyka okna w trakcie operacji wymagającej odpowiedzi serwera.
+document.querySelectorAll('dialog').forEach(dialog=>dialog.addEventListener('cancel',event=>{
+ if(busy)event.preventDefault();
+}));
 
 $('#attachment-preview-dialog').addEventListener('close',()=>{
  closeAttachmentResources();$('#attachment-preview-dialog').innerHTML='';
