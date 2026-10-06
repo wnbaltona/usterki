@@ -151,6 +151,31 @@ form[aria-busy="true"] button[type="submit"]::after {
 }
 
 /* Deleted profiles: details on the left, both actions together on the right. */
+#account-dialog #account-password-form,
+#content #recovery-password-form {
+ display:flex;flex-direction:column;gap:22px;margin:0;padding:0;
+}
+#account-dialog #account-password-form > .field,
+#content #recovery-password-form > .field {
+ display:flex;flex-direction:column;gap:8px;margin:0;padding:0;min-width:0;
+}
+#account-dialog #account-password-form .field > label,
+#account-dialog #account-password-form .field > input,
+#account-dialog #account-password-form .field > .hint,
+#content #recovery-password-form .field > label,
+#content #recovery-password-form .field > input,
+#content #recovery-password-form .field > .hint {
+ margin:0;line-height:1.5;
+}
+#account-dialog #account-password-form .field > input,
+#content #recovery-password-form .field > input {
+ width:100%;box-sizing:border-box;min-height:46px;
+}
+#account-dialog #account-password-form > button[type="submit"],
+#content #recovery-password-form > button[type="submit"] {
+ align-self:flex-start;margin:2px 0 0;min-height:44px;
+}
+#account-dialog .account-security > h3 { margin:0 0 20px; }
 #account-password-form > button[type="submit"],
 #recovery-password-form > button[type="submit"] {
  margin-top:16px;
