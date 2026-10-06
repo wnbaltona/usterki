@@ -78,3 +78,13 @@
   .recent-panel .tickets-table td[data-label="Status"] { max-width:140px; }
   .recent-panel .tickets-table td[data-label="Status"] .pill { font-size:10px; }
 }
+
+/* Notification layer above open dialogs on all screen sizes. */
+#toasts.toast-container {
+ position:fixed;inset:calc(16px + env(safe-area-inset-top)) auto auto 50%;
+ transform:translateX(-50%);width:min(440px,calc(100vw - 24px));max-width:calc(100vw - 24px);
+ max-height:calc(100dvh - 32px);margin:0;padding:0;border:0;background:transparent;
+ overflow:auto;box-sizing:border-box;z-index:2147483647;pointer-events:none;
+}
+#toasts .toast { pointer-events:auto;width:100%;box-sizing:border-box;overflow-wrap:anywhere; }
+#toasts::backdrop { background:transparent;pointer-events:none; }

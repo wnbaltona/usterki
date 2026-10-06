@@ -1,4 +1,4 @@
-// Worker instalowanej aplikacji. Nie obsługuje powiadomień push.
+// Worker instalowanej aplikacji i powiadomień push.
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', event => event.waitUntil(self.clients.claim()));
 
@@ -6,15 +6,17 @@ self.addEventListener('activate', event => event.waitUntil(self.clients.claim())
 self.addEventListener('push', event => {
   let message = {};
   try { message = event.data?.json() || {}; } catch {}
+  const tag=typeof message.tag==='string'?message.tag:'';
+  const text=String(message.title||'');
+  const simpleTitle=tag.startsWith('comment-')||/komentarz/i.test(text)?'Dodano komentarz do zgłoszenia':tag.startsWith('new-')||/nowe zgłoszenie/i.test(text)?'Nowe zgłoszenie':'Zaktualizowano zgłoszenie';
   const ticketId = typeof message.ticketId === 'string' ? message.ticketId : '';
   const url = new URL('./index.html', self.registration.scope);
   if (ticketId) url.searchParams.set('ticket', ticketId);
   event.waitUntil(self.registration.showNotification(
-    typeof message.title === 'string' ? message.title : 'Serwis Lokali',
+    simpleTitle,
     {
-      body: typeof message.body === 'string' ? message.body : 'Masz nową informację o zgłoszeniu.',
-      icon: './icon-transparent-192.png',
-      badge: './icon-transparent-192.png',
+      body: '',
+      badge: new URL('./icon-transparent-192.png',self.registration.scope).href,
       tag: typeof message.tag === 'string' ? message.tag : undefined,
       data: { url: url.href },
     }

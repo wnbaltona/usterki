@@ -150,20 +150,8 @@ async function submitSettings(form){if(!isAdmin())throw Error('Wybierz profil ad
 function exportCsv(form){if(!isAdmin())throw Error('Wybierz profil administratora.');const v=Object.fromEntries(new FormData(form));if(v.from&&v.to&&v.from>v.to)throw Error('Data początkowa nie może być późniejsza niż końcowa.');const tickets=state.tickets.filter(t=>(!v.from||t.createdAt>=new Date(v.from+'T00:00').toISOString())&&(!v.to||t.createdAt<=new Date(v.to+'T23:59:59.999').toISOString()));const rows=[['Numer zgłoszenia','Poprzedni numer','Data zgłoszenia','Miasto','MPK','Nazwa','Zgłaszający','Telefon kontaktowy','E-mail','Rodzaj','Priorytet','Blokuje sprzedaż','Opis','Status','Czas sugerowany (h)','Termin sugerowany','Termin planowany','Data zamknięcia','Komentarz zamknięcia','Pierwsza reakcja','Załączniki']];for(const t of tickets)rows.push([t.number,t.previousNumber||'',date(t.createdAt),t.city,t.mpk,t.locationName,t.reporter,t.reporterPhone||'',t.reporterEmail,t.category,t.priority,t.blocksSales?'Tak':'Nie',t.description,t.status,targetHours(t.priority,t.blocksSales),date(suggestedDeadline(t)),t.dueAt?dateOnly(t.dueAt):'',t.closedAt?date(t.closedAt):'',t.closingComment,t.firstResponseAt?date(t.firstResponseAt):'',t.attachments.map(f=>f.name).join(' | ')]);download(new Blob(['\uFEFF'+rows.map(r=>r.map(Model.csvCell).join(';')).join('\r\n')],{type:'text/csv;charset=utf-8'}),'Serwis-Lokali-zgloszenia-'+new Date().toISOString().slice(0,10)+'.csv');toast('Przygotowano raport: '+tickets.length+' zgłoszeń.');}
 // Powiadomienia są częścią tej samej transakcji co zgłoszenie/komentarz.
 function notificationsContext(data=pendingRemote||state){return Model.notificationsFor(data,data.users.find(u=>u.id===currentId&&u.active));}
-function mountToast(node){
- const modal=['quick-close-dialog','notifications-dialog','detail-dialog'].map(id=>document.getElementById(id)).find(dialog=>dialog?.open);
- if(!modal){$('#toasts').append(node);return;}
- let layer=modal.querySelector('.dialog-toast-layer');
- if(!layer){
-   layer=document.createElement('div');
-   layer.className='dialog-toast-layer';
-   const header=modal.querySelector('.dialog-head');
-   layer.style.setProperty('--dialog-header-height',(header?.getBoundingClientRect().height||64)+'px');
-   if(header)header.insertAdjacentElement('afterend',layer);
-   else modal.prepend(layer);
- }
- layer.append(node);
-}
+function mountToast(node){mountToastAboveDialogs(node);}
+
 function incomingToast(title,body,notificationId=''){
  const node=document.createElement('div');node.className='toast incoming-toast';node.setAttribute('role','status');
  const copy=document.createElement('div'),strong=document.createElement('strong'),p=document.createElement('p');strong.textContent=title;p.textContent=body;copy.append(strong,p);
