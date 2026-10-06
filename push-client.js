@@ -3,6 +3,10 @@ const PUSH_TABLE = 'usterki_push_subscriptions';
 const PUSH_FUNCTION = SUPABASE_URL + '/functions/v1/send-push';
 let pushBusy = false;
 let pushCachedKey = null;
+let pushLastError='';
+function pushTimeout(promise,message,ms=12000){let timer;return Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error(message)),ms);})]).finally(()=>clearTimeout(timer));}
+function pushSupportError(){if(!window.isSecureContext)return 'Otwórz aplikację pod adresem HTTPS.';if(!pushSupported())return 'Ta przeglądarka nie obsługuje push. Na iPhonie otwórz aplikację z ikony na ekranie początkowym. Na laptopie użyj Chrome lub Edge.';if(Notification.permission==='denied')return 'Zgoda na powiadomienia jest zablokowana. Odblokuj ją w ustawieniach tej strony lub aplikacji w przeglądarce/systemie.';return '';}
+
 
 function pushSupported() {
   return window.isSecureContext && 'serviceWorker' in navigator &&
@@ -16,8 +20,8 @@ function pushKeyBytes(base64url) {
 }
 
 async function pushRegistration() {
-  await navigator.serviceWorker.register('./app-sw.js', { scope: './' });
-  return navigator.serviceWorker.ready;
+  await pushTimeout(navigator.serviceWorker.register('./app-sw.js', { scope: './' }),'Nie udało się uruchomić obsługi push. Sprawdź, czy app-sw.js jest wgrany na hosting.');
+  return pushTimeout(navigator.serviceWorker.ready,'Obsługa push nie uruchomiła się. Odśwież aplikację i sprawdź plik app-sw.js na hostingu.');
 }
 
 async function pushSubscription() {
@@ -25,12 +29,20 @@ async function pushSubscription() {
   return registration.pushManager.getSubscription();
 }
 
-async function pushPublicKey() {
-  const response = await fetch(PUSH_FUNCTION);
-  if (!response.ok) throw Error('Powiadomienia telefonu nie są jeszcze skonfigurowane w Supabase.');
-  const config = await response.json();
-  if (!config.publicKey) throw Error('Brak klucza powiadomień w Supabase.');
+async function pushPublicKey(){
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);
+ try{
+  const response=await fetch(PUSH_FUNCTION,{headers:{apikey:SUPABASE_ANON_KEY},signal:controller.signal});
+  if(response.status===401||response.status===403)throw Error('Funkcja send-push odrzuca dostęp. Wyłącz Verify JWT w ustawieniach tej funkcji w Supabase.');
+  if(response.status===404)throw Error('Brak funkcji send-push w Supabase. Najpierw wdróż tę funkcję.');
+  if(response.status===503)throw Error('W Supabase brakuje VAPID_PUBLIC_KEY. Dodaj klucze w Edge Functions → Secrets.');
+  if(!response.ok)throw Error('Błąd funkcji send-push: HTTP '+response.status+'. Sprawdź jej logi w Supabase.');
+  const config=await response.json();
+  if(!config.publicKey)throw Error('Funkcja send-push nie zwraca klucza VAPID_PUBLIC_KEY.');
+  const bytes=pushKeyBytes(config.publicKey);if(bytes.length!==65||bytes[0]!==4)throw Error('VAPID_PUBLIC_KEY jest niepoprawny. Wpisz cały klucz publiczny z generatora.');
   return config.publicKey;
+ }catch(error){if(error.name==='AbortError')throw Error('Brak odpowiedzi send-push. Sprawdź połączenie i wdrożenie funkcji.');if(error instanceof TypeError)throw Error('Nie można połączyć się z send-push. Sprawdź wdrożenie funkcji i jej obsługę CORS.');throw error;}
+ finally{clearTimeout(timer);}
 }
 
 async function savePushSubscription(subscription) {
@@ -63,54 +75,28 @@ window.removePushForLogout = async function () {
   await removePushSubscription();
 };
 
-window.refreshPushButton = async function () {
-  const button = document.getElementById('push-toggle');
-  const status = document.getElementById('push-status');
-  if (!button || !status) return;
-  if(!signedInProfile()){status.textContent='Powiadomienia wymagają aktywnego dostępu do aplikacji.';button.disabled=true;return;}
-  if (!pushSupported()) {
-    status.textContent = window.isSecureContext
-      ? 'Ta przeglądarka nie obsługuje push. Na iPhonie dodaj aplikację do ekranu początkowego i otwórz ją z ikony.'
-      : 'Otwórz aplikację przez bezpieczny adres HTTPS.';
-    button.disabled = true;
-    return;
-  }
-  if (Notification.permission === 'denied') {
-    status.textContent = 'Powiadomienia są zablokowane w ustawieniach telefonu.';
-    button.disabled = true;
-    return;
-  }
-  if (pushBusy) { button.disabled = true; return; }
-  try {
-    const subscription = await pushSubscription();
-    if (!status.isConnected) return;
-    if (!subscription) {
-      try { pushCachedKey = await pushPublicKey(); }
-      catch {
-        if (status.isConnected) {
-          status.textContent = 'Wysyłka na telefon nie jest jeszcze skonfigurowana.';
-          button.disabled = true;
-        }
-        return;
-      }
-    }
-    if (!status.isConnected) return;
-    status.textContent = subscription ? 'Włączone na tym urządzeniu.' : 'Otrzymuj informacje o nowych zgłoszeniach i zmianach.';
-    button.textContent = subscription ? 'Wyłącz' : 'Włącz';
-    button.disabled = false;
-  } catch {
-    if (!status.isConnected) return;
-    status.textContent = 'Nie udało się sprawdzić ustawień powiadomień.';
-    button.disabled = false;
-  }
+window.refreshPushButton=async function(){
+ const button=document.getElementById('push-toggle'),status=document.getElementById('push-status');if(!button||!status)return;
+ button.disabled=pushBusy;if(pushBusy)return;
+ if(!signedInProfile()){status.textContent='Powiadomienia wymagają aktywnego dostępu do aplikacji.';button.disabled=true;return;}
+ const problem=pushSupportError();if(problem){status.textContent=problem;button.textContent='Sprawdź powiadomienia';return;}
+ button.textContent='Włącz powiadomienia';
+ try{const subscription=await pushSubscription();if(!status.isConnected||pushBusy)return;
+ button.textContent=subscription?'Wyłącz powiadomienia':'Włącz powiadomienia';
+ status.textContent=pushLastError||(subscription?'Włączone na tym urządzeniu.':'Kliknij, aby zezwolić na powiadomienia na tym urządzeniu.');
+ }catch(error){if(status.isConnected)status.textContent=error.message;}
 };
 
 document.addEventListener('click', async event => {
-  if (event.target?.id !== 'push-toggle' || pushBusy) return;
+  const clicked=event.target.closest?.('#push-toggle');if(!clicked||pushBusy)return;
   pushBusy = true;
-  const button = event.target;
+  const button = clicked;
+  const status=document.getElementById('push-status');pushLastError='';
   button.disabled = true;
   try {
+    const problem=pushSupportError();if(problem)throw Error(problem);
+    if(!signedInProfile())throw Error('Najpierw administrator musi nadać dostęp.');
+    if(status)status.textContent='Włączanie lub wyłączanie powiadomień…';
     // Na iPhonie przeglądarka wymaga wywołania wprost po dotknięciu przycisku.
     const permissionPromise = Notification.permission === 'default'
       ? Notification.requestPermission() : null;
@@ -131,7 +117,7 @@ document.addEventListener('click', async event => {
       catch (error) { await subscription.unsubscribe(); throw error; }
       toast('Powiadomienia na tym urządzeniu są włączone.');
     }
-  } catch (error) { toast(error.message || 'Nie udało się zmienić powiadomień.', true); }
+  } catch (error) { pushLastError=error.message||'Nie udało się zmienić powiadomień.';if(status)status.textContent=pushLastError;toast(pushLastError,true); }
   finally { pushBusy = false; window.refreshPushButton(); }
 });
 
