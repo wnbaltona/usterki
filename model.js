@@ -89,7 +89,6 @@ const Model = (() => {
     for (const notification of state.notifications) {
       if (notification.type === 'update' && notification.body) notification.body = notification.body.replaceAll('Oczekuje na części','Oczekuje na naprawę');
     }
-    if (!state.users.some(u=>u.id==='demo-manager'||u.email==='kierownik178@example.test')) state.users.push({id:'demo-manager',name:'Kierownik lokalu 178',email:'kierownik178@example.test',role:'Kierownik lokalu',mpks:['178'],active:true});
     const knownEvents = new Set(state.events.map(event => event.id));
     for (const ticket of state.tickets) {
       const id = 'created-' + ticket.id;

@@ -91,6 +91,16 @@ async function restoreUserProfile(id){
  await mutate(next=>{const profile=next.users.find(u=>u.id===id);profile.active=true;delete profile.deletedAt;});
  shell();toast('Przywrócono profil.');
 }
+async function purgeUserProfile(id){
+ if(!isAdmin())throw Error('Tylko administrator może trwale usuwać profile.');
+ const target=state.users.find(u=>u.id===id&&u.deletedAt);
+ if(!target)throw Error('Można trwale usunąć wyłącznie profil z listy usuniętych.');
+ if(target.authUserId===authUser?.id||id===currentId)throw Error('Nie można usunąć własnego profilu.');
+ if(!confirm('Usunąć na stałe profil „'+target.name+'”? Nie będzie można go przywrócić. Zgłoszenia i komentarze pozostaną w historii. Konto logowania w Supabase pozostanie.'))return;
+ await mutate(next=>{next.users=next.users.filter(u=>u.id!==id);next.notifications=next.notifications.filter(n=>n.recipientId!==id);});
+ if(editingUser===id)editingUser=null;
+ shell();toast('Profil został trwale usunięty.');
+}
 async function saveUserForm(form){
  if(!form||!state)return;
  if(busy){fail(Error('Poczekaj na zakończenie poprzedniego zapisu.'),form);return;}
@@ -116,11 +126,14 @@ async function submitUser(form){
  const values=Object.fromEntries(new FormData(form));
  const mpks=[...new Set(String(values.mpks||'').toUpperCase().split(/[,;\s]+/).filter(Boolean))];
  if(mpks.some(mpk=>!state.locations.some(l=>l.mpk===mpk)))throw Error('Sprawdź przypisane MPK — jeden z numerów nie istnieje.');
- const previous=values.id?(state.users.find(u=>u.id===values.id)||pendingAccount(values.id)):null;
+ let previous=values.id?(state.users.find(u=>u.id===values.id)||pendingAccount(values.id)):null;
  const account=authAccounts.find(a=>a.email?.toLowerCase()===values.email.trim().toLowerCase());
  if(!account)throw Error('Najpierw utwórz konto z tym e-mailem w Supabase i odśwież listę kont.');
+ const saved=values.id?state.users.find(u=>u.id===values.id):null;
+ if(!saved){previous=state.users.find(u=>u.authUserId===account.id)||state.users.find(u=>u.email?.trim().toLowerCase()===account.email.trim().toLowerCase())||previous;}
  if(values.id&&!previous)throw Error('Nie znaleziono edytowanego profilu. Odśwież listę użytkowników.');
- const proposed={...previous,authUserId:account.id,id:values.id||uid(),name:values.name.trim(),email:values.email.trim().toLowerCase(),phone:String(values.phone||'').trim(),role:values.role,mpks,active:values.active==='on'};
+ const proposed={...previous,authUserId:account.id,id:previous?.id||values.id||uid(),name:values.name.trim(),email:values.email.trim().toLowerCase(),phone:String(values.phone||'').trim(),role:values.role,mpks,active:values.active==='on'};
+ delete proposed.deletedAt;
  Model.validateUserChange(state.users,proposed);
  await mutate(next=>{const index=next.users.findIndex(u=>u.id===proposed.id);if(index>=0)next.users[index]=proposed;else next.users.push(proposed);});
  currentId=user()?.id;

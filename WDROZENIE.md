@@ -30,3 +30,9 @@ Nowe konto bez aktywnego profilu nie pobierze wspólnych danych ani plików. Wy�
 Weryfikacja po wdrożeniu: nowe konto bez roli nie otwiera zgłoszeń; administrator może nadać mu Koordynatora; koordynator widzi obsługę zgłoszeń, ale nie Administrację; wyłączenie profilu blokuje odczyt/zapis; próba zmiany `data.users` z sesji koordynatora jest odrzucana.
 
 Ograniczenie obecnej architektury: zgłoszenia nadal znajdują się w jednym wspólnym JSON. Aktywne konta mają dostęp do całego rekordu przez API, a filtrowanie zgłoszeń według roli/MPK odbywa się w interfejsie. Ten dodatek chroni nadawanie ról i dostęp kont, ale nie wprowadza serwerowych uprawnień do pojedynczych zgłoszeń.
+
+## Aktualizacja poprawki profili
+
+Jeśli poprzednia wersja kont i ról została już wdrożona, wystarczy podmienić pliki aplikacji z nowej paczki i odświeżyć stronę. SQL pozostaje bez zmian; nie wykonuj ponownie powiązania pierwszego administratora.
+
+Nadawanie dostępu wiąże konto z istniejącym profilem o tym samym e-mailu, także z profilem usuniętym, zachowując identyfikator i historię. Zapis przywraca taki profil. Trwałe usunięcie jest dostępne wyłącznie dla profili z listy usuniętych, wymaga potwierdzenia i usuwa profil oraz jego powiadomienia. Zachowuje zgłoszenia i komentarze oraz konto w Supabase. Po ponownym nadaniu dostępu trwale usuniętemu kontu powstaje nowy profil.

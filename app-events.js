@@ -68,6 +68,7 @@ document.addEventListener('click', async event => {
  else if(action==='admin-tab'){if(dirty&&!confirm('Odrzucić niezapisane zmiany formularza?'))return;dirty=false;adminTab=el.dataset.tab;editingUser=null;editingLocation=null;shell();}
  else if(action==='save-user'){event.preventDefault();await saveUserForm($('#user-form'));}
  else if(action==='delete-user')await perform(()=>deleteUserProfile(el.dataset.id));
+ else if(action==='purge-user')await perform(()=>purgeUserProfile(el.dataset.id));
  else if(action==='restore-user')await perform(()=>restoreUserProfile(el.dataset.id));
  else if(action==='edit-user'){if(dirty&&!confirm('Odrzucić niezapisane zmiany formularza?'))return;dirty=false;editingUser=el.dataset.id;shell();$('#u-name').focus();}
  else if(action==='cancel-user'){dirty=false;editingUser=null;shell();}
