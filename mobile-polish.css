@@ -151,6 +151,38 @@ form[aria-busy="true"] button[type="submit"]::after {
 }
 
 /* Deleted profiles: details on the left, both actions together on the right. */
+#content .tickets-table td[data-label="Status"] .pill,
+.schedule-state .pill.waiting {
+ white-space:nowrap;overflow-wrap:normal;word-break:normal;
+ width:max-content;max-width:none;font-size:11px;line-height:1.4;padding:6px 8px;
+}
+#content .tickets-table td[data-label="Status"] { max-width:none;text-align:center; }
+@media(min-width:1001px) {
+ #content .recent-panel .tickets-table tbody tr {
+  grid-template-columns:112px minmax(120px,.95fr) minmax(135px,1.5fr) 104px minmax(165px,.85fr) 146px;
+ }
+ #content .tickets-table:not(.recent-panel .tickets-table) th:nth-child(5) { min-width:165px; }
+ @container(min-width:880px) {
+  #content .recent-panel .tickets-table tbody tr {
+   grid-template-columns:minmax(85px,.75fr) minmax(115px,1.1fr) minmax(150px,1.55fr) minmax(78px,.7fr) minmax(165px,.85fr) minmax(92px,.8fr) minmax(138px,1fr);
+  }
+ }
+}
+@media(min-width:1001px) {
+ #content .tickets-table thead th:nth-child(3),
+ #content .tickets-table tbody td[data-label="Usterka"],
+ #content .tickets-table tbody td[data-label="Usterka"] .cell-main,
+ #content .tickets-table tbody td[data-label="Usterka"]::before {
+  text-align:center;
+ }
+ #content .tickets-table tbody td[data-label="Usterka"] {
+  justify-self:stretch;min-width:0;
+ }
+ #content .tickets-table tbody td[data-label="Usterka"]::before,
+ #content .tickets-table tbody td[data-label="Usterka"] .cell-main {
+  display:block;width:100%;box-sizing:border-box;margin-inline:0;
+ }
+}
 #account-dialog:has(.account-layout) { width: min(680px,calc(100vw - 24px));max-height:calc(100dvh - 24px); }
 #account-dialog .account-layout { display:grid;gap:18px;padding:22px; }
 .account-layout .account-section { min-width:0;padding:20px;background:#fff;border:1px solid var(--line);border-radius:14px; }
