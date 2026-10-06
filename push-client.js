@@ -143,9 +143,53 @@ function openTicketFromPush() {
 window.onPushAppReady = function () {
   restorePushSubscription().catch(() => {});
   openTicketFromPush();
+  setTimeout(offerStartupPush,500);
 };
 
 window.onPushProfileChanged = function () {
   restorePushSubscription().catch(error => toast(error.message, true));
   window.refreshPushButton();
 };
+
+// Pierwsze uruchomienie zainstalowanej aplikacji: zgodę systemową wywołuje kliknięcie.
+const startupPushShown=new Set();
+function installedApp(){return window.matchMedia?.('(display-mode: standalone)').matches||window.matchMedia?.('(display-mode: fullscreen)').matches||navigator.standalone===true;}
+function startupPushKey(){return 'usterki-push-welcome-'+authUser?.id;}
+function rememberStartupPush(){try{localStorage.setItem(startupPushKey(),'done');}catch{}startupPushShown.add(startupPushKey());}
+function shouldOfferStartupPush(){
+ if(startupPushShown.has(startupPushKey())||!authUser||!signedInProfile()||previewProfileId||!installedApp()||!pushSupported()||Notification.permission!=='default')return false;
+ try{if(localStorage.getItem(startupPushKey()))return false;}catch{}
+ return true;
+}
+function offerStartupPush(){
+ if(!shouldOfferStartupPush()||document.querySelector('dialog[open]'))return;
+ const dialog=document.getElementById('push-welcome-dialog');if(!dialog)return;
+ startupPushShown.add(startupPushKey());
+ dialog.innerHTML='<div class="push-welcome-content"><h2 id="push-welcome-title">Włączyć powiadomienia?</h2><p>Otrzymasz powiadomienie, gdy pojawi się nowe zgłoszenie, komentarz lub zmiana statusu — także gdy aplikacja jest zamknięta.</p><div class="push-welcome-actions"><button type="button" class="btn" id="push-welcome-enable">Włącz powiadomienia</button><button type="button" class="btn secondary" id="push-welcome-later">Później</button></div><p id="push-welcome-status" role="status"></p><p class="hint">Ustawienie możesz zmienić w „Moim koncie”.</p></div>';
+ dialog.showModal();
+ document.getElementById('push-welcome-later').onclick=()=>{rememberStartupPush();dialog.close();};
+ dialog.oncancel=()=>{rememberStartupPush();};
+ document.getElementById('push-welcome-enable').onclick=async()=>{
+  if(pushBusy)return;
+  pushBusy=true;
+  const button=document.getElementById('push-welcome-enable'),status=document.getElementById('push-welcome-status'),accountId=authUser?.id;
+  button.disabled=true;status.textContent='Oczekiwanie na zgodę…';
+  try{
+   const problem=pushSupportError();if(problem)throw Error(problem);
+   // Musi nastąpić bezpośrednio po kliknięciu, przed oczekiwaniem na sieć.
+   const permission=await Notification.requestPermission();
+   if(permission!=='granted')throw Error(permission==='denied'?'Powiadomienia zablokowano. Możesz odblokować je w ustawieniach przeglądarki lub aplikacji.':'Nie udzielono zgody. Możesz spróbować ponownie lub wybrać „Później”.');
+   status.textContent='Zapisywanie urządzenia…';
+   const publicKey=pushCachedKey||await pushPublicKey();pushCachedKey=publicKey;
+   const registration=await pushRegistration();
+   let subscription=await registration.pushManager.getSubscription();
+   if(!subscription)subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:pushKeyBytes(publicKey)});
+   try{if(authUser?.id!==accountId)throw Error('Konto zmieniło się podczas włączania powiadomień. Spróbuj ponownie w „Moim koncie”.');await savePushSubscription(subscription);}catch(error){await subscription.unsubscribe();throw error;}
+   rememberStartupPush();dialog.close();toast('Powiadomienia są włączone na tym urządzeniu.');
+  }catch(error){status.textContent=error.message||'Nie udało się włączyć powiadomień.';}
+  finally{pushBusy=false;button.disabled=false;window.refreshPushButton?.();}
+ };
+}
+window.addEventListener('appinstalled',()=>setTimeout(offerStartupPush,500));
+document.addEventListener('close',()=>setTimeout(offerStartupPush,250),true);
+
