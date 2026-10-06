@@ -407,3 +407,6 @@ input[type=checkbox],input[type=radio] { accent-color:var(--accent-dark) }
 #push-welcome-status { margin:16px 0 0; }#push-welcome-status:empty { display:none; }
 .push-welcome-content .hint { margin:18px 0 0;font-size:13px; }
 @media(max-width:560px){.push-welcome-content{padding:24px 20px;}.push-welcome-content h2{font-size:22px;}}
+
+.install-button{margin:16px 0 24px;min-height:44px;white-space:normal;}.install-button[hidden]{display:none!important;}
+@media(max-width:800px){.install-button{width:100%;min-height:48px;}}

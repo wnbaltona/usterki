@@ -6,9 +6,10 @@ async function registerAppWorker(){
 
 async function startApplication() {
   try {
+    registerAppWorker().catch(error=>{window.appInstallError=error.message;});
     await openStore();
     await initializeAuth();
-    registerAppWorker().catch(() => {});
+
 
     if (authUser) {
       showApp();
