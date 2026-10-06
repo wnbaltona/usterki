@@ -308,3 +308,49 @@ input[type=checkbox],input[type=radio] { accent-color:var(--accent-dark) }
 @media(max-width:560px) { .account-data { grid-template-columns:1fr;gap:4px; }.account-data dd { margin-bottom:10px; } }
 
 #admin-account-button[hidden] { display:none!important; }
+
+/* Account and password forms have their own spacing instead of relying on grid wrappers. */
+#account-password-form,
+#password-reset-form,
+#recovery-password-form {
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:20px;
+  margin:18px 0 0;
+}
+#account-password-form .field,
+#password-reset-form .field,
+#recovery-password-form .field {
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:8px;
+  min-width:0;
+  margin:0;
+}
+#account-password-form .field label,
+#password-reset-form .field label,
+#recovery-password-form .field label { margin:0;line-height:1.5; }
+#account-password-form input,
+#password-reset-form input,
+#recovery-password-form input { width:100%;min-width:0;box-sizing:border-box;margin:0; }
+#account-password-form .hint,
+#recovery-password-form .hint { margin:0;line-height:1.5; }
+#account-password-form > .btn,
+#password-reset-form > .btn,
+#recovery-password-form > .btn { justify-self:start;margin:0;max-width:100%;min-height:42px;white-space:normal; }
+.account-dialog .dialog-body { padding:24px;background:#fff; }
+.account-dialog .dialog-body > p { margin:0 0 20px;line-height:1.6; }
+.account-dialog .dialog-head { gap:16px;align-items:center; }
+.account-dialog .dialog-head h2 { margin:0;min-width:0;line-height:1.35; }
+.account-dialog .close-dialog { flex:0 0 auto; }
+.account-status { margin:0;line-height:1.6; }
+.account-status:empty { display:none; }
+.recovery-panel { box-sizing:border-box;padding:28px; }
+.recovery-panel h1 { margin:0 0 18px;line-height:1.3; }
+.recovery-panel > p { margin:0;line-height:1.6; }
+.recovery-panel > .account-logout { margin-top:20px; }
+@media(max-width:560px) {
+  .account-dialog .dialog-body { padding:20px; }
+  .recovery-panel { padding:22px 20px; }
+  #account-password-form,#password-reset-form,#recovery-password-form { gap:18px; }
+}
