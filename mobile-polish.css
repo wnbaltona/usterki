@@ -149,3 +149,65 @@ form[aria-busy="true"] button[type="submit"]::after {
 @media(prefers-reduced-motion:reduce) {
  *,*::before,*::after { scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important; }
 }
+
+/* Deleted profiles: details on the left, both actions together on the right. */
+#account-dialog:has(.account-layout) { width: min(680px,calc(100vw - 24px));max-height:calc(100dvh - 24px); }
+#account-dialog .account-layout { display:grid;gap:18px;padding:22px; }
+.account-layout .account-section { min-width:0;padding:20px;background:#fff;border:1px solid var(--line);border-radius:14px; }
+.account-layout .account-section h3 { margin:0 0 18px;font-size:17px;line-height:1.4; }
+.account-layout .account-data { margin:0;grid-template-columns:145px minmax(0,1fr);gap:12px 18px; }
+.account-layout .account-push { margin:18px 0 0;padding:18px 0 0;border:0;border-top:1px solid var(--line);border-radius:0; }
+.account-layout .account-push h4 { margin:0 0 10px;font-size:14px; }
+.account-layout .account-push p { line-height:1.5;overflow-wrap:anywhere; }
+.account-layout .account-footer { display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap; }
+.account-layout .account-footer .account-logout { margin:0;width:auto; }
+.account-layout .account-status { margin:0;line-height:1.5; }
+.topbar span.account-summary { cursor:default; }
+.topbar span.account-summary:hover { background:transparent; }
+@media(max-width:800px) {
+ #account-dialog .account-layout { padding:14px;gap:14px; }
+ .account-layout .account-section { padding:16px; }
+ .account-layout .account-data { grid-template-columns:minmax(0,1fr);gap:4px; }
+ .account-layout .account-data dd { margin:0 0 12px; }
+ .account-layout .account-data dd:last-child { margin-bottom:0; }
+ .account-layout .account-footer > .btn { flex:1 1 110px; }
+ .account-layout #account-password-form > .btn { width:100%; }
+}
+.profile-form-actions { display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:20px; }
+#user-form .profile-form-actions > .btn { margin:0;min-height:40px; }
+.users-table { width:100%; }
+.users-table th:nth-child(4),.users-table td:nth-child(4) { text-align:center;vertical-align:middle; }
+.users-table th:last-child,.users-table td:last-child { text-align:right;padding-right:18px; }
+.users-table .user-actions { justify-content:flex-end;gap:8px; }
+.users-table td:nth-child(4) .pill { white-space:nowrap; }
+.empty > p { margin-bottom:0; }
+.empty > .btn { margin-top:20px; }
+.tickets-table td[data-label="Status"] .pill { text-align:center;line-height:1.4; }
+@media(min-width:1001px) {
+ .tickets-table th:nth-child(3),.tickets-table td[data-label="Usterka"],
+ .tickets-table td[data-label="Usterka"] .cell-main,
+ .tickets-table td[data-label="Usterka"]::before,
+ .recent-panel.space-top .tickets-table td[data-label="Usterka"],
+ .recent-panel.space-top .tickets-table td[data-label="Usterka"]::before { text-align:center; }
+ .tickets-table th:nth-child(5),.tickets-table td[data-label="Status"],
+ .tickets-table td[data-label="Status"]::before,
+ .recent-panel.space-top .tickets-table td[data-label="Status"],
+ .recent-panel.space-top .tickets-table td[data-label="Status"]::before { text-align:center; }
+ .tickets-table td[data-label="Status"] .pill { display:inline-block;max-width:100%;box-sizing:border-box;white-space:normal;padding:6px 9px; }
+}
+@media(max-width:800px) {
+ #user-form .profile-form-actions > .btn { flex:1 1 120px;min-height:44px; }
+}
+.removed-users > div {
+ display:grid;grid-template-columns:minmax(0,1fr) auto auto;
+ align-items:center;gap:10px;padding:14px 16px;
+}
+.removed-users > div > span { min-width:0;overflow-wrap:anywhere; }
+.removed-users > div > span strong { line-height:1.5; }
+.removed-users > div > span small { margin-top:3px;line-height:1.5; }
+.removed-users > div > .btn { margin:0;white-space:nowrap;min-height:40px; }
+@media(max-width:800px) {
+ .removed-users > div { grid-template-columns:minmax(0,1fr) minmax(0,1fr);padding:14px;gap:12px 8px; }
+ .removed-users > div > span { grid-column:1 / -1; }
+ .removed-users > div > .btn { width:100%;min-height:44px;white-space:normal; }
+}
