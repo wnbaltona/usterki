@@ -81,13 +81,20 @@
 
 /* Notification layer above open dialogs on all screen sizes. */
 #toasts.toast-container {
- position:fixed;inset:calc(16px + env(safe-area-inset-top)) auto auto 50%;
- transform:translateX(-50%);width:min(440px,calc(100vw - 24px));max-width:calc(100vw - 24px);
+ position:fixed;inset:auto calc(20px + env(safe-area-inset-right)) calc(20px + env(safe-area-inset-bottom)) auto;
+ transform:none;width:min(440px,calc(100vw - 40px));max-width:calc(100vw - 40px);
  max-height:calc(100dvh - 32px);margin:0;padding:0;border:0;background:transparent;
  overflow:auto;box-sizing:border-box;z-index:2147483647;pointer-events:none;
 }
 #toasts .toast { pointer-events:auto;width:100%;box-sizing:border-box;overflow-wrap:anywhere; }
 #toasts::backdrop { background:transparent;pointer-events:none; }
+@media(max-width:800px) {
+ #toasts.toast-container {
+  inset:auto 12px calc(12px + env(safe-area-inset-bottom)) 12px;
+  width:auto;max-width:none;
+  max-height:calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+ }
+}
 
 /* Consistent controls, readable content and feedback while saving. */
 :where(button,input,select,textarea,a):focus-visible { outline:3px solid #92b7f2;outline-offset:3px; }
