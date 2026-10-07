@@ -1,0 +1,5 @@
+.auth-main .microsoft-login { display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:48px;margin:20px 0 0;box-sizing:border-box; }
+.microsoft-login svg { width:20px;height:20px;flex:none;background:#fff;padding:3px;border-radius:3px; }
+.auth-divider { display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px;margin:20px 0; }
+.auth-divider::before,.auth-divider::after { content:"";height:1px;flex:1;background:var(--line); }
+.account-microsoft-note { line-height:1.6;margin:0 0 20px; }

@@ -20,7 +20,8 @@ document.addEventListener('click', async event => {
  const action = el.dataset.action;
  try {
  if(busy){toast('Poczekaj na zakończenie bieżącej operacji.');return;}
- if(action==='sidebar-toggle')toggleSidebar();
+ if(action==='login-microsoft'){el.disabled=true;try{await perform(signInMicrosoft);}finally{el.disabled=false;}}
+ else if(action==='sidebar-toggle')toggleSidebar();
  else if(action==='toggle-password'){const field=$('#login-password'),visible=field.type==='password';field.type=visible?'text':'password';el.innerHTML=authEye(visible);el.setAttribute('aria-label',visible?'Ukryj hasło':'Pokaż hasło');el.setAttribute('aria-pressed',String(visible));}
  else if(action==='open-account')openAccount();
  else if(action==='close-account')$('#account-dialog').close();

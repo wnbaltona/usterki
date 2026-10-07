@@ -34,8 +34,9 @@ async function loadDemoState() {
 }
 
 async function initializeAuth() {
+  if(!SUPABASE_URL.startsWith('https://')||SUPABASE_URL.includes('TWOJ_PROJEKT')||!SUPABASE_ANON_KEY||SUPABASE_ANON_KEY.includes('WPISZ_'))throw Error('IT musi uzupełnić publiczną konfigurację Supabase w app-config.js.');
   if (!window.supabase) throw Error('Nie udało się załadować logowania Supabase.');
-  authClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  authClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY,{auth:{flowType:'pkce',detectSessionInUrl:true}});
   authClient.auth.onAuthStateChange((event, session) => {
     if(event==='PASSWORD_RECOVERY'){passwordRecovery=true;previewProfileId=null;authUser=session?.user||null;setTimeout(()=>showApp(),0);return;}
     if (event === 'INITIAL_SESSION') return;
@@ -54,7 +55,9 @@ async function initializeAuth() {
   if (error) throw error;
   authUser = data.session?.user || null;
 
-  if (!authUser) { showAuth(); return; }
+  const returnError=authReturnError();
+  clearAuthReturnUrl();
+  if (!authUser) { showAuth(returnError); return; }
   if(passwordRecovery){showPasswordRecovery();return;}
   await loadDemoState();
 }

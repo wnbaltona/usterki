@@ -152,7 +152,7 @@ form[aria-busy="true"] button[type="submit"]::after {
 
 /* Deleted profiles: details on the left, both actions together on the right. */
 @media(min-width:801px) {
- #account-dialog:has(.account-layout) { width:min(1280px,calc(100vw - 32px)); }
+ #account-dialog:has(.account-layout) { width:min(1180px,calc(100vw - 48px)); }
  #account-dialog .account-layout {
   grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);
   grid-template-areas:"data security" "device security" "footer footer";
@@ -232,7 +232,7 @@ form[aria-busy="true"] button[type="submit"]::after {
   display:block;width:100%;box-sizing:border-box;margin-inline:0;
  }
 }
-#account-dialog:has(.account-layout) { width:min(1280px,calc(100vw - 32px));max-height:calc(100dvh - 24px); }
+#account-dialog:has(.account-layout) { width:min(1180px,calc(100vw - 48px));max-height:calc(100dvh - 24px); }
 #account-dialog .account-layout { display:grid;gap:18px;padding:22px; }
 .account-layout .account-section { min-width:0;padding:20px;background:#fff;border:1px solid var(--line);border-radius:14px; }
 .account-layout .account-section h3 { margin:0 0 18px;font-size:17px;line-height:1.4; }
