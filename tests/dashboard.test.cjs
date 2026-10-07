@@ -1,0 +1,18 @@
+const path = require('path');
+const siteRoot = path.resolve(__dirname, '..');
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+const tickets=[{createdAt:'2026-10-06T10:00:00Z',status:'Nowe',city:'Warszawa',mpk:'178',locationName:'Multistore',priority:'Niski'},{createdAt:'2025-01-01T10:00:00Z',status:'Zamknięte',closedAt:'2025-01-01T12:00:00Z',city:'Kraków',mpk:'179',locationName:'Lokal',priority:'Niski'}];
+const ctx={Date,console,state:{locations:[],settings:{responseHours:48}},page:'dashboard',dashboardRange:'30',currentTickets:()=>tickets,isAdmin:()=>true,esc:s=>String(s),icon:()=>'<svg class="icon"></svg>',dateOnly:s=>s.slice(0,10),ticketCity:t=>t.city};
+vm.createContext(ctx);
+vm.runInContext(fs.readFileSync(path.join(siteRoot,'model.js'),'utf8'),ctx);
+for(const name of ['shared','home','new-ticket','tickets','schedule','dashboard','admin','ticket-detail']) vm.runInContext(fs.readFileSync(path.join(siteRoot,'views',name+'.js'),'utf8'),ctx);
+ctx.dashboardStartDate=()=>ctx.dashboardRange==='all'?'':'2026-09-08';
+let html=ctx.dashboardView();
+assert(html.includes('Warszawa'));assert(!html.includes('Kraków'));
+assert.equal((html.match(/data-action="stat-filter"/g)||[]).length,5);
+assert.equal((html.match(/data-action="dashboard-range"/g)||[]).length,3);
+assert(html.includes('data-action="dashboard-waiting"'));
+ctx.dashboardRange='all';html=ctx.dashboardView();assert(html.includes('Kraków'));assert(html.includes('2 h'));
+tickets.length=0;html=ctx.dashboardView();assert.equal((html.match(/Brak zgłoszeń w tym okresie/g)||[]).length,1);assert(!html.includes('chart-grid'));
+ctx.isAdmin=()=>false;assert.equal(ctx.dashboardView(),'');
+console.log('OK: zakres dat, karty filtrów, średni czas, pusty widok i dostęp administratora');

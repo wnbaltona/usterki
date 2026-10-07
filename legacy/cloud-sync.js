@@ -1,21 +1,19 @@
-'use strict';
-
-// Zapis i synchronizacja wspólnych danych demonstracyjnych w Supabase.
+/* Shared test data. This file runs after the app definitions and before startup. */
 const DEMO_TABLE = 'usterki_demo_state';
 const DEMO_BUCKET = 'usterki-demo-files';
 let demoLoaded = false;
-async function openStore() {
+openStore = async function () {
   state = Model.initial(window.BALTONA_LOCATIONS);
   try {
     currentId = localStorage.getItem('baltona-demo-view-profile');
   } catch {}
   currentId = user().id;
-}
-function savePreference() {
+};
+savePreference = function () {
   try {
     localStorage.setItem('baltona-demo-view-profile', currentId);
   } catch {}
-}
+};
 async function loadDemoState() {
   const {
     data,
@@ -46,15 +44,9 @@ async function loadDemoState() {
   demoLoaded = true;
   if (user()?.role === 'Administrator') await refreshAuthAccounts();
 }
-async function initializeAuth() {
-  if (!SUPABASE_URL.startsWith('https://') || SUPABASE_URL.includes('TWOJ_PROJEKT') || !SUPABASE_ANON_KEY || SUPABASE_ANON_KEY.includes('WPISZ_')) throw Error('IT musi uzupełnić publiczną konfigurację Supabase w app-config.js.');
+initializeAuth = async function () {
   if (!window.supabase) throw Error('Nie udało się załadować logowania Supabase.');
-  authClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-    auth: {
-      flowType: 'pkce',
-      detectSessionInUrl: true
-    }
-  });
+  authClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   authClient.auth.onAuthStateChange((event, session) => {
     if (event === 'PASSWORD_RECOVERY') {
       passwordRecovery = true;
@@ -90,10 +82,9 @@ async function initializeAuth() {
   } = await authClient.auth.getSession();
   if (error) throw error;
   authUser = data.session?.user || null;
-  const returnError = authReturnError();
-  clearAuthReturnUrl();
+  authReady = true;
   if (!authUser) {
-    showAuth(returnError);
+    showAuth();
     return;
   }
   if (passwordRecovery) {
@@ -101,8 +92,8 @@ async function initializeAuth() {
     return;
   }
   await loadDemoState();
-}
-async function persist(next, files = [], replaceFiles = false) {
+};
+persist = async function (next, files = [], replaceFiles = false) {
   if (replaceFiles) throw Error('Wczytywanie kopii jest wyłączone we wspólnej wersji demo.');
   const revision = state.revision;
   const uploaded = [];
@@ -146,8 +137,8 @@ async function persist(next, files = [], replaceFiles = false) {
   updatesChannel?.postMessage({
     revision: next.revision
   });
-}
-async function attachmentBlob(id) {
+};
+downloadFile = async function (id) {
   const ticket = currentTickets().find(t => t.attachments.some(f => f.id === id));
   if (!ticket) throw Error('Załącznik niedostępny w tym profilu.');
   const record = ticket.attachments.find(f => f.id === id);
@@ -156,19 +147,9 @@ async function attachmentBlob(id) {
     error
   } = await authClient.storage.from(DEMO_BUCKET).download(id);
   if (error) throw error;
-  return {
-    record,
-    blob: data
-  };
-}
-async function downloadFile(id) {
-  const {
-    record,
-    blob
-  } = await attachmentBlob(id);
-  download(blob, record.name);
-}
-async function syncFromDatabase() {
+  download(data, record.name);
+};
+syncFromDatabase = async function () {
   if (passwordRecovery || !authClient || !authUser || !state || busy || syncing) return;
   syncing = true;
   try {
@@ -198,8 +179,8 @@ async function syncFromDatabase() {
   } finally {
     syncing = false;
   }
-}
-function startLiveSync() {
+};
+startLiveSync = function () {
   if (startLiveSync.started) return;
   startLiveSync.started = true;
   try {
@@ -213,8 +194,8 @@ function startLiveSync() {
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') syncFromDatabase();
   });
-}
-async function readNotifications(ids = null) {
+};
+readNotifications = async function (ids = null) {
   const recipient = currentId;
   const selected = ids ? new Set(ids) : null;
   await mutate(next => {
@@ -226,8 +207,8 @@ async function readNotifications(ids = null) {
     }
   });
   refreshNotificationsUI();
-}
-async function backup() {
+};
+backup = async function () {
   if (!isAdmin()) throw Error('Wybierz profil administratora.');
   toast('Przygotowuję kopię danych demo i załączników…');
   const {
@@ -261,4 +242,19 @@ async function backup() {
     type: 'application/json'
   }), 'Serwis-Lokali-demo-kopia-' + new Date().toISOString().slice(0, 10) + '.json');
   toast('Pobrano kopię danych demo.');
-}
+};
+restore = async function () {
+  throw Error('Wczytywanie kopii jest wyłączone we wspólnej wersji demo.');
+};
+reportsView = function () {
+  return `<section class="panel"><h2>Eksport zgłoszeń</h2><form id="export-form" class="filters space-top"><div class="field"><label for="export-from">Od</label><input id="export-from" name="from" type="date"></div><div class="field"><label for="export-to">Do</label><input id="export-to" name="to" type="date"></div><button class="btn" type="submit">${icon('download')}Pobierz CSV</button></form></section><section class="panel space-top"><h2>Kopia danych demo</h2><p class="report-copy">Pobierz zgłoszenia i załączniki ze wspólnej bazy. Plik nie jest szyfrowany.</p><div class="backup-actions">${btn('backup', 'Pobierz kopię', 'download')}</div></section><div class="warning space-top">Wszyscy zalogowani testerzy widzą wspólne dane i mogą przełączać role. Używaj wyłącznie danych testowych.</div>`;
+};
+const originalNotificationsView = notificationsView;
+notificationsView = function () {
+  return originalNotificationsView().replace('Powiadomienia działają w tej lokalnej bazie — nie między komputerami.', 'Powiadomienia są wspólne dla zalogowanych urządzeń.');
+};
+const originalShell = shell;
+shell = function () {
+  originalShell();
+  $('#content').insertAdjacentHTML('afterbegin', '<div class="demo-banner" role="note">Wersja pokazowa · dane wspólne dla zalogowanych urządzeń. Używaj wyłącznie danych testowych. Przełączanie ról służy prezentacji.</div>');
+};
