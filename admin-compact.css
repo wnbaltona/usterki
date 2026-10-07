@@ -1,0 +1,118 @@
+/* Formularze wykorzystują szerokość swojego panelu. */
+#content .admin-split {
+  align-items: start;
+}
+#content .admin-split > #user-form,
+#content #settings-form {
+  display: block;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  margin: 0;
+  padding: 20px;
+  box-sizing: border-box;
+  container: admin-form / inline-size;
+}
+#content .admin-settings {
+  width: 100%;
+  max-width: none;
+}
+#content #user-form > h3,
+#content #settings-form > h2 {
+  margin: 0 0 20px;
+}
+#content #user-form .profile-fields,
+#content #settings-form .form-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px 20px;
+  margin: 0;
+}
+#content #user-form .field,
+#content #settings-form .field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+}
+#content #user-form .field > label,
+#content #settings-form .field > label {
+  margin: 0;
+  line-height: 1.5;
+}
+#content #user-form .field > input,
+#content #user-form .field > select,
+#content #settings-form .field > input,
+#content #settings-form .field > textarea {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+#content #user-form .field > input,
+#content #user-form .field > select,
+#content #settings-form .field > input {
+  min-height: 46px;
+}
+#content #user-form .hint,
+#content #settings-form .hint {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+#content #user-form .profile-fields > .checkline {
+  align-self: start;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  margin: 0;
+  padding: 10px 12px;
+  box-sizing: border-box;
+}
+#content #user-form .profile-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0 0;
+  padding: 0;
+}
+#content #user-form .profile-form-actions > .btn {
+  width: auto;
+  margin: 0;
+  min-height: 44px;
+}
+#content #settings-form > .btn {
+  margin: 20px 0 0;
+  min-height: 44px;
+}
+#content #settings-form .field.full {
+  grid-column: 1 / -1;
+}
+#content #settings-form textarea {
+  min-height: 200px;
+  resize: vertical;
+}
+@container admin-form (min-width: 440px) {
+  #content #user-form .profile-fields,
+  #content #settings-form .form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  #content #user-form .profile-fields > .checkline {
+    margin-top: 28px;
+  }
+}
+@container admin-form (min-width: 720px) {
+  #content #user-form .profile-fields,
+  #content #settings-form .form-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  #content .admin-split > #user-form,
+  #content #settings-form {
+    padding: 16px;
+  }
+}
