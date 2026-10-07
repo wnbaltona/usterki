@@ -1,0 +1,39 @@
+/* Ikona ma stałe pole; rozwinięcie zmienia wyłącznie jej kierunek. */
+#content .more-filters > summary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  max-width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 8px 28px 8px 0;
+  box-sizing: border-box;
+  line-height: 1.5;
+  list-style: none;
+}
+#content .more-filters > summary::marker {
+  content: '';
+}
+#content .more-filters > summary::-webkit-details-marker {
+  display: none;
+}
+#content .more-filters > summary::after {
+  content: none;
+  display: none;
+}
+#content .more-filters .filter-toggle-chevron {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: -8px;
+  pointer-events: none;
+  transform: scaleY(1);
+  transform-origin: center;
+  transition: none;
+}
+#content .more-filters[open] .filter-toggle-chevron {
+  transform: scaleY(-1);
+}

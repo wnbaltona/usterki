@@ -22,11 +22,12 @@ function updateTargetHint() {
   target.textContent = `Proponowany czas realizacji: ${targetHours(priority, blocksSales)} h od wysłania zgłoszenia${blocksSales ? ' (usterka blokuje sprzedaż)' : ''}.`;
 }
 function renderDraftFiles() {
-  if (draftFiles.length) {
-    document.getElementById('attachment-error').hidden = true;
-    document.getElementById('dropzone').classList.remove('invalid');
-  }
   if (!$('#draft-files')) return;
+  if (draftFiles.length) {
+    const error = document.getElementById('attachment-error');
+    if (error) error.hidden = true;
+    document.getElementById('dropzone')?.classList.remove('invalid');
+  }
   $('#draft-files').innerHTML = draftFiles.map((f, i) => `<div class="file-row">${icon('clip')}<span class="file-name">${esc(f.name)} <small>${sizeFmt(f.size)}</small></span><button class="btn secondary small" type="button" data-action="remove-file" data-index="${i}" aria-label="Usuń ${esc(f.name)}">Usuń</button></div>`).join('');
 }
 function renderCommentDraftFiles() {

@@ -1,0 +1,33 @@
+/* Sugestia terminu w wąskiej kolumnie obsługi zgłoszenia. */
+#manage-form .due-suggestion {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f6f8fb;
+}
+#manage-form #due-suggestion-text {
+  display: block;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+#manage-form #use-suggested-date {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  margin: 0;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  font-size: 13px;
+  line-height: 1.4;
+  white-space: normal;
+}
+#manage-form #use-suggested-date[hidden] {
+  display: none;
+}

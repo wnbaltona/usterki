@@ -14,7 +14,7 @@ Ta paczka pochodzi z załącznika `usterki-main (3).zip`. Zachowuje Supabase, do
 - `account.js` obsługuje panel konta, a `microsoft-auth.js` logowanie Microsoft.
 - `install.js`, `push-client.js`, `app-sw.js` i `push-sw.js` obsługują instalację oraz powiadomienia.
 - `supabase/` i pliki SQL zawierają dotychczasowe elementy backendu.
-- `legacy/` przechowuje stare, nieładowane implementacje `app.js` i `cloud-sync.js`.
+- Stare, nieładowane implementacje app.js, app-views.js i cloud-sync.js usunięto z paczki. Aktywne widoki są w views/.
 
 ## Zasady utrzymania
 

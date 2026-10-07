@@ -17,7 +17,7 @@
     <link rel="manifest" href="./manifest.json?v=native-install2">
     <link rel="icon" type="image/png" href="./icon-192.png?v=7">
     <link rel="apple-touch-icon" href="./icon-192.png?v=7">
-    <link rel="stylesheet" href="./styles.css?v=blue-theme1">
+    <link rel="stylesheet" href="./styles.css?v=arrow-svg2">
     <link rel="stylesheet" href="./fonts/manrope.css?v=1">
     <link rel="stylesheet" href="./ui-polish.css?v=blue-theme1">
     <link rel="stylesheet" href="./ui-layout.css?v=blue-theme1">
@@ -31,10 +31,14 @@
     <link rel="stylesheet" href="./microsoft-auth.css?v=1">
     <link rel="stylesheet" href="./account-polish.css?v=18">
     <link rel="stylesheet" href="./ticket-list.css?v=columns1">
-    <link rel="stylesheet" href="./admin-compact.css?v=admin1">
+    <link rel="stylesheet" href="./admin-compact.css?v=admin2">
+    <link rel="stylesheet" href="./ticket-detail.css?v=audit1">
+    <link rel="stylesheet" href="./accessibility.css?v=audit1">
+    <link rel="stylesheet" href="./filter-layout.css?v=arrow-svg2">
   </head>
 
   <body>
+    <a class="skip-link" href="#content">Przejdź do treści</a>
     <aside class="sidebar">
       <div class="brand">
         <span class="brand-mark" aria-hidden="true">
@@ -85,7 +89,7 @@
         <span>Dostępne są nowsze dane z drugiej karty. Twój formularz nie został zmieniony.</span>
         <button type="button" data-action="apply-pending">Wczytaj nowsze dane</button>
       </div>
-      <main class="content" id="content">
+      <main class="content" id="content" tabindex="-1">
         <div class="loading" role="status">Łączenie ze wspólną bazą danych…</div>
       </main>
     </div>
@@ -107,21 +111,21 @@
     <script src="./model.js?v=profiles2"></script>
     <script src="./install.js?v=restored3"></script>
     <script src="./microsoft-auth.js?v=1"></script>
-    <script src="./app-core.js?v=it-ms17"></script>
-    <script src="./views/shared.js?v=19"></script>
+    <script src="./app-core.js?v=audit1"></script>
+    <script src="./views/shared.js?v=audit1"></script>
     <script src="./views/home.js?v=19"></script>
     <script src="./views/new-ticket.js?v=19"></script>
-    <script src="./views/tickets.js?v=19"></script>
+    <script src="./views/tickets.js?v=arrow-svg2"></script>
     <script src="./views/schedule.js?v=19"></script>
     <script src="./views/dashboard.js?v=19"></script>
-    <script src="./views/admin.js?v=admin1"></script>
+    <script src="./views/admin.js?v=audit1"></script>
     <script src="./views/ticket-detail.js?v=19"></script>
     <script src="./toast-layer.js?v=1"></script>
-    <script src="./app-actions.js?v=toast-layer1"></script>
+    <script src="./app-actions.js?v=audit1"></script>
     <script src="./app-events.js?v=it-ms17"></script>
     <script src="./push-client.js?v=push-welcome3"></script>
     <script src="./account.js?v=it-ms17"></script>
-    <script src="./app-data.js?v=it-ms17"></script>
+    <script src="./app-data.js?v=audit1"></script>
     <script src="./bootstrap.js?v=install1"></script>
   </body>
 </html>

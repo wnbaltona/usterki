@@ -6,10 +6,7 @@ const DEMO_BUCKET = 'usterki-demo-files';
 let demoLoaded = false;
 async function openStore() {
   state = Model.initial(window.BALTONA_LOCATIONS);
-  try {
-    currentId = localStorage.getItem('baltona-demo-view-profile');
-  } catch {}
-  currentId = user().id;
+  currentId = null;
 }
 function savePreference() {
   try {

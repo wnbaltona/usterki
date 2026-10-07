@@ -116,3 +116,61 @@
     padding: 16px;
   }
 }
+
+/* Formularz profilu i usunięte profile w dwóch pionowych panelach. */
+#content .admin-users-layout {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+#content .admin-profile-panels {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 20px;
+  width: 100%;
+  max-width: 1100px;
+}
+#content .admin-profile-panels > #user-form,
+#content .admin-profile-panels > .removed-profiles-panel {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 20px;
+  box-sizing: border-box;
+}
+#content .admin-profile-panels #user-form .profile-fields {
+  grid-template-columns: minmax(0, 1fr);
+}
+#content .admin-profile-panels #user-form .profile-fields > .checkline {
+  margin: 0;
+}
+#content .removed-profiles-panel > h3 {
+  margin: 0 0 16px;
+}
+#content .removed-profiles-panel > .report-copy {
+  margin: 0 0 20px;
+  line-height: 1.6;
+}
+#content .removed-profiles-panel .removed-users > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 10px;
+  padding: 16px;
+}
+#content .removed-profiles-panel .removed-users > div > span {
+  grid-column: 1 / -1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+#content .removed-profiles-panel .removed-users > div > .btn {
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  white-space: normal;
+}
+@media (max-width: 800px) {
+  #content .admin-profile-panels {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

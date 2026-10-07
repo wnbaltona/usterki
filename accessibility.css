@@ -1,0 +1,40 @@
+/* Klawiatura, czytelność i wielkość pól interaktywnych. */
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 2147483647;
+  padding: 12px 16px;
+  border: 2px solid #173f78;
+  border-radius: 6px;
+  background: #fff;
+  color: #173f78;
+  transform: translateY(-200%);
+}
+.skip-link:focus { transform: translateY(0); }
+button:focus-visible, a:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible, summary:focus-visible {
+  outline: 3px solid #173f78;
+  outline-offset: 3px;
+}
+#content .cell-sub, #content .report-copy, #content .hint,
+dialog .hint, #content .recent-panel td[data-label]::before {
+  color: #52627a;
+}
+.btn, .close-dialog, .tab-button { min-height: 40px; }
+.close-dialog { min-width: 40px; }
+#content .admin-profile-panels > #user-form {
+  display: block;
+}
+@media (pointer: coarse) {
+  .btn, .close-dialog, .tab-button { min-height: 44px; }
+  .close-dialog { min-width: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}

@@ -124,7 +124,7 @@ function testProfiles() {
   });
 }
 function user() {
-  if (!authUser) return state.users.find(u => u.id === currentId && u.active) || state.users.find(u => u.active && u.role === 'Administrator');
+  if (!authUser) return undefined;
   const real = signedInProfile();
   if (real?.role === 'Administrator' && previewProfileId) {
     const test = testProfiles().find(u => u.id === previewProfileId);
@@ -280,10 +280,11 @@ async function logout() {
   }
 }
 function canManage() {
-  return ['Koordynator', 'Administrator'].includes(user().role);
+  return ['Koordynator', 'Administrator'].includes(user()?.role);
 }
 function canClose(ticket) {
   const u = user();
+  if (!u) return false;
   return ['Koordynator', 'Administrator'].includes(u.role) || u.role === 'Kierownik lokalu' && !!ticket && (u.mpks || []).includes(ticket.mpk);
 }
 function syncCategoryOptions() {
@@ -302,14 +303,15 @@ function syncCategoryOptions() {
 }
 function availablePlaces() {
   const u = user(),
-    mpks = u.mpks || [];
+    mpks = u?.mpks || [];
+  if (!u) return [];
   return state.locations.filter(l => l.active && (u.role === 'Kierownik lokalu' ? mpks.includes(l.mpk) : u.role === 'Użytkownik' && mpks.length ? mpks.includes(l.mpk) : true));
 }
 function isAdmin() {
-  return user().role === 'Administrator';
+  return user()?.role === 'Administrator';
 }
 function currentTickets() {
-  return Model.visible(state, user());
+  return user() ? Model.visible(state, user()) : [];
 }
 function toast(message, error = false) {
   const node = document.createElement('div');
@@ -369,6 +371,7 @@ function fail(error, form) {
 }
 async function mutate(change, files = [], replace = false) {
   if (canPreviewProfiles() && previewProfileId) throw Error('To jest podgląd konta testowego. Wróć do swojego konta, aby zapisać zmiany.');
+  if (!authUser || !signedInProfile()) throw Error('Zaloguj się na konto z aktywnym dostępem.');
   const next = structuredClone(state);
   change(next);
   await persist(next, files, replace);
