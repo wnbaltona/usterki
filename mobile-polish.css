@@ -152,9 +152,9 @@ form[aria-busy="true"] button[type="submit"]::after {
 
 /* Deleted profiles: details on the left, both actions together on the right. */
 @media(min-width:801px) {
- #account-dialog:has(.account-layout) { width:min(1160px,calc(100vw - 48px)); }
+ #account-dialog:has(.account-layout) { width:min(1280px,calc(100vw - 32px)); }
  #account-dialog .account-layout {
-  grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);
+  grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);
   grid-template-areas:"data security" "device security" "footer footer";
   gap:14px;padding:18px;align-items:stretch;
  }
@@ -232,7 +232,7 @@ form[aria-busy="true"] button[type="submit"]::after {
   display:block;width:100%;box-sizing:border-box;margin-inline:0;
  }
 }
-#account-dialog:has(.account-layout) { width: min(680px,calc(100vw - 24px));max-height:calc(100dvh - 24px); }
+#account-dialog:has(.account-layout) { width:min(1280px,calc(100vw - 32px));max-height:calc(100dvh - 24px); }
 #account-dialog .account-layout { display:grid;gap:18px;padding:22px; }
 .account-layout .account-section { min-width:0;padding:20px;background:#fff;border:1px solid var(--line);border-radius:14px; }
 .account-layout .account-section h3 { margin:0 0 18px;font-size:17px;line-height:1.4; }
@@ -291,4 +291,18 @@ form[aria-busy="true"] button[type="submit"]::after {
  .removed-users > div { grid-template-columns:minmax(0,1fr) minmax(0,1fr);padding:14px;gap:12px 8px; }
  .removed-users > div > span { grid-column:1 / -1; }
  .removed-users > div > .btn { width:100%;min-height:44px;white-space:normal; }
+}
+
+/* Keep the email intact and let it use a full row on narrower screens. */
+#account-dialog .account-data dd:nth-of-type(2) {
+ white-space:nowrap;overflow-wrap:normal;word-break:normal;
+ min-width:0;overflow-x:auto;
+}
+@media(max-width:1000px) {
+ #account-dialog .account-data { grid-template-columns:minmax(0,1fr);gap:4px; }
+ #account-dialog .account-data dd { margin-bottom:12px; }
+ #account-dialog .account-data dd:last-child { margin-bottom:0; }
+}
+@media(max-width:800px) {
+ #account-dialog:has(.account-layout) { width:calc(100vw - 24px); }
 }
